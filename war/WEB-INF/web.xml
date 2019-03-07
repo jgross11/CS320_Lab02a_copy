@@ -22,6 +22,10 @@
     <servlet-name>GuessingGameServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.GuessingGameServlet</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>PCP_IndexServlet</servlet-name>
+    <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.PCP_IndexServlet</servlet-class>
+  </servlet>
   
   <!-- AJAX servlets. -->
   <servlet>
@@ -53,6 +57,10 @@
   <servlet-mapping>
     <servlet-name>GuessingGameServlet</servlet-name>
     <url-pattern>/guessingGame</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>PCP_IndexServlet</servlet-name>
+    <url-pattern>/PCP_Index</url-pattern>
   </servlet-mapping>
   
   <!--  AJAX servlet mappings. -->
