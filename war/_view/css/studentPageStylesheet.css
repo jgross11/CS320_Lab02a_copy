@@ -1,0 +1,47 @@
+/*
+Authors: 
+Alyssa Grove | agrove9@ycp.edu
+Dennis Chism | dchism@ycp.edu
+Josh Gross   | jgross11@ycp.edu
+Bill Abram   | wabram@ycp.edu
+*/
+#studentBox{
+    margin-top: 50px;
+    border: 1px solid black;
+    height: 250px;
+    width: 700px;
+}
+
+#pictureBox{
+    float: left;
+    width: 250px;
+    height: 250px;
+    border-right: 1px solid black;
+}
+
+#infoBox{
+    float: left;
+    font-size: 150%;
+}
+
+#mediaBox{
+    float: none;
+    width: 700px;
+}
+
+#academicInformation{
+    font-size: 30px;
+    border-bottom: 1px solid black;
+    width: 444px;
+}
+#extraInformation{
+    font-size: 25px;
+    width: 444px;
+}
+
+#studentName{
+    height: 20px;
+    width: 444px;
+    font-size: 40px;
+    border-bottom: 1px solid black;
+}

@@ -1,0 +1,16 @@
+/*
+Authors: 
+Alyssa Grove | agrove9@ycp.edu
+Dennis Chism | dchism@ycp.edu
+Josh Gross   | jgross11@ycp.edu
+Bill Abram   | wabram@ycp.edu
+*/
+#documentHeading{
+    font-size: 200%;
+}
+#error{ 
+    color:darkred;
+    background-color: lightcoral;
+    border-color: darkred;
+    border: solid 3px; 
+}
