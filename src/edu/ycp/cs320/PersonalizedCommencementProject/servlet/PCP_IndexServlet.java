@@ -87,7 +87,7 @@ public class PCP_IndexServlet extends HttpServlet {
 					errorMessage = "Username and password not found.";
 				}
 			}
-
+			
 		// Add parameters as request attributes
 		// this creates attributes named "first" and "second for the response, and grabs
 		// the
