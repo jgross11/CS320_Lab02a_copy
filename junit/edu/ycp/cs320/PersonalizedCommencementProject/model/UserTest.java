@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+
+// JUnits for User
 public class UserTest {
 	private User model1, model2, model3;
 
