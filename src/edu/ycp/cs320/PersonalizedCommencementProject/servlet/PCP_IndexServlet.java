@@ -6,7 +6,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import edu.ycp.cs320.PersonalizedCommencementProject.controller.GraduateController;
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.User;
 
 public class PCP_IndexServlet extends HttpServlet {
@@ -34,10 +37,10 @@ public class PCP_IndexServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		// populate 'database' with acceptable logins
-		logins[0] = new User("jgross11", "jgross11", "admin");
-		logins[1] = new User("wabram", "wabram", "student");
-		logins[2] = new User("agrove9", "agrove9", "advisor");
-		logins[3] = new User("dchism", "dchism", "student");
+		logins[0] = new User("jgross11", "jgross11", "admin", "Josh", "Gross");
+		logins[1] = new User("wabram", "wabram", "student", "Bill", "Abram");
+		logins[2] = new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove");
+		logins[3] = new User("dchism", "dchism", "student", "Dennis", "Chism");
 		infoInDB = false;
 		
 		System.out.println("PCP_Index Servlet: doPost");
@@ -45,24 +48,20 @@ public class PCP_IndexServlet extends HttpServlet {
 		// holds the error message text, if there is any
 		String errorMessage = null;
 
-		/* TODO Straighten this out - use both a controller and a model, somehow. 
-		 * TODO Straighten this out - use both a controller and a model, somehow.
-		 * TODO Straighten this out - use both a controller and a model, somehow.
-		 */
-		//NumbersController controller = new NumbersController();
+		// create controller that holds User model
 		UserController controller = new UserController();
-		User model = new User();
-		controller.setModel(model);
+		
+		// create user model that holds user information
+		User userModel = new User();
+		controller.setModel(userModel);
 
 		// decode POSTed form parameters and dispatch to controller
 			// stores inputted username and password
 			String username = req.getParameter("username");
 			String password = req.getParameter("password");
-			System.out.println(username + ", " + password);
 
 			// check for errors in the form data before using is in a calculation
 			if (username.equals("") || password.equals("")) {
-				System.out.println("A field was null");
 				errorMessage = "Please enter a username and password";
 				controller.setUsername("");
 				controller.setPassword("");
@@ -79,6 +78,8 @@ public class PCP_IndexServlet extends HttpServlet {
 					if(username.equals(logins[i].getUsername()) && password.equals(logins[i].getPassword())) {
 						infoInDB = true;
 						infoIndex = i;
+						controller.setFirstName(logins[i].getFirstName());
+						controller.setLastName(logins[i].getLastName());
 						break;
 					}
 				}
@@ -95,43 +96,66 @@ public class PCP_IndexServlet extends HttpServlet {
 		// they don't have to be named the same, but in this case, since we are passing
 		// them back
 		// and forth, it's a good idea
-		req.setAttribute("username", model.getUsername());
-		req.setAttribute("password", model.getPassword());
+		req.setAttribute("username", userModel.getUsername());
+		req.setAttribute("password", userModel.getPassword());
 		
 		// add result objects as attributes
 		// this adds the errorMessage text and the result to the response
 		req.setAttribute("errorMessage", errorMessage);
 
-		req.setAttribute("model", model);
-		
-		/* 
-		 * TODO this is where we check what type of account the user is
-		 * TODO after determining which account type the user has, then
-		 * TODO redirect to the appropriate page. Before the YCP database
-		 * TODO created, these can be hard coded by adding to the instantiated
-		 * TODO user array above. ex logins[0] = new User(username, password, type)
-		 */
+		req.setAttribute("model", userModel);
 		
 		// Redirect accordingly
 		// correct login
 		if(infoInDB) {
 			// get login account type
-			String loginType = logins[infoIndex].getType();	
+			String loginType = logins[infoIndex].getType();
+			
 			// redirect to student page
 			if(loginType.equals("student")) {
+				// The Graduate object must be instantiated here in order to load information
+				// to load student page. This also (probably) means that every object (Advisor, Admin) must
+				// be instantiated in the following logical statements in order to ensure data is loaded to screen
+				// since the graduate's view page should be displayed first, all of their information is required
+				// when the server is implemented, not only would the graduate's major/minor be extracted,
+				// but their infostates would also need to be obtained. 
+				
+				// transfers data from userModel to gradModel 
+				Graduate gradModel = new Graduate(userModel);
+				
+				// informs student page jsp that the page needs to be loaded
+				req.setAttribute("validLogIn", true);
+				
+				// sets page attribute to display graduate name
+				req.setAttribute("studentName", gradModel.getFirstName() + " " +  gradModel.getLastName());
+				
+				// sets page attribute to display graduate academic information
+				req.setAttribute("studentAcademicInformation", "Major in Testing");
+				
+				// sets page attribute to display graduate's additional information
+				req.setAttribute("studentExtraInformation", "excels at Testology");
+				
+				// TODO once the Infostate and ContentComponent classes are correctly implemented, there will need to be calls
+				// TODO here setting the media page elements (video, photo, etc.) with the graduate's ContentComponents
+				
+				// redirect to the student page
 				req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
 			}
+			
 			// redirect to advisor page
 			else if(loginType.equals("advisor")) {
 				req.getRequestDispatcher("/_view/PCP_AdvisorPage.jsp").forward(req, resp);
 			}
+			
 			// redirect to admin page
 			else {
 				req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
 			}
 		}
+		
 		// incorrect login
 		else {
+			
 			// redirect to login page again
 			req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
 		}

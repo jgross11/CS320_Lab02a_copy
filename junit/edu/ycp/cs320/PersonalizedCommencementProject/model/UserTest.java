@@ -10,9 +10,9 @@ public class UserTest {
 
 	@Before
 	public void setUp() {
-		model1 = new User();
-		model2 = new User("testUser", "testPass");
-		model3 = new User("testUser", "testPass", "testType");
+		model1 = new User("", "", "", "", "");
+		model2 = new User("testUser", "testPass", "", "", "");
+		model3 = new User("testUser", "testPass", "testType", "", "");
 	}
 
 	@Test
