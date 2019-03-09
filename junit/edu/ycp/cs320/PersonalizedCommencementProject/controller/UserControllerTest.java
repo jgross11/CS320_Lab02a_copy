@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.model.User;
 
-
+// JUnits for UserController
 public class UserControllerTest {
 	private UserController controller;
 	private User model;
