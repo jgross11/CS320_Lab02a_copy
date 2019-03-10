@@ -11,25 +11,18 @@ import edu.ycp.cs320.PersonalizedCommencementProject.controller.GraduateControll
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.User;
 
-// TODO add parameter 'switchToEditMode' into the student page jsp file
-// TODO this will determine whether or not the user wants to edit their info
-
-// TODO also, figure out why the Student page jsp css is broken
-
-// TODO also, create test cases for graduate and graduateController
-
-// TODO also, navigating between login / student pages is working 90% of the time
+// TODO navigating between login / student pages is working 90% of the time
 // TODO find / fix cases where it doesn't
 
 // TODO finally, understand that the graduate and graduateController classes 
 // TODO are not complete at this time (3/9) since they only contain a small 
-// TODO amount of the attributes the Graduate class diagram has. 
+// TODO amount of the attributes the Graduate class diagram has 
 
 public class PCP_StudentPageServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	// acts as a temporary 'database' for login verification
-	private Graduate[] logins = new Graduate[1];
+	private Graduate[] logins = new Graduate[2];
 	
 	// indicates that graduate information matches graduate information stored in 'database'
 	private boolean infoInDB;
@@ -46,23 +39,25 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		// call JSP to generate student page
 		try{
 			System.out.println("Attemping to navigate...");
-			if(req.getAttribute("validLogIn").equals(false)) {
+			if(req.getAttribute("validLogIn").equals(true)) {
 				System.out.println("Navigating to student page");
-				req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
+				resp.sendRedirect("http://localhost:8081/PersonalizedCommencementProject/PCP_StudentPage");
 			}
 			// the supplied login information is not valid,
 			// return user to login page
 
 			else {
 				System.out.println("Navigating to login page due to bad data");
-				req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req,  resp);
+				resp.sendRedirect("http://localhost:8081/PersonalizedCommencementProject/PCP_Index");
+				//req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req,  resp);
 			}
 		}
 		// no information is supplied,
 		// return user to login page
 		catch(NullPointerException e){
 			System.out.println("Navigating to login page due to no data");
-			req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req,  resp);
+			resp.sendRedirect("http://localhost:8081/PersonalizedCommencementProject/PCP_Index");
+			//req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req,  resp);
 		}
 	}
 
@@ -80,30 +75,24 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		GraduateController controller = new GraduateController();
 
 		// decode POSTed form parameters and dispatch to controller
-		// stores inputted username and password
+		// stores inputed username and password
 		String studentName = req.getParameter("studentName");
 		
 		// once the database is set up, this would iterate through every student in the database
-		// and load information to the page only if the supplied information is valid. Otherwise,
-		// it will redirect the user back to the login screen to supply valid information. 
-		// One example why this is necessary is the case where someone directly accesses the
-		// url for the student page without logging in - no login information would have been 
-		// supplied, so no information should be displayed and the user should be redirected. 
+		// and load information to the page only if the supplied information is valid (found in 
+		// the database). Otherwise, it will redirect the user back to the login screen to 
+		// supply valid information. One example why this is necessary is the case where someone
+		// directly accesses the url for the student page without logging in - no login information 
+		// would have been supplied, so no information should be displayed and the user should be redirected. 
 		
 		for(int i = 0; i < logins.length; i++) {
-			// provided student name is equal to a student name in database -> input is probably valid
-			System.out.println("FFFF" + studentName);
+			// provided student name is equal to a student name in database --> input is probably valid
+			// set the controller's model to the Graduate class of the user and indicate info was found. 
 			if(studentName.equals(logins[i].getFirstName() + " " + logins[i].getLastName())) {
-				System.out.println("Found user");
 				controller.setModel(logins[i]);
 				infoInDB = true;
 				break;
 			}	
-		}
-		// create 'dummy' graduate if supplied information is missing / incorrect
-		// used to ensure that user is redirected to the login screen
-		if(!infoInDB) {
-			controller.setModel(new Graduate(new User("", "", "", "", "")));
 		}
 		
 		// create reference to model
@@ -114,9 +103,14 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		String studentAcademicInformation = req.getParameter("studentAcademicInformation");
 		String studentExtraInformation = req.getParameter("studentExtraInformation");
 		
-		// TODO add this parameter into the student page 
-		// TODO jsp file and then uncomment the following line 
-		// switchToEditMode = (req.getParameter("switchToEditMode").equals("true")) ? true : false;
+		if(req.getParameter("mode").equals("view")) {
+			req.setAttribute("mode", "edit");
+			System.out.println("Switching graduate mode from view to edit");
+		}
+		else {
+			req.setAttribute("mode", "view");
+			System.out.println("Switching graduate mode from edit to view");
+		}
 		
 		// Add parameters as request attributes
 		// this creates attributes named "first" and "second for the response, and grabs
@@ -135,11 +129,6 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		// correct graduate information is supplied
 		if(infoInDB) {
 			req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
-		}
-		// incorrect information is supplied
-		else {
-			// redirect to login page
-			req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
 		}
 	}
 
