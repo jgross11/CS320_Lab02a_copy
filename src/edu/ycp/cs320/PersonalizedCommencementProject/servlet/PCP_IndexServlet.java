@@ -112,6 +112,7 @@ public class PCP_IndexServlet extends HttpServlet {
 			String loginType = logins[infoIndex].getType();
 			
 			// redirect to student page
+			System.out.println("User supplied valid graduate data");
 			if(loginType.equals("student")) {
 				// The Graduate object must be instantiated here in order to load information
 				// to load student page. This also (probably) means that every object (Advisor, Admin) must
@@ -122,6 +123,9 @@ public class PCP_IndexServlet extends HttpServlet {
 				
 				// transfers data from userModel to gradModel 
 				Graduate gradModel = new Graduate(userModel);
+				
+				// displays view version of student page
+				req.setAttribute("mode", "view");
 				
 				// informs student page jsp that the page needs to be loaded
 				req.setAttribute("validLogIn", true);
