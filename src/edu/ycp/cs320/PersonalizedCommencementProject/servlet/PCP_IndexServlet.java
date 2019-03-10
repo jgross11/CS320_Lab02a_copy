@@ -112,8 +112,8 @@ public class PCP_IndexServlet extends HttpServlet {
 			String loginType = logins[infoIndex].getType();
 			
 			// redirect to student page
-			System.out.println("User supplied valid graduate data");
 			if(loginType.equals("student")) {
+				System.out.println("User supplied valid graduate data");
 				// The Graduate object must be instantiated here in order to load information
 				// to load student page. This also (probably) means that every object (Advisor, Admin) must
 				// be instantiated in the following logical statements in order to ensure data is loaded to screen
