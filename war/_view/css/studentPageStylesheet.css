@@ -9,7 +9,7 @@ Bill Abram   | wabram@ycp.edu
     margin-top: 50px;
     border: 1px solid black;
     height: 250px;
-    width: 700px;
+    width: 701px;
 }
 
 #pictureBox{
@@ -22,6 +22,11 @@ Bill Abram   | wabram@ycp.edu
 #infoBox{
     float: left;
     font-size: 150%;
+}
+
+#viewToggleButton{
+	float: right;
+	font-size: 120%;
 }
 
 #mediaBox{
