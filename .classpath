@@ -1,79 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="CS320_Jetty9"/>
 	<classpathentry kind="src" output="test-bin" path="junit"/>
 	<classpathentry kind="src" output="bin" path="main"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/annotations/asm-5.1.jar"/>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/annotations/asm-commons-5.1.jar"/>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/annotations/javax.annotation-api-1.2.jar"/>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/apache-jsp/org.eclipse.jdt.core.compiler.ecj-4.4.2.jar"/>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/apache-jsp/org.eclipse.jetty.apache-jsp-9.4.3.v20170317.jar"/>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/apache-jsp/org.mortbay.jasper.apache-el-8.5.9.1.jar"/>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/apache-jsp/org.mortbay.jasper.apache-jsp-8.5.9.1.jar"/>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/apache-jstl/org.apache.taglibs.taglibs-standard-impl-1.2.5.jar"/>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/apache-jstl/org.apache.taglibs.taglibs-standard-spec-1.2.5.jar"/>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-annotations-9.4.3.v20170317.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://download.eclipse.org/jetty/stable-9/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-http-9.4.3.v20170317.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://download.eclipse.org/jetty/stable-9/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-io-9.4.3.v20170317.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://download.eclipse.org/jetty/stable-9/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-jmx-9.4.3.v20170317.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://download.eclipse.org/jetty/stable-9/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-plus-9.4.3.v20170317.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://download.eclipse.org/jetty/stable-9/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-schemas-3.1.jar"/>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-security-9.4.3.v20170317.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://download.eclipse.org/jetty/stable-9/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-server-9.4.3.v20170317.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://download.eclipse.org/jetty/stable-9/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-servlet-9.4.3.v20170317.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://download.eclipse.org/jetty/stable-9/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-util-9.4.3.v20170317.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://download.eclipse.org/jetty/stable-9/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-webapp-9.4.3.v20170317.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://download.eclipse.org/jetty/stable-9/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/jetty-xml-9.4.3.v20170317.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://download.eclipse.org/jetty/stable-9/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="/CS320_Jetty9_test/lib/servlet-api-3.1.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="https://tomcat.apache.org/tomcat-8.0-doc/servletapi/"/>
-		</attributes>
-	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/J/git/Personalized-Commencement-Project/CS320_Jetty9/lib/annotations/asm-5.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/J/git/Personalized-Commencement-Project/CS320_Jetty9/lib/annotations/asm-commons-5.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/J/git/Personalized-Commencement-Project/CS320_Jetty9/lib/annotations/javax.annotation-api-1.2.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/annotations/asm-5.1.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/annotations/asm-commons-5.1.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/annotations/javax.annotation-api-1.2.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/apache-jsp/org.eclipse.jdt.core.compiler.ecj-4.4.2.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/apache-jsp/org.eclipse.jetty.apache-jsp-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/apache-jsp/org.mortbay.jasper.apache-el-8.5.9.1.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/apache-jsp/org.mortbay.jasper.apache-jsp-8.5.9.1.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/apache-jstl/org.apache.taglibs.taglibs-standard-impl-1.2.5.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/apache-jstl/org.apache.taglibs.taglibs-standard-spec-1.2.5.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-annotations-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-http-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-io-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-jmx-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-plus-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-schemas-3.1.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-security-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-server-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-servlet-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-util-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-webapp-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-xml-9.4.3.v20170317.jar"/>
+	<classpathentry kind="lib" path="CS320_Jetty9/lib/servlet-api-3.1.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
