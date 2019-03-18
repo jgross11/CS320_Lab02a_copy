@@ -13,31 +13,31 @@ public class User {
 		this.lastName = lastName;
 	}
 	public String getUsername() {
-		return this.username;
+		return username;
 	}
 	public void setUsername(String username) {
 		this.username = username;
 	}
 	public String getPassword() {
-		return this.password;
+		return password;
 	}
 	public void setPassword(String password) {
 		this.password = password;
 	}
 	public String getType() {
-		return this.type;
+		return type;
 	}
 	public void setType(String type) {
 		this.type = type;
 	}
 	public String getFirstName() {
-		return this.firstName;
+		return firstName;
 	}
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 	public String getLastName() {
-		return this.lastName;
+		return lastName;
 	}
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
