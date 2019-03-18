@@ -27,9 +27,6 @@ public class PCP_StudentPageServlet extends HttpServlet {
 	// indicates that graduate information matches graduate information stored in 'database'
 	private boolean infoInDB;
 	
-	// indicates whether or not user wants to edit their information
-	private boolean switchToEditMode;
-	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -67,6 +64,8 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		// populate 'database' with acceptable graduates
 		logins[0] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
 		logins[1] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
+		logins[0].setStatus(true);
+		logins[1].setStatus(false);
 		infoInDB = false;
 		
 		System.out.println("PCP_StudentPage Servlet: doPost");
@@ -103,13 +102,30 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		String studentAcademicInformation = req.getParameter("studentAcademicInformation");
 		String studentExtraInformation = req.getParameter("studentExtraInformation");
 		
-		if(req.getParameter("mode").equals("view")) {
+		// These can be used later on to differentiate the choice of the student
+		String studentSaveChanges = req.getParameter("saveChanges");
+		String studentDiscardChanges = req.getParameter("discardChanges");
+		String mode = req.getParameter("mode");
+		
+		if(mode.equals("view")) {
 			req.setAttribute("mode", "edit");
 			System.out.println("Switching graduate mode from view to edit");
+			if(studentSaveChanges.equals("1") && studentDiscardChanges.equals("0")) {
+				System.out.println("\n\nStudent wishes to save changes");
+			}
+			else if(studentDiscardChanges.equals("1") && studentSaveChanges.equals("0")){
+				System.out.println("\n\nStudent wishes to discard changes");
+			}
+			else {
+				System.out.println("Invalid Values, save: " + studentSaveChanges + " | discard: " + studentDiscardChanges);
+			}
 		}
-		else {
+		else if(mode.equals("edit")){
 			req.setAttribute("mode", "view");
 			System.out.println("Switching graduate mode from edit to view");
+		}
+		else {
+			System.out.println("Invalid mode: " + mode);
 		}
 		
 		// Add parameters as request attributes
@@ -124,24 +140,14 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		req.setAttribute("studentAcademicInformation", studentAcademicInformation);
 		req.setAttribute("studentExtraInformation", studentExtraInformation);
 		req.setAttribute("model", model);
+		req.setAttribute("studentStatus", model.getStatus());
+		req.setAttribute("saveChanges", studentSaveChanges);
+		req.setAttribute("discardChanges", studentDiscardChanges);
 		
 		// Redirect accordingly
 		// correct graduate information is supplied
 		if(infoInDB) {
 			req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
-		}
-	}
-
-	/* 
-	 * NOT REQUIRED FOR OUR PROJECT - WILL MOST LIKELY BE DELETED AT SOME POINT
-	 * STILL HERE FOR REFERENCE IF IT WOULD BE NEEDED FOR WHATEVER REASON
-	 */
-	// gets double from the request with attribute named s
-	private Double getDoubleFromParameter(String s) {
-		if (s == null || s.equals("")) {
-			return null;
-		} else {
-			return Double.parseDouble(s);
 		}
 	}
 }
