@@ -1,5 +1,6 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.model;
 
+// Graduate model class
 public class Graduate extends User{
 	private String major, minor, QRCodeString;
 	//private InfoState pendInfo, currInfo;
@@ -15,25 +16,25 @@ public class Graduate extends User{
 	}
 	
 	public String getMajor() {
-		return this.major;
+		return major;
 	}
 	public void setMajor(String major) {
 		this.major = major;
 	}
 	public String getMinor() {
-		return this.minor;
+		return minor;
 	}
 	public void setMinor(String minor) {
 		this.minor = minor;
 	}
 	public String getQRCodeString() {
-		return this.QRCodeString;
+		return QRCodeString;
 	}
 	public void setQRCodeString(String QRCodeString) {
 		this.QRCodeString = QRCodeString;
 	}
 	public boolean getStatus() {
-		return this.status;
+		return status;
 	}
 	public void setStatus(boolean status) {
 		this.status = status;
