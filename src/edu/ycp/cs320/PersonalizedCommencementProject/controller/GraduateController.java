@@ -2,14 +2,12 @@ package edu.ycp.cs320.PersonalizedCommencementProject.controller;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
 
+// Graduate controller class
 public class GraduateController extends UserController{
 	private Graduate model;
 	
-	public void setModel(Graduate model) {
-		this.model = model;
-	}
 	public Graduate getModel() {
-		return this.model;
+		return model;
 	}
 	
 	public void setMajor(String major) {
