@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.ycp.cs320.PersonalizedCommencementProject.controller.GraduateController;
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.User;
@@ -133,6 +132,8 @@ public class PCP_IndexServlet extends HttpServlet {
 				// sets page attribute to display graduate name
 				req.setAttribute("studentName", gradModel.getFirstName() + " " +  gradModel.getLastName());
 				
+				req.setAttribute("studentStatus", (infoIndex == 1) ? true : false);
+				
 				// sets page attribute to display graduate academic information
 				req.setAttribute("studentAcademicInformation", "Major in Testing");
 				
@@ -162,19 +163,6 @@ public class PCP_IndexServlet extends HttpServlet {
 			
 			// redirect to login page again
 			req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
-		}
-	}
-
-	/* 
-	 * NOT REQUIRED FOR OUR PROJECT - WILL MOST LIKELY BE DELETED AT SOME POINT
-	 * STILL HERE FOR REFERENCE IF IT WOULD BE NEEDED FOR WHATEVER REASON
-	 */
-	// gets double from the request with attribute named s
-	private Double getDoubleFromParameter(String s) {
-		if (s == null || s.equals("")) {
-			return null;
-		} else {
-			return Double.parseDouble(s);
 		}
 	}
 }
