@@ -21,7 +21,7 @@
 					</c:if>
                     <p>MyYCP Username <br> <input type="text" name="username" value="${model.username}"> </p>
                     <p>MyYCP Password <br> <input type="password" name="password" value="${model.password}"> </p>
-                    <input type="Submit" name="submit" value="Log in"></button>
+                    <input type="Submit" name="submit" value="Log in">
                 </form>
             </div>
         </div>
