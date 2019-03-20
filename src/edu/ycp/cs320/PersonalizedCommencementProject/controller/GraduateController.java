@@ -1,5 +1,7 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.controller;
 
+import edu.ycp.cs320.PersonalizedCommencementProject.miscellaneousClasses.InfoState;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
 
 // Graduate controller class
@@ -8,6 +10,10 @@ public class GraduateController extends UserController{
 	
 	public Graduate getModel() {
 		return model;
+	}
+	
+	public void setModel(Graduate model) {
+		this.model = model;
 	}
 	
 	public void setMajor(String major) {
@@ -24,5 +30,17 @@ public class GraduateController extends UserController{
 	
 	public void setStatus(boolean status) {
 		model.setStatus(status);
+	}
+	
+	public void setAdvisor(Advisor advisor) {
+		model.setAdvisor(advisor);
+	}
+	
+	public void setCurrentInfo(InfoState currentInfo) {
+		model.setCurrentInfo(currentInfo);
+	}
+	
+	public void setPendingInfo(InfoState pendingInfo) {
+		model.setPendingInfo(pendingInfo);
 	}
 }
