@@ -6,8 +6,8 @@
 <html>
     <head>
         <title>Personalized Commencement Login</title>
-        <style><%@include file="css/loginStylesheet.css"%></style>
-        <style><%@include file="css/siteStylesheet.css"%></style>
+		<link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/_view/css/loginStylesheet.css" />
+        <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/_view/css/siteStylesheet.css" />
     </head>
     <body>
         <div id="documentHeading">
