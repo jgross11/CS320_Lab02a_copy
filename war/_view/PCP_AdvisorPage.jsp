@@ -66,12 +66,6 @@ TODO: Needs
                 	TODO: new InfoState information in Advisor Edit mode
                 	
                 	 -->
-                	<c:forEach var="student" items="${model.students}">
-                		<c:if test="${student.status == 'true'}">
-                			<td><c:out value="${student.name}"/>${student.name}</td>
-                		</c:if>
-   					</c:forEach>
-                    <td>Josh Gross </td>
                 </tr>
                 
                 <!-- 
