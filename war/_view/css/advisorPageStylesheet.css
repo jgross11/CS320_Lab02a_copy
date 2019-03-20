@@ -19,10 +19,6 @@
     font-size: 150%;
 }
 #eventStatus{
-    /*
-    This color changes depending on the advisor's status
-    */
-    color: red;
     border: 0px solid black;
     font-size: 180%;
 }
