@@ -41,7 +41,8 @@
     34px - height of the title cells
     15 / 16 - offset to make it look 'right' 
     ###################### TO DO ######################
-    look into whether this has to do with odd # of students requiring 15 and even # of students requiring 16
+    Look into whether this has to do with odd # of students requiring 15 and even # of students requiring 16
+    Also, this has to be calculated dynamically when loading the Advisor JSP, so Javascript will likely be involved. 
     ###################### TO DO ######################
     */
     height: 127px;
@@ -63,11 +64,11 @@
     border-right: 0px solid black;
     border-left: 0px solid black;
     border-bottom: 1px solid black;
-    width: 444px;
+    width: 440px;
 }
 #advisorName{
     height: 20px;
-    width: 444px;
+    width: 440px;
     font-size: 40px;
     border-top: 0px solid black;
     border-right: 0px solid black;
