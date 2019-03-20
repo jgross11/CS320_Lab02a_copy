@@ -20,14 +20,8 @@ TODO: needs to be displayed
 <html>
     <head>
         <title>Personalized Commencement - Student Page</title>
-        <!--  
-        TODO figure out how to reference other files from within
-        TODO a jsp file - this will be useful later on for
-        TODO css styling and loading images/videos/etc.
-         -->
-        <style><%@include file="css/studentPageStylesheet.css"%></style>
-        <style><%@include file="css/siteStylesheet.css"%></style>
-        <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}\war\_view\css\siteStylesheet.css" />
+		<link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/_view/css/studentPageStylesheet.css" />
+        <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/_view/css/siteStylesheet.css" />
         
     </head>
     <body>
@@ -55,7 +49,7 @@ TODO: needs to be displayed
 				</div>
 			    <div id="studentBox">
 			    	<div id="pictureBox">
-			        	<img src="assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+			        	<img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
 			        </div>
 			    	<div id="infoBox">
 			            <table id="infoTable">
@@ -128,7 +122,7 @@ TODO: needs to be displayed
 			</div>
 	        <div id="studentBox">
 	            <div id="pictureBox">
-	                <img src="assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+	                <img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
 	            </div>
 	            <div id="infoBox">
 	                <table id="infoTable">
@@ -151,10 +145,10 @@ TODO: needs to be displayed
 				<h3> NOTE: ONLY ONE OF THESE WILL BE DISPLAYED DEPENDING ON THE GRADUATE'S INFOSTATE TYPE</h3>
 	            <!-- STATIC SLIDESHOW -->
 				<h3> STATIC SLIDESHOW EXAMPLE </h3>
-				<img src = "assets/mocha2.jpg" alt = "slideshow image 1" width = 170px height = 170px> 
-	            <img src = "assets/mocha1.jpg" alt = "slideshow image 2" width = 170px height = 170px> 
-	            <img src = "assets/tippy.jpg" alt = "slideshow image 3" width = 170px height = 170px> 
-	            <img src = "assets/marble.jpg" alt = "slideshow image 4" width = 170px height = 170px>
+				<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 170px height = 170px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 170px height = 170px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 170px height = 170px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 170px height = 170px>
 				
 	            <p> Upload leftmost image - display dimensions: 170px x 170px</p>
 	            <input type="file" name="file1" accept="image/*">
@@ -167,10 +161,10 @@ TODO: needs to be displayed
 	            
 	            <!-- 'DYNAMIC' SLIDESHOW -->
 	            <h3> DYNAMIC SLIDESHOW EXAMPLE </h3>
-				<img src = "assets/mocha2.jpg" alt = "slideshow image 1" width = 410px height = 410px> 
-	            <img src = "assets/mocha1.jpg" alt = "slideshow image 2" width = 70px height = 70px> 
-	            <img src = "assets/tippy.jpg" alt = "slideshow image 3" width = 70px height = 70px> 
-	            <img src = "assets/marble.jpg" alt = "slideshow image 4" width = 70px height = 70px>
+				<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 410px height = 410px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 70px height = 70px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 70px height = 70px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 70px height = 70px>
 	            <p> Upload leftmost image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
 	            <input type="file" name="file1" accept="image/*">
 				<p> Upload center-left image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
@@ -183,7 +177,7 @@ TODO: needs to be displayed
 	            
 	            <!-- VIDEO -->
 				<h3> VIDEO EXAMPLE </h3>
-	            <video width = 680px height = 680px controls>       <source src = "assets/tippy.mp4" type = "video/mp4">
+	            <video width = 680px height = 680px controls>       <source src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.mp4" type = "video/mp4">
 	            </video>
 				<p> Upload video - optimal length: &lt; 6 seconds</p>
 				<input type="file" name="file1" accept="video/*">
