@@ -8,6 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.Admin;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.User;
 
@@ -36,10 +38,10 @@ public class PCP_IndexServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		// populate 'database' with acceptable logins
-		logins[0] = new User("jgross11", "jgross11", "admin", "Josh", "Gross");
-		logins[1] = new User("wabram", "wabram", "student", "Bill", "Abram");
-		logins[2] = new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove");
-		logins[3] = new User("dchism", "dchism", "student", "Dennis", "Chism");
+		logins[0] = new Admin(new User("jgross11", "jgross11", "admin", "Josh", "Gross"));
+		logins[1] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
+		logins[2] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
+		logins[3] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
 		infoInDB = false;
 		
 		System.out.println("PCP_Index Servlet: doPost");
@@ -118,7 +120,7 @@ public class PCP_IndexServlet extends HttpServlet {
 				// be instantiated in the following logical statements in order to ensure data is loaded to screen
 				// since the graduate's view page should be displayed first, all of their information is required
 				// when the server is implemented, not only would the graduate's major/minor be extracted,
-				// but their infostates would also need to be obtained. 
+				// but their InfoStates would also need to be obtained. 
 				
 				// transfers data from userModel to gradModel 
 				Graduate gradModel = new Graduate(userModel);
@@ -149,12 +151,25 @@ public class PCP_IndexServlet extends HttpServlet {
 			
 			// redirect to advisor page
 			else if(loginType.equals("advisor")) {
+				Advisor advisorModel = new Advisor(userModel);
+				advisorModel.setStatus(false);
+				advisorModel.setAcademicInformation("Departmet of Etestimology");
+				/*
+				 * TODO: this is where the Advisor's student list is populated, which will then be used to calculate the Advisor's
+				 * TODO: status in order to set the initial value of the advisorStatus attribute
+				 */
+				req.setAttribute("advisorName", advisorModel.getFirstName() + " " + advisorModel.getLastName());
+				req.setAttribute("academicInformation", advisorModel.getAcademicInformation());
+				req.setAttribute("advisorStatus", advisorModel.getStatus());
 				req.getRequestDispatcher("/_view/PCP_AdvisorPage.jsp").forward(req, resp);
 			}
 			
 			// redirect to admin page
-			else {
+			else if(loginType.equals("admin")){
 				req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
+			}
+			else {
+				System.out.println("Unknown account type, redirecting to login.");
 			}
 		}
 		
