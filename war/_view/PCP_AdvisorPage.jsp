@@ -20,7 +20,7 @@ TODO: back and forth between JSP and servlet
         <div id="documentHeading">
             <b> Personalized Commencement - Advisor Page </b>
         </div>
-        <form name="studentForm" action="${pageContext.servletContext.contextPath}/PCP_StudentPage" method="post">
+        <form name="advisorForm" action="${pageContext.servletContext.contextPath}/PCP_AdvisorPage" method="post">
 	        <div id="advisorBox">
 	            <div id="pictureBox">
 	                <img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Advisor Photo" width="150px" height="150px"/> 
@@ -92,6 +92,8 @@ TODO: back and forth between JSP and servlet
 	    	<input type="hidden" name="advisorName" value="${advisorName}">
 	    	<input type="hidden" name="academicInformation" value="${academicInformation}">
 	    	<input type="hidden" name="advisorStatus" value="${advisorStatus}">
+	    	<input type="hidden" name="studentToView" value="${studentToView}">
+	    	<input type="hidden" name="advisorUsername" value="${advisorUsername}">
         </form>
     </body>
 </html>
