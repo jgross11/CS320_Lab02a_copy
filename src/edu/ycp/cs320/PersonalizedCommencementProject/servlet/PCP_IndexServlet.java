@@ -153,7 +153,7 @@ public class PCP_IndexServlet extends HttpServlet {
 			else if(loginType.equals("advisor")) {
 				Advisor advisorModel = new Advisor(userModel);
 				advisorModel.setStatus(false);
-				advisorModel.setAcademicInformation("Departmet of Etestimology");
+				advisorModel.setAcademicInformation("Department of Etestimology");
 				/*
 				 * TODO: this is where the Advisor's student list is populated, which will then be used to calculate the Advisor's
 				 * TODO: status in order to set the initial value of the advisorStatus attribute
