@@ -107,25 +107,37 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		String studentDiscardChanges = req.getParameter("discardChanges");
 		String mode = req.getParameter("mode");
 		
-		if(mode.equals("view")) {
-			req.setAttribute("mode", "edit");
+		if(mode.equals("graduateView")) {
+			req.setAttribute("mode", "graduateEdit");
 			System.out.println("Switching graduate mode from view to edit");
+		}
+		else if(mode.equals("graduateEdit")){
+			req.setAttribute("mode", "graduateView");
+			System.out.println("Switching graduate mode from edit to view");
 			if(studentSaveChanges.equals("1") && studentDiscardChanges.equals("0")) {
 				System.out.println("\n\nStudent wishes to save changes");
+				// TODO: call function to save changes
+				// TODO: call function to save changes
 			}
 			else if(studentDiscardChanges.equals("1") && studentSaveChanges.equals("0")){
 				System.out.println("\n\nStudent wishes to discard changes");
+				// TODO: call function to discard changes
+				// TODO: call function to discard changes
 			}
 			else {
 				System.out.println("Invalid Values, save: " + studentSaveChanges + " | discard: " + studentDiscardChanges);
 			}
 		}
-		else if(mode.equals("edit")){
-			req.setAttribute("mode", "view");
-			System.out.println("Switching graduate mode from edit to view");
+		else if(mode.equals("advisorView")){
+			req.setAttribute("mode", "advisorEdit");
+			System.out.println("Switching advisor mode from view to edit");
+		}
+		else if(mode.equals("advisorEdit")) {
+			req.setAttribute("mode", "advisorView");
+			System.out.println("Switching advisor mode from edit to view");
 		}
 		else {
-			System.out.println("Invalid mode: " + mode);
+			System.out.println("Invalid mode");
 		}
 		
 		// Add parameters as request attributes

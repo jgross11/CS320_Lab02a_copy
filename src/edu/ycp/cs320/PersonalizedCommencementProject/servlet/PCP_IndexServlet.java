@@ -126,7 +126,7 @@ public class PCP_IndexServlet extends HttpServlet {
 				Graduate gradModel = new Graduate(userModel);
 				
 				// displays view version of student page
-				req.setAttribute("mode", "view");
+				req.setAttribute("mode", "graduateView");
 				
 				// informs student page jsp that the page needs to be loaded
 				req.setAttribute("validLogIn", true);

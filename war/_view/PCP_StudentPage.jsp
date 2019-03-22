@@ -33,10 +33,10 @@ TODO: needs to be displayed
         </div>
   		<form name="studentForm" action="${pageContext.servletContext.contextPath}/PCP_StudentPage" method="post">
   		
-  		<!--  STUDENT VIEW PAGE -->
-  		<!--  STUDENT VIEW PAGE -->
+  			<!--  STUDENT VIEW PAGE -->
+  			<!--  STUDENT VIEW PAGE -->
   		
-	  		<c:if test="${mode == 'view'}">
+	  		<c:if test="${mode == 'graduateView'}">
 			  	<div id="layoutViewSelectionBox">
 			  		<c:if test="${studentStatus == 'true'}">
 						<b style="font-size: 23px">Status: <b style = "color: green; font-size: 23px"> Approved </b> </b>
@@ -102,7 +102,7 @@ TODO: needs to be displayed
 		   	<!--  STUDENT EDIT PAGE -->
 	  		<!--  STUDENT EDIT PAGE -->
 		   	
-		   	<c:if test="${mode=='edit'}">
+		   	<c:if test="${mode == 'graduateEdit'}">
 		   	<div id="layoutEditSelectionBox">
 				<b style="font-size: 23px">Select your layout</b><hr>
 				<select name="layoutSelection">
@@ -185,6 +185,24 @@ TODO: needs to be displayed
 	            
 	        </div>
 		   	</c:if>
+	    	
+	    	<!--  ADVISOR VIEW PAGE -->
+	    	<!--  ADVISOR VIEW PAGE -->
+	    	<!--  TODO: ADD ADVISOR VIEW HTML WITHIN THE IF STATEMENT -->
+	    	<!--  TODO: ADD ADVISOR VIEW HTML WITHIN THE IF STATEMENT -->
+	    	
+	    	<c:if test="${mode=='advisorView'}">
+	    	
+	    	</c:if>
+	    	
+	    	<!--  ADVISOR EDIT PAGE -->
+	    	<!--  ADVISOR EDIT PAGE -->
+	    	<!--  TODO: ADD ADVISOR EDIT HTML WITHIN THE IF STATEMENT -->
+	    	<!--  TODO: ADD ADVISOR EDIT HTML WITHIN THE IF STATEMENT -->
+	    	<c:if test="${mode=='advisorEdit'}">
+	    	
+	    	</c:if>
+	    	
 	    	<!--  sneaky references to fields accessed by the servlet-->
 	    	<!--  
 	    	NOTE: *every* attribute that is submitted to the JSP needs to be represented here,
