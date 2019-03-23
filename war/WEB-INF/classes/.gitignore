@@ -2,6 +2,6 @@
 /.classpath
 /.gitignore
 /.project
-/lib/
+/.settings/
 /edu/
-/miscellaneousClasses/
+/lib/
