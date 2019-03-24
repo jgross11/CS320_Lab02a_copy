@@ -166,6 +166,10 @@ public class PCP_IndexServlet extends HttpServlet {
 			
 			// redirect to admin page
 			else if(loginType.equals("admin")){
+				Admin adminModel = new Admin(userModel);
+				adminModel.setDate("May 15th, 2019");
+				req.setAttribute("adminName", adminModel.getFirstName() + " " + adminModel.getLastName());
+				req.setAttribute("eventDate",adminModel.getDate());
 				req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
 			}
 			else {
