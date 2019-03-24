@@ -20,6 +20,42 @@ TODO: needs to be displayed
 <html>
     <head>
         <title>Personalized Commencement - Student Page</title>
+        
+        <!-- shows that advisor is using the student view or edit under title  -->
+        <!-- shows that advisor is using the student view or edit under title  -->
+        <!-- also show status and edit button for advisor view and edit  -->
+        <!-- also show status and edit button for advisor view and edit  -->
+        <p>
+        	<c:if test="${mode=='studentView'}">
+            	<p> Advisor View Student Page </p>
+            		<div id="layoutViewSelectionBox">
+			  		<c:if test="${studentStatus == 'true'}">
+						<b style="font-size: 23px">Status: <b style = "color: green; font-size: 23px"> Approved </b> </b>
+					</c:if>
+					<c:if test="${studentStatus == 'false'}">
+						<b style="font-size: 23px">Status: <b style = "color: red; font-size: 20px"> Not Approved </b> </b>
+					</c:if>
+					<hr>
+					<input type="submit" name="editInfoButton" value="Edit Information" >
+				</div>
+            	
+            </c:if>
+            <c:if test="${mode=='advisorEdit'}">
+            	<p> Advisor's Approval Page <p>
+            		<div id="layoutViewSelectionBox">
+			  		<c:if test="${studentStatus == 'true'}">
+						<b style="font-size: 23px">Status: <b style = "color: green; font-size: 23px"> Approved </b> </b>
+					</c:if>
+					<c:if test="${studentStatus == 'false'}">
+						<b style="font-size: 23px">Status: <b style = "color: red; font-size: 20px"> Not Approved </b> </b>
+					</c:if>
+					<hr>
+					<input type="submit" name="editInfoButton" value="Edit Information" >
+				</div>
+            	
+            </c:if>
+            
+    	</p>
 		<link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/_view/css/studentPageStylesheet.css" />
         <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/_view/css/siteStylesheet.css" />
         
@@ -30,6 +66,7 @@ TODO: needs to be displayed
         </script>
         <div id="documentHeading">
             <b> Personalized Commencement - Student Page </b>
+            
         </div>
   		<form name="studentForm" action="${pageContext.servletContext.contextPath}/PCP_StudentPage" method="post">
   		
@@ -47,6 +84,7 @@ TODO: needs to be displayed
 					<hr>
 					<input type="submit" name="editInfoButton" value="Edit Information" >
 				</div>
+				
 			    <div id="studentBox">
 			    	<div id="pictureBox">
 			        	<img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
@@ -54,7 +92,7 @@ TODO: needs to be displayed
 			    	<div id="infoBox">
 			            <table id="infoTable">
 			            	<tr>
-			             		<td id = "studentName">${studentName}</td>
+			             		<td id = "studentName">${studentName}	</td>
 			                </tr>
 			                <tr>
 			                	<td id = "academicInformation">${studentAcademicInformation}</td>
@@ -192,7 +230,56 @@ TODO: needs to be displayed
 	    	<!--  TODO: ADD ADVISOR VIEW HTML WITHIN THE IF STATEMENT -->
 	    	
 	    	<c:if test="${mode=='advisorView'}">
-	    	
+			    <div id="studentBox">
+			    	<div id="pictureBox">
+			        	<img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+			        </div>
+			    	<div id="infoBox">
+			            <table id="infoTable">
+			            	<tr>
+			             		<td id = "studentName">${studentName}</td>
+			                </tr>
+			                <tr>
+			                	<td id = "academicInformation">${studentAcademicInformation}</td>
+			                </tr>
+			                <tr>
+			                    <td id = "extraInformation">${studentExtraInformation}</td>
+			                </tr>
+			            </table>
+			        </div>
+			    </div>
+			     
+			    <br><br>
+			    
+			    <div id = "mediaBox">
+		            <!-- Uncomment one of these options to display-->
+		            
+		            <!-- STATIC SLIDESHOW -->
+		            
+		            
+				<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 172px height = 172px>
+		            
+		            
+		            <!-- 'DYNAMIC' SLIDESHOW -->
+		            
+		            <!--
+		            <img src = "assets/mocha2.jpg" alt = "slideshow image 1" width = 200px height = 200px> 
+		            <img src = "assets/mocha1.jpg" alt = "slideshow image 2" width = 50px height = 50px> 
+		            <img src = "assets/tippy.jpg" alt = "slideshow image 3" width = 50px height = 50px> 
+		            <img src = "assets/marble.jpg" alt = "slideshow image 4" width = 50px height = 50px>
+		            --> 
+		            
+		            <!-- VIDEO -->
+		            
+		            <!--
+		            <video width = 325px height = 325px controls>       <source src = "assets/tippy.mp4" type = "video/mp4">
+		            </video>
+		            
+		            -->
+		    	</div>
 	    	</c:if>
 	    	
 	    	<!--  ADVISOR EDIT PAGE -->
@@ -200,7 +287,79 @@ TODO: needs to be displayed
 	    	<!--  TODO: ADD ADVISOR EDIT HTML WITHIN THE IF STATEMENT -->
 	    	<!--  TODO: ADD ADVISOR EDIT HTML WITHIN THE IF STATEMENT -->
 	    	<c:if test="${mode=='advisorEdit'}">
-	    	
+	  
+	    		<div id="layoutEditSelectionBox">
+					<b style="font-size: 18px">Approve</b><hr>
+					
+					<p><label class="container">Misc
+  					<input type="checkbox">
+  					<span class="checkmark"></span>
+					</label>
+					
+					<label class="container">Audio
+  					<input type="checkbox">
+  					<span class="checkmark"></span>
+					</label></p>
+
+					<label class="container">Visual Media
+  					<input type="checkbox">
+ 					<span class="checkmark"></span>
+					</label>
+					<hr>
+					
+					<input type="submit" value="Save Approvals">
+					
+				</div>
+	    		<div id="studentBox">
+			    	<div id="pictureBox">
+			        	<img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+			        </div>
+			    	<div id="infoBox">
+			            <table id="infoTable">
+			            	<tr>
+			             		<td id = "studentName">${studentName}</td>
+			                </tr>
+			                <tr>
+			                	<td id = "academicInformation">${studentAcademicInformation}</td>
+			                </tr>
+			                <tr>
+			                    <td id = "extraInformation">${studentExtraInformation}</td>
+			                </tr>
+			            </table>
+			        </div>
+			    </div>
+			     
+			    <br><br>
+			    
+			    <div id = "mediaBox">
+		            <!-- Uncomment one of these options to display-->
+		            
+		            <!-- STATIC SLIDESHOW -->
+		            
+		            
+				<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 172px height = 172px>
+		            
+		            
+		            <!-- 'DYNAMIC' SLIDESHOW -->
+		            
+		            <!--
+		            <img src = "assets/mocha2.jpg" alt = "slideshow image 1" width = 200px height = 200px> 
+		            <img src = "assets/mocha1.jpg" alt = "slideshow image 2" width = 50px height = 50px> 
+		            <img src = "assets/tippy.jpg" alt = "slideshow image 3" width = 50px height = 50px> 
+		            <img src = "assets/marble.jpg" alt = "slideshow image 4" width = 50px height = 50px>
+		            --> 
+		            
+		            <!-- VIDEO -->
+		            
+		            <!--
+		            <video width = 325px height = 325px controls>       <source src = "assets/tippy.mp4" type = "video/mp4">
+		            </video>
+		            
+		            -->
+		    	</div>
 	    	</c:if>
 	    	
 	    	<!--  sneaky references to fields accessed by the servlet-->
