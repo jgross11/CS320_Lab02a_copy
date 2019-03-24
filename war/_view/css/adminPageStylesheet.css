@@ -15,67 +15,24 @@
 #infoBox{
     text-align: center;
     float: left;
+    font-size: 120%;
+}
+#dateChange{
+    height: 49px;
     font-size: 150%;
 }
-#eventStatus{
-    border: 0px solid black;
-    font-size: 180%;
-}
 
-#studentStatusBox{
-    margin-top: 30px;
-    width: 600px;
-    /*
-    This height changes depending on the number
-    of students in the category that has the 
-    highest number of students in it
-    
-    something like (26px * # of students in largest category) + 34 + (15 OR 16)
-    
-    26px - height of each cell that holds a student name
-    34px - height of the title cells
-    15 / 16 - offset to make it look 'right' 
-    ###################### TO DO ######################
-    Look into whether this has to do with odd # of students requiring 15 and even # of students requiring 16
-    Also, this has to be calculated dynamically when loading the Advisor JSP, so Javascript will likely be involved. 
-    ###################### TO DO ######################
-    */
-    height: 127px;
-    border: 1px solid black;
-}
-#approvedStudentHeader{
-    font-size: 200%;
-    float:left
-    width: 300px;
-}
-#pendingStudentHeader{
-    float: left;
-    font-size: 200%;
-}
-
-#academicInformation{
-    font-size: 30px;
-    border-top: 0px solid black;
-    border-right: 0px solid black;
-    border-left: 0px solid black;
-    border-bottom: 1px solid black;
-    width: 440px;
+#deadlineInformation{
+	width: 440px;
+	font-size: 170%;
+	height: 49px;
+	border-bottom: 1px solid black;
 }
 #adminName{
     height: 20px;
-    width: 440px;
-    font-size: 40px;
+    font-size: 150%;
     border-top: 0px solid black;
     border-right: 0px solid black;
     border-left: 0px solid black;
     border-bottom: 1px solid black;
-}
-th{
-    font-size: 180%;
-    border: 1px solid black;
-}
-td{
-    font-size: 130%;
-    border: 1px solid black;
-    text-align: center;
 }
