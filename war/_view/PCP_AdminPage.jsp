@@ -28,62 +28,31 @@ TODO: back and forth between JSP and servlet
 	                        <td id = "adminName">
 	                        	${adminName}
 	                        </td>
-	                        <b> Josh Gross</b>
 	                    </tr>
 	                    <tr>
-	                        <td id = "academicInformation">
-	                        	${academicInformation}
+	                        <td id = "deadlineInformation">
+	                        	 Deadline date: <b style="color: green"> ${eventDate} </b>
 	                        </td> 
 	                    </tr>
 	                    <tr>
-	                        <td id = "eventStatus"> 
-	                        	<c:if test="${advisorStatus == 'true'}">
-									<b style="font-size: 30px"> Status: <b style = "color: green;"> All students approved </b> </b>
-								</c:if>
-								<c:if test="${advisorStatus == 'false'}">
-									<b style="font-size: 30px"> Status: <b style = "color: red;"> Student changes pending </b> </b>
-								</c:if>
+	                        <td id = "dateChange"> 
+	                        	Change deadline date: <input type="date" name = "changeDateButton"/>
+	                        	
 	                        </td>
 	                    </tr>
 	                </table>
 	            </div>
 	        </div>
-	        <div id="studentStatusBox">
-	            <table style="width:100%">
-	                <tr>
-	                    <b> Deadline date: May 11, 2019</b> 
-	                </tr>
-	                
-	                <!-- 
-	                The following will be removed once table generation is functional, but
-	                it can be uncommented to preview what a generated table will look like
-	                 -->
-	                 
-	                <!-- 
-	                <tr>
-	                    <td> Dennis Chism</td>
-	                    <td> </td>
-	                </tr>
-	                <tr>
-	                    <td> Alyssa Grove</td>
-	                    <td> </td>
-	                </tr>
-	                -->
-	            </table> 
-	        </div>
+	        <p></p>
+	    	<button type="submit" name = "submit"> Event Page</button>  
 	        <!--  sneaky references to fields accessed by the servlet--> 
 	    	<!--  
 	    	NOTE: *every* attribute that is submitted to the JSP needs to be represented here,
 	    	NOTE: regardless of whether or not it is visible / modifiable by the user  
 	    	-->
-	    	<form> 
-	    		<button type="submit" formaction="${pageContext.servletContext.contextPath}/_view/PCP_EventPage.jsp">Event Page</button> 
-	    	</form> 
-	    
+	
 	    	<input type="hidden" name="adminName" value="${adminName}">
-	    	<input type="hidden" name="academicInformation" value="${academicInformation}">
-	    	<input type="hidden" name="advisorStatus" value="${advisorStatus}">
-	    	<input type="hidden" name="studentToView" value="${studentToView}">
+	    	<input type="hidden" name="eventDate" value="${eventDate}">
 	    	<input type="hidden" name="adminUsername" value="${adminUsername}"> 
         </form>
     </body>
