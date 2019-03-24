@@ -73,12 +73,12 @@ TODO: needs to be displayed
 		            
 		            <!-- STATIC SLIDESHOW -->
 		            
-		            <!--
-		            <img src = "assets/mocha2.jpg" alt = "slideshow image 1" width = 170px height = 170px> 
-		            <img src = "assets/mocha1.jpg" alt = "slideshow image 2" width = 170px height = 170px> 
-		            <img src = "assets/tippy.jpg" alt = "slideshow image 3" width = 170px height = 170px> 
-		            <img src = "assets/marble.jpg" alt = "slideshow image 4" width = 170px height = 170px>
-		            -->
+		            
+				<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 172px height = 172px>
+		            
 		            
 		            <!-- 'DYNAMIC' SLIDESHOW -->
 		            
