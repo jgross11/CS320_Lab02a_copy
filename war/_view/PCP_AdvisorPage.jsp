@@ -22,7 +22,7 @@ TODO: back and forth between JSP and servlet
         <form name="advisorForm" action="${pageContext.servletContext.contextPath}/PCP_AdvisorPage" method="post">
 	        <div id="advisorBox">
 	            <div id="pictureBox">
-	                <img src="${pageContext.servletContext.contextPath}/_view/assets/kobe.jpg" alt="Advisor Photo" width="150px" height="150px"/> 
+	                <img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Advisor Photo" width="150px" height="150px"/> 
 	            </div>
 	            <div id="infoBox">
 	                <table id="infoTable">
@@ -64,7 +64,7 @@ TODO: back and forth between JSP and servlet
 	            </table>
 	             <table style="float: left;">
 	                <tr>
-	                    <th>Approved Students</th>
+	                    <th>Pending Students</th>
 	                </tr>
 	                
 	                    <c:forEach items="${NameList}" var="element"> 

@@ -112,7 +112,7 @@ TODO: needs to be displayed
 				
 			    <div id="studentBox">
 			    	<div id="pictureBox">
-			        	<img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+			        	<img src="${pageContext.servletContext.contextPath}/_view/assets/kobe.jpg" alt="Student Image" width="250px" height="250px"> 
 			        </div>
 			    	<div id="infoBox">
 			            <table id="infoTable">

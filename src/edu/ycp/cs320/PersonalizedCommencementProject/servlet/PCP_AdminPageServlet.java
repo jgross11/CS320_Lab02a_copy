@@ -56,7 +56,7 @@ public class PCP_AdminPageServlet extends HttpServlet {
 		advisorLogins[0] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
 		graduateLogins[0] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
 		graduateLogins[1] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
-		AdminLogins[0] = new Admin(new User("admin","admin","admin","McAdmin","Adminna")); 
+		AdminLogins[0] = new Admin(new User("jgross11","jgross11","admin","Josh","Gross")); 
 				
 		infoInDB = false;
 		
@@ -106,15 +106,16 @@ public class PCP_AdminPageServlet extends HttpServlet {
 		advisorLogins[0] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
 		graduateLogins[0] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
 		graduateLogins[1] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
+		AdminLogins[0] = new Admin(new User("jgross11","jgross11","admin","Josh","Gross")); 
 		infoInDB = false;
 		
 		System.out.println("PCP_AdvisorPage Servlet: doPost");
 		
 		// create controller that holds Advisor controller
-		AdvisorController controller = new AdvisorController();
+		AdminController controller = new AdminController();
 		
 		// create Advisor model that holds Advisor information
-		Advisor advisorModel;
+		Admin adminModel;
 		
 		// correct input - obtain that student's information, redirect to student page
 		if(req.getParameter("studentToView") != null) {
@@ -123,7 +124,7 @@ public class PCP_AdminPageServlet extends HttpServlet {
 		}
 		// incorrect input - redirect to login page
 		else {
-			req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
+			req.getRequestDispatcher("/_view/PCP_EventPage.jsp").forward(req, resp);
 		}
 	}
 }
