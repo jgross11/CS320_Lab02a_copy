@@ -1,7 +1,75 @@
 <!DOCTYPE html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
-<!-- TODO: Add HTML file code here, replace hard-coded text values with JSP servlet attribute names / values. Remove these comments when done -->
-<!-- TODO: Add HTML file code here, replace hard-coded text values with JSP servlet attribute names / values. Remove these comments when done -->
-<!-- TODO: Add HTML file code here, replace hard-coded text values with JSP servlet attribute names / values. Remove these comments when done -->
-<!-- TODO: Add HTML file code here, replace hard-coded text values with JSP servlet attribute names / values. Remove these comments when done -->
-<!-- TODO: Add HTML file code here, replace hard-coded text values with JSP servlet attribute names / values. Remove these comments when done -->
+<html>
+    <head>
+        <title>Personalized Commencement - Event Page</title>
+		<link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/_view/css/eventPageStylesheet.css" />
+        <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/_view/css/siteStylesheet.css" />
+    </head>
+    <body>
+        <div id="documentHeading">
+            <b> Personalized Commencement - Event Page </b>
+        </div>
+		<form name="eventForm" action="${pageContext.servletContext.contextPath}/PCP_EventPage" method="post">
+				
+		<div id="studentBox">
+			<div id="pictureBox">
+			 	<img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+			 </div>
+			 <div id="infoBox">
+			    <table id="infoTable">
+			    	<tr>
+			     		<td id = "studentName">${studentName} Dennis Chism</td>
+			    	 </tr>
+			     	<tr>
+			      		<td id = "academicInformation">${studentAcademicInformation} Major in Testing</td>
+			    	 </tr>
+			    	 <tr>
+			     		<td id = "extraInformation">${studentExtraInformation} excels at Testology</td>
+			     	</tr>
+			    </table>
+			    </div>
+			    </div>
+			     
+			    <br><br>
+			    
+			    <div id = "mediaBox">
+		            <!-- Uncomment one of these options to display-->
+		            
+		            <!-- STATIC SLIDESHOW -->
+		            
+		            
+				<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 172px height = 172px> 
+	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 172px height = 172px>
+	            </div>
+	            
+	            <div id="studentBox2">
+			<div id="pictureBox">
+			 	<img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+			 </div>
+			 <div id="infoBox2">
+			    <table id="infoTable2">
+			    	<tr> 
+			     		<td id = "studentName">${studentName} Bill Abram</td>
+			    	 </tr>
+			     	<tr>
+			      		<td id = "academicInformation">${studentAcademicInformation} Major in Testing</td>
+			    	 </tr>
+			    	 <tr>
+			     		<td id = "extraInformation">${studentExtraInformation} excels at Testology</td>
+			     	</tr>
+			    </table>
+			    </div>
+			    </div>
+			     
+	            
+	            <form> 
+	    		<button type="submit" formaction="${pageContext.servletContext.contextPath}/_view/PCP_AdminPage.jsp">End Event</button> 
+	    		</form> 
+		</form> 
+	</body>
+</html>		            
