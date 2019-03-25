@@ -35,6 +35,10 @@
     <servlet-name>PCP_AdvisorPageServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.PCP_AdvisorPageServlet</servlet-class>
   </servlet>
+    <servlet>
+    <servlet-name>PCP_AdminPageServlet</servlet-name>
+    <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.PCP_AdminPageServlet</servlet-class>
+  </servlet>
   <!-- Add Admin and Advisor Servlet names below, remove these comments when done -->
   <!-- Add Admin and Advisor Servlet names below, remove these comments when done -->
   <!-- Add Admin and Advisor Servlet names below, remove these comments when done -->
@@ -89,6 +93,10 @@
   <servlet-mapping>
     <servlet-name>PCP_AdvisorPageServlet</servlet-name>
     <url-pattern>/PCP_AdvisorPage</url-pattern>
+  </servlet-mapping>
+    <servlet-mapping>
+    <servlet-name>PCP_AdminPageServlet</servlet-name>
+    <url-pattern>/PCP_AdminPage</url-pattern>
   </servlet-mapping>
   <!-- Add Admin and Advisor Servlet mappings below, remove these comments when done -->
   <!-- Add Admin and Advisor Servlet mappings below, remove these comments when done -->

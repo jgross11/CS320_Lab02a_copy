@@ -17,7 +17,7 @@ public class PCP_IndexServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	// acts as a temporary 'database' for login verification
-	private User[] logins = new User[4];
+	private User[] logins = new User[5];
 	
 	// indicates that login matches a login stored in 'database'
 	private boolean infoInDB;
@@ -42,6 +42,7 @@ public class PCP_IndexServlet extends HttpServlet {
 		logins[1] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
 		logins[2] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
 		logins[3] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
+		logins[4] = new Admin(new User("kobe","kobe","admin","Kobe","Bryant")); 
 		infoInDB = false;
 		
 		System.out.println("PCP_Index Servlet: doPost");
@@ -158,6 +159,11 @@ public class PCP_IndexServlet extends HttpServlet {
 				 * TODO: this is where the Advisor's student list is populated, which will then be used to calculate the Advisor's
 				 * TODO: status in order to set the initial value of the advisorStatus attribute
 				 */
+				String[] NameList = new String[2]; 
+				NameList[0] = "Dennis";
+				NameList[1] = "Alyssa"; 
+
+				req.setAttribute("NameList", NameList);
 				req.setAttribute("advisorName", advisorModel.getFirstName() + " " + advisorModel.getLastName());
 				req.setAttribute("academicInformation", advisorModel.getAcademicInformation());
 				req.setAttribute("advisorStatus", advisorModel.getStatus());
@@ -166,10 +172,8 @@ public class PCP_IndexServlet extends HttpServlet {
 			
 			// redirect to admin page
 			else if(loginType.equals("admin")){
-				Admin adminModel = new Admin(userModel);
-				adminModel.setDate("May 15th, 2019");
-				req.setAttribute("adminName", adminModel.getFirstName() + " " + adminModel.getLastName());
-				req.setAttribute("eventDate",adminModel.getDate());
+				Admin Adminmodel = new Admin(userModel); 
+				req.setAttribute("adminName", Adminmodel.getFirstName() + " " + Adminmodel.getLastName());
 				req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
 			}
 			else {

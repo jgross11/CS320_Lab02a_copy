@@ -6,7 +6,6 @@
 <!-- 
 TODO: Needs table generation for pending / approved graduates that navigates to 
 TODO: Advisor's edit mode of graduate's pending infostate when name in table is clicked
-
 TODO: Needs to store (approximately) a ton of hidden attributes that will be passed
 TODO: back and forth between JSP and servlet
  -->
@@ -23,7 +22,7 @@ TODO: back and forth between JSP and servlet
         <form name="advisorForm" action="${pageContext.servletContext.contextPath}/PCP_AdvisorPage" method="post">
 	        <div id="advisorBox">
 	            <div id="pictureBox">
-	                <img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Advisor Photo" width="150px" height="150px"/> 
+	                <img src="${pageContext.servletContext.contextPath}/_view/assets/kobe.jpg" alt="Advisor Photo" width="150px" height="150px"/> 
 	            </div>
 	            <div id="infoBox">
 	                <table id="infoTable">
@@ -50,40 +49,32 @@ TODO: back and forth between JSP and servlet
 	                </table>
 	            </div>
 	        </div>
-	        <div id="studentStatusBox">
-	            <table style="width:100%">
+	
+	            <table style="float: left;">
 	                <tr>
 	                    <th>Approved Students</th>
-	                    <th>Pending Students </th>
-	                </tr>
-	                <tr><!-- STUDENT TABLE GENERATION  -->
-	                	
-	                	<!-- 
-	                	TODO: iterate through the Advisor's Graduate array
-	                	TODO: and generate a cell for every dis/approved Graduate
-	                	TODO: and assign a click event that loads that Graduate's
-	                	TODO: new InfoState information in Advisor Edit mode
-	                	
-	                	 -->
 	                </tr>
 	                
-	                <!-- 
-	                The following will be removed once table generation is functional, but
-	                it can be uncommented to preview what a generated table will look like
-	                 -->
-	                 
-	                <!-- 
-	                <tr>
-	                    <td> Dennis Chism</td>
-	                    <td> </td>
-	                </tr>
-	                <tr>
-	                    <td> Alyssa Grove</td>
-	                    <td> </td>
-	                </tr>
-	                -->
+	                    <c:forEach items="${NameList}" var="element"> 
+  						<tr>
+    					<td>${element}</td>
+ 						 </tr>
+						</c:forEach>
+	                
 	            </table>
-	        </div>
+	             <table style="float: left;">
+	                <tr>
+	                    <th>Approved Students</th>
+	                </tr>
+	                
+	                    <c:forEach items="${NameList}" var="element"> 
+  						<tr>
+    					<td>${element}</td>
+ 						 </tr>
+						</c:forEach>
+	                
+	            </table>
+
 	        <!--  sneaky references to fields accessed by the servlet-->
 	    	<!--  
 	    	NOTE: *every* attribute that is submitted to the JSP needs to be represented here,
