@@ -18,6 +18,14 @@
     font-size: 150%;
 }
 
+#advisorEditBox{
+	border: 1px solid black;
+	width: 200px;
+	height: 150px;
+	float: right;
+	text-align: center;
+}
+
 #layoutEditSelectionBox{
 	border: 1px solid black;
 	width: 200px;
