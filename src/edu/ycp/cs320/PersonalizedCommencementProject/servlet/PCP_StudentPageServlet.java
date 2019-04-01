@@ -105,8 +105,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		String studentExtraInformation = req.getParameter("studentExtraInformation");
 		
 		// These can be used later on to differentiate the choice of the student
-		String studentSaveChanges = req.getParameter("saveChanges");
-		String studentDiscardChanges = req.getParameter("discardChanges");
+		String studentSaveChanges = req.getParameter("studentSaveChanges");
 		String mode = req.getParameter("mode");
 		
 		if(mode.equals("graduateView")) {
@@ -116,18 +115,18 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		else if(mode.equals("graduateEdit")){
 			req.setAttribute("mode", "graduateView");
 			System.out.println("Switching graduate mode from edit to view");
-			if(studentSaveChanges.equals("1") && studentDiscardChanges.equals("0")) {
+			if(studentSaveChanges.equals("true")) {
 				System.out.println("\n\nStudent wishes to save changes");
 				// TODO: call function to save changes
 				// TODO: call function to save changes
 			}
-			else if(studentDiscardChanges.equals("1") && studentSaveChanges.equals("0")){
+			else if(studentSaveChanges.equals("false")){
 				System.out.println("\n\nStudent wishes to discard changes");
 				// TODO: call function to discard changes
 				// TODO: call function to discard changes
 			}
 			else {
-				System.out.println("Invalid Values, save: " + studentSaveChanges + " | discard: " + studentDiscardChanges);
+				System.out.println("Invalid Values, save: " + studentSaveChanges);
 			}
 		}
 		else if(mode.equals("advisorView")){
@@ -179,13 +178,13 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		// they don't have to be named the same, but in this case, since we are passing
 		// them back
 		// and forth, it's a good idea
+		
 		req.setAttribute("studentName", studentName);
 		req.setAttribute("studentAcademicInformation", studentAcademicInformation);
 		req.setAttribute("studentExtraInformation", studentExtraInformation);
 		req.setAttribute("model", model);
 		req.setAttribute("studentStatus", model.getStatus());
-		req.setAttribute("saveChanges", studentSaveChanges);
-		req.setAttribute("discardChanges", studentDiscardChanges);
+		req.setAttribute("studentSaveChanges", studentSaveChanges);
 		
 		// Redirect accordingly
 		// correct graduate information is supplied

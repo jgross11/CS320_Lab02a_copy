@@ -20,6 +20,16 @@ TODO: needs to be displayed
 <html>
     <head>
   		<script>
+	  		function setGraduateSaveOption(choice){
+			    if(choice == 1){
+			    	document.getElementById("studentSaveChanges").value = "true";
+			    	document.getElementById("studentForm").submit();
+			    }
+			    else{
+			    	document.getElementById("studentSaveChanges").value = "false";
+			    	document.getElementById("studentForm").submit();
+			    }
+			}
 			function setAdvisorApprovalOption(choice){
 			    if(choice == 1){
 			    	document.getElementById("advisorSaveChanges").value = "true";
@@ -198,9 +208,9 @@ TODO: needs to be displayed
 				TODO to determine whether possible changes are being saved and 
 				TODO submitted to the advisor, or if they are being discarded
 				 -->
-				<input type="submit" value="Save changes">
+				<input type="button" value="Save changes" onclick="setGraduateSaveOption(1)">
 				<hr>
-				<input type="submit" value="Delete changes">
+				<input type="button" value="Delete changes" onclick="setGraduateSaveOption(0)">
 			</div>
 	        <div id="studentBox">
 	            <div id="pictureBox">
@@ -405,7 +415,7 @@ TODO: needs to be displayed
 	    	<input type="hidden" name="studentExtraInformation" value="${studentExtraInformation}">
 	    	<input type="hidden" name="toggleText" value="${toggleText}">
 	    	<input type="hidden" name="studentStatus" value="${studentStatus}">
-	    	<input type="hidden" id="studentSaveChanges "name="studentSaveChanges" value="${studentSaveChanges}">
+	    	<input type="hidden" id="studentSaveChanges"name="studentSaveChanges" value="${studentSaveChanges}">
 	    	
 	    	<!-- Advisor Attributes -->
 	    	<input type="hidden" id="advisorUsername" name="advisorUsername" value="${advisorUsername}">
