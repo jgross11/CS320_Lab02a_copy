@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.GraduateController;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.User;
 
@@ -23,6 +24,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 	
 	// acts as a temporary 'database' for login verification
 	private Graduate[] logins = new Graduate[2];
+	private Advisor[] advLogin = new Advisor[1];
 	
 	// indicates that graduate information matches graduate information stored in 'database'
 	private boolean infoInDB;
@@ -129,12 +131,41 @@ public class PCP_StudentPageServlet extends HttpServlet {
 			}
 		}
 		else if(mode.equals("advisorView")){
-			req.setAttribute("mode", "advisorEdit");
-			System.out.println("Switching advisor mode from view to edit");
+			if(req.getParameter("advisorSwitch").equals("true")) {
+				req.setAttribute("mode", "advisorEdit");
+				System.out.println("Switching advisor mode from view to edit");
+				req.setAttribute("advisorUsername", req.getParameter("advisorUsername"));
+			}
+			else if(req.getParameter("advisorGoBack").equals("true")) {
+				System.out.println("Navigating back to advisor home page");
+				req.setAttribute("advisorUsername", req.getParameter("advisorUsername"));
+				advLogin[0] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
+				Advisor advisorModel = advLogin[0];
+				advisorModel.setStatus(false);
+				advisorModel.setAcademicInformation("Department of Etestimology");
+				Graduate[] graduateList = new Graduate[2];
+				graduateList[0] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
+				graduateList[1] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
+				graduateList[0].setStatus(true);
+				graduateList[1].setStatus(false);
+				advisorModel.setGraduates(graduateList);
+				advisorModel.setNumGraduates(2);
+				advisorModel.generatePendingAndCompletedGraduateList();
+
+				req.setAttribute("model", advisorModel);
+				req.setAttribute("advisorName", advisorModel.getFirstName() + " " + advisorModel.getLastName());
+				req.setAttribute("academicInformation", advisorModel.getAcademicInformation());
+				req.setAttribute("advisorStatus", advisorModel.getStatus());
+				req.getRequestDispatcher("/_view/PCP_AdvisorPage.jsp").forward(req, resp);
+			}
+			
 		}
 		else if(mode.equals("advisorEdit")) {
 			req.setAttribute("mode", "advisorView");
+			req.setAttribute("advisorUsername", req.getParameter("advisorUsername"));
 			System.out.println("Switching advisor mode from edit to view");
+			System.out.println(req.getParameter("advisorSaveChanges"));
+			// TODO: add logic to save dis/approved content
 		}
 		else {
 			System.out.println("Invalid mode");
