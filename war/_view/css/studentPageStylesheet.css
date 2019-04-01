@@ -1,4 +1,4 @@
-
+/* Large box holding graduate text and picture */
 #studentBox{
     margin-top: 50px;
     border: 1px solid black;
@@ -6,6 +6,7 @@
     width: 700px;
 }
 
+/* Box holding graduate picture */
 #pictureBox{
     float: left;
     width: 250px;
@@ -13,19 +14,22 @@
     border-right: 1px solid black;
 }
 
+/* Box holding graduate name, academic info, extra info */
 #infoBox{
     float: left;
     font-size: 150%;
 }
 
+/* Box holding advisor confirmation options, save / discard changes buttons */
 #advisorEditBox{
 	border: 1px solid black;
-	width: 200px;
-	height: 150px;
+	width: 175px;
+	height: 200px;
 	float: right;
 	text-align: center;
 }
 
+/* Box holding graduate edit options */
 #layoutEditSelectionBox{
 	border: 1px solid black;
 	width: 200px;
@@ -34,6 +38,7 @@
 	text-align: center;
 }
 
+/* Box holding graduate status and edit button */
 #layoutViewSelectionBox{
 	border: 1px solid black;
 	width: 200px;
@@ -42,21 +47,26 @@
 	text-align: center;
 }
 
+/* Box containing Graduates additional content */
 #mediaBox{
     float: none;
     width: 700px;
 }
 
+/* Box containing Graduate academic information */
 #academicInformation{
     font-size: 30px;
     border-bottom: 1px solid black;
     width: 440px;
 }
+
+/* Box containing Graduate extra information */
 #extraInformation{
     font-size: 25px;
     width: 440px;
 }
 
+/* Box containing editable Graduate extra information */
 #extraInformationTB{
     font-size: 25px;
 	resize: none;
@@ -65,6 +75,7 @@
     width: 437px;
 }
 
+/* Box containing Graduates name */
 #studentName{
     height: 20px;
     width: 440px;
