@@ -87,7 +87,7 @@ public class PCP_AdvisorPageServlet extends HttpServlet {
 			}
 			
 			// displays view version of student page
-			req.setAttribute("mode", "advisorEdit");
+			req.setAttribute("mode", "advisorView");
 			
 			// informs student page jsp that the page needs to be loaded
 			req.setAttribute("validLogIn", true);
