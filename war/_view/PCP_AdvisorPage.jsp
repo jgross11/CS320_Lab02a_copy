@@ -16,10 +16,16 @@ TODO: back and forth between JSP and servlet
         <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/_view/css/siteStylesheet.css" />
     </head>
     <body>
+		<script>
+			function selectStudent(username) {
+			    document.getElementById("studentToView").value = username;
+			    document.getElementById("advisorForm").submit();
+			}
+		</script>
         <div id="documentHeading">
             <b> Personalized Commencement - Advisor Page </b>
         </div>
-        <form name="advisorForm" action="${pageContext.servletContext.contextPath}/PCP_AdvisorPage" method="post">
+        <form id = "advisorForm" name="advisorForm" action="${pageContext.servletContext.contextPath}/PCP_AdvisorPage" method="post">
 	        <div id="advisorBox">
 	            <div id="pictureBox">
 	                <img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Advisor Photo" width="150px" height="150px"/> 
@@ -55,9 +61,9 @@ TODO: back and forth between JSP and servlet
 	                    <th>Approved Students</th>
 	                </tr>
 	                
-	                    <c:forEach items="${NameList}" var="element"> 
+	                    <c:forEach items="${model.completedGraduates}" var="cg"> 
   						<tr>
-    					<td>${element}</td>
+    					<td onclick="selectStudent('${cg.username}')">${cg.name}</td>
  						 </tr>
 						</c:forEach>
 	                
@@ -67,9 +73,9 @@ TODO: back and forth between JSP and servlet
 	                    <th>Pending Students</th>
 	                </tr>
 	                
-	                    <c:forEach items="${NameList}" var="element"> 
+	                    <c:forEach items="${model.pendingGraduates}" var="pg"> 
   						<tr>
-    					<td>${element}</td>
+    					<td onclick="selectStudent('${pg.username}')">${pg.name}</td>
  						 </tr>
 						</c:forEach>
 	                
@@ -83,7 +89,7 @@ TODO: back and forth between JSP and servlet
 	    	<input type="hidden" name="advisorName" value="${advisorName}">
 	    	<input type="hidden" name="academicInformation" value="${academicInformation}">
 	    	<input type="hidden" name="advisorStatus" value="${advisorStatus}">
-	    	<input type="hidden" name="studentToView" value="${studentToView}">
+	    	<input type="hidden" id = "studentToView" name="studentToView" value="${studentToView}">
 	    	<input type="hidden" name="advisorUsername" value="${advisorUsername}">
         </form>
     </body>
