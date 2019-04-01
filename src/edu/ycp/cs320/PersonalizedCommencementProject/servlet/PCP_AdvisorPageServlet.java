@@ -46,47 +46,7 @@ public class PCP_AdvisorPageServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
-		System.out.println("PCP_AdvisorPage Servlet: doGet");
-		
-		// populate 'databases' with acceptable logins
-		advisorLogins[0] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
-		graduateLogins[0] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
-		graduateLogins[1] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
-		infoInDB = false;
-		
-		System.out.println("PCP_AdvisorPage Servlet: doGet");
-		
-		// create controller that holds Advisor controller
-		AdvisorController controller = new AdvisorController();
-		
-		// create Advisor model that holds Advisor information
-		Advisor advisorModel = null;
-		
-		// attempt to find advisor based on username
-		String username = req.getParameter("advisorUsername");
-		for(Advisor adv : advisorLogins) {
-			// found advisor
-			if(adv.getUsername().equals(username)) {
-				advisorModel = adv;
-				controller.setModel(advisorModel);
-				infoInDB = true;
-				break;
-			}
-		}
-		// no advisor found - redirect to login
-		if(!infoInDB) {
-			req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
-			System.out.println("Redirecting to login page due to no advisor being found");
-		}
-		// advisor found set attributes and reload advisor page
-		else {
-			req.setAttribute("advisorName", advisorModel.getFirstName() + " " + advisorModel.getLastName());
-			req.setAttribute("advisorUsername", username);
-			req.setAttribute("academicInformation", advisorModel.getAcademicInformation());
-			req.getRequestDispatcher("/_view/PCP_AdvisorPage.jsp").forward(req, resp);
-		}
-		
+		req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
 	}
 
 	@Override
@@ -105,19 +65,62 @@ public class PCP_AdvisorPageServlet extends HttpServlet {
 		
 		System.out.println("PCP_AdvisorPage Servlet: doPost");
 		
-		// create controller that holds Advisor controller
-		AdvisorController controller = new AdvisorController();
-		
-		// create Advisor model that holds Advisor information
-		Advisor advisorModel;
+		// look for graduate information
+		String studentToView = req.getParameter("studentToView");
 		
 		// correct input - obtain that student's information, redirect to student page
-		if(req.getParameter("studentToView") != null) {
-			// TODO: create student model based off of that student's information,
-			// TODO: pass it's attributes to the student page and set mode to advisorView
+		if(studentToView != null) {
+			
+			// create controller that holds Graduate controller
+			GraduateController graduateController = new GraduateController();
+			
+			// create Graduate model that holds Graduate information
+			Graduate graduateModel = new Graduate();
+			
+			// find graduate in graduate 'database'
+			for(Graduate grad : graduateLogins) {
+				grad.setAdvisor(advisorLogins[0]);
+				if(grad.getUsername().equals(studentToView)) {
+					graduateModel = grad;
+					break;
+				}
+			}
+			
+			// displays view version of student page
+			req.setAttribute("mode", "advisorEdit");
+			
+			// informs student page jsp that the page needs to be loaded
+			req.setAttribute("validLogIn", true);
+			
+			// sets page attribute to remember advisor's name
+			req.setAttribute("advisorUsername", graduateModel.getAdvisor().getUsername());
+			
+			// sets page attribute to display graduate name
+			req.setAttribute("studentName", graduateModel.getName());
+			
+			// sets page attribute to display graduate status
+			req.setAttribute("studentStatus", graduateModel.getStatus());
+			
+			// sets page attribute to display graduate academic information
+			req.setAttribute("studentAcademicInformation", "Major in Testing");
+			
+			// sets page attribute to display graduate's additional information
+			req.setAttribute("studentExtraInformation", "excels at Testology");
+			
+			// TODO once the Infostate and ContentComponent classes are correctly implemented, there will need to be calls
+			// TODO here setting the media page elements (video, photo, etc.) with the graduate's ContentComponents
+			
+			// redirect to the student page
+			req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
 		}
-		// incorrect input - redirect to login page
+		// direct link to advisor page - redirect to login
 		else {
+			// create controller that holds Advisor controller
+			AdvisorController controller = new AdvisorController();
+			
+			// create Advisor model that holds Advisor information
+			Advisor advisorModel;
+			
 			req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
 		}
 	}
