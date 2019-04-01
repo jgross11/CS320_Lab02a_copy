@@ -19,6 +19,28 @@ TODO: needs to be displayed
 
 <html>
     <head>
+  		<script>
+			function setAdvisorApprovalOption(choice){
+			    if(choice == 1){
+			    	document.getElementById("advisorSaveChanges").value = "true";
+			    	document.getElementById("studentForm").submit();
+			    }
+			    else{
+			    	document.getElementById("advisorSaveChanges").value = "false";
+			    	document.getElementById("studentForm").submit();
+			    }
+			}
+			
+			function navToStudentList(){
+				document.getElementById("advisorGoBack").value = "true";
+				document.getElementById("studentForm").submit();
+			}
+			
+			function navToEditMode(){
+				document.getElementById("advisorSwitch").value = "true";
+				document.getElementById("studentForm").submit();
+			}
+		</script>
     	<!--  Conditional Page Title -->
     	<c:if test="${mode == 'studentView'}">
     		<title>Personalized Commencement - Student View Page</title>
@@ -76,9 +98,6 @@ TODO: needs to be displayed
         
     </head>
     <body>
-    	<script>
-	        
-        </script>
         <div id="documentHeading">
 	        <c:if test="${mode == 'graduateView'}">
 	    		 <b> Personalized Commencement -  Student View Page </b>
@@ -93,7 +112,7 @@ TODO: needs to be displayed
 	    		 <b> Personalized Commencement - Advisor Edit Page </b>
 	    	</c:if> 	 	 	
         </div>
-  		<form name="studentForm" action="${pageContext.servletContext.contextPath}/PCP_StudentPage" method="post">
+  		<form id = "studentForm" name="studentForm" action="${pageContext.servletContext.contextPath}/PCP_StudentPage" method="post">
   		
   			<!--  STUDENT VIEW PAGE -->
   			<!--  STUDENT VIEW PAGE -->
@@ -302,23 +321,22 @@ TODO: needs to be displayed
 		            <video width = 325px height = 325px controls>       <source src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.mp4" type = "video/mp4">
 		            </video>
 		            <br><br>
-		           <input type="button" value="Back to Student List"/>
+		           <input type="button" value="Back to Student List" onclick="navToStudentList()"/>
+		           <input type="button" value="Confirm / Deny Student Information" onclick="navToEditMode()"/>
 		    	</div>
 	    	</c:if>
 	    	
 	    	<!--  ADVISOR EDIT PAGE -->
 	    	<!--  ADVISOR EDIT PAGE -->
-	    	<!--  TODO: ADD ADVISOR EDIT HTML WITHIN THE IF STATEMENT -->
-	    	<!--  TODO: ADD ADVISOR EDIT HTML WITHIN THE IF STATEMENT -->
 	    	<c:if test="${mode=='advisorEdit'}">
-	  
+			  	
 	    		<div id="advisorEditBox">
 					<b style="font-size: 18px">Approve</b><hr>
   					<input type="checkbox" name="extraInfoCB" value="extraInfoCB"> Extra Info <hr>
   					<input type="checkbox" name="prounciationCB" value="prounciationCB"> Audio <hr>
   					<input type="checkbox" name="extraInfoCB" value="extraInfoCB"> Video <hr>
-					<input type="submit" value="Save Approvals">
-					<input type="submit" value="Discard Approvals">
+					<input type="button" value="Save Approvals" onclick="setAdvisorApprovalOption(1)">
+					<input type="button" value="Discard Approvals" onclick="setAdvisorApprovalOption(0)">
 				</div>
 	    		<div id="studentBox">
 			    	<div id="pictureBox">
@@ -378,14 +396,24 @@ TODO: needs to be displayed
 	    	NOTE: *every* attribute that is submitted to the JSP needs to be represented here,
 	    	NOTE: regardless of whether or not it is visible / modifiable by the user
 	    	-->
+	    	<!-- General Attributes-->
 	    	<input type="hidden" name="mode" value="${mode}">
+	    	
+	    	<!-- Graduate Attributes -->
 	    	<input type="hidden" name="studentName" value="${studentName}">
 	    	<input type="hidden" name="studentAcademicInformation" value="${studentAcademicInformation}">
 	    	<input type="hidden" name="studentExtraInformation" value="${studentExtraInformation}">
 	    	<input type="hidden" name="toggleText" value="${toggleText}">
 	    	<input type="hidden" name="studentStatus" value="${studentStatus}">
-	    	<input type="hidden" id="saveChanges "name="saveChanges" value="0">
-	    	<input type="hidden" id="discardChanges" name="discardChanges" value="0">
+	    	<input type="hidden" id="studentSaveChanges "name="studentSaveChanges" value="${studentSaveChanges}">
+	    	
+	    	<!-- Advisor Attributes -->
+	    	<input type="hidden" id="advisorUsername" name="advisorUsername" value="${advisorUsername}">
+	    	<input type="hidden" id="advisorSwitch" name="advisorSwitch" value="${advisorSwitch}">
+	    	<input type="hidden" id="advisorGoBack" name="advisorGoBack" value="${advisorGoBack}">
+	    	<input type="hidden" id="advisorSaveChanges"name="advisorSaveChanges" value="${advisorSaveChanges}">
+	    	<input type="hidden" id="navToList"name="navToList" value="${navToList}">
+
 		</form>
     </body>
 </html>
