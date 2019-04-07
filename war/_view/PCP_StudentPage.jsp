@@ -23,31 +23,46 @@ TODO: needs to be displayed
 	  		function setGraduateSaveOption(choice){
 			    if(choice == 1){
 			    	document.getElementById("studentSaveChanges").value = "true";
-			    	document.getElementById("studentForm").submit();
+			    	/*
+			    	TODO: set values of student images / videos (*dependent on current layout*)
+			    	TODO: input containers to path of image / video after uploading to database
+			    	*/
 			    }
 			    else{
 			    	document.getElementById("studentSaveChanges").value = "false";
-			    	document.getElementById("studentForm").submit();
 			    }
+			    submitForm();
 			}
 			function setAdvisorApprovalOption(choice){
 			    if(choice == 1){
 			    	document.getElementById("advisorSaveChanges").value = "true";
-			    	document.getElementById("studentForm").submit();
 			    }
 			    else{
 			    	document.getElementById("advisorSaveChanges").value = "false";
-			    	document.getElementById("studentForm").submit();
 			    }
+			    submitForm();
 			}
 			
 			function navToStudentList(){
 				document.getElementById("advisorGoBack").value = "true";
-				document.getElementById("studentForm").submit();
+				submitForm();
 			}
 			
 			function navToEditMode(){
 				document.getElementById("advisorSwitch").value = "true";
+				submitForm();
+			}
+			
+			function changeGraduateLayout(mode){
+				var layoutOBJ = document.getElementById("layoutSelection");
+				var layoutChoice = layoutOBJ.options[layoutOBJ.selectedIndex].text.toLowerCase();
+				document.getElementById("graduateLayout").value = layoutChoice;
+				document.getElementById("graduateLayoutChange").value = true;
+				console.log(layoutChoice);
+				submitForm();
+			}
+			
+			function submitForm(){
 				document.getElementById("studentForm").submit();
 			}
 		</script>
@@ -64,45 +79,7 @@ TODO: needs to be displayed
        	<c:if test="${mode == 'advisorEdit'}">
     		<title>Personalized Commencement - Advisor Edit Page</title>
     	</c:if> 	 	 	
-        
-        <!-- shows that advisor is using the student view or edit under title  -->
-        <!-- shows that advisor is using the student view or edit under title  -->
-        <!-- also show status and edit button for advisor view and edit  -->
-        <!-- also show status and edit button for advisor view and edit  -->
-        <p>
-        	<!--  
-        	<c:if test="${mode=='studentView'}">
-            	<p> Advisor View Student Page </p>
-            		<div id="layoutViewSelectionBox">
-			  		<c:if test="${studentStatus == 'true'}">
-						<b style="font-size: 23px">Status: <b style = "color: green; font-size: 23px"> Approved </b> </b>
-					</c:if>
-					<c:if test="${studentStatus == 'false'}">
-						<b style="font-size: 23px">Status: <b style = "color: red; font-size: 20px"> Not Approved </b> </b>
-					</c:if>
-					<hr>
-					<input type="submit" name="editInfoButton" value="Edit Information" >
-				</div>
-            	
-            </c:if>
-            -->
-            <!--
-            <c:if test="${mode=='advisorEdit'}">
-            	<p> Advisor's Approval Page <p>
-            		<div id="layoutViewSelectionBox">
-			  		<c:if test="${studentStatus == 'true'}">
-						<b style="font-size: 23px">Status: <b style = "color: green; font-size: 23px"> Approved </b> </b>
-					</c:if>
-					<c:if test="${studentStatus == 'false'}">
-						<b style="font-size: 23px">Status: <b style = "color: red; font-size: 20px"> Not Approved </b> </b>
-					</c:if>
-					<hr>
-					<input type="submit" name="editInfoButton" value="Edit Information" >
-				</div>
-            	
-            </c:if>
-            -->
-    	</p>
+  
 		<link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/_view/css/studentPageStylesheet.css" />
         <link type="text/css" rel="stylesheet" href="${pageContext.request.contextPath}/_view/css/siteStylesheet.css" />
         
@@ -165,21 +142,82 @@ TODO: needs to be displayed
 		            
 		            <!-- STATIC SLIDESHOW -->
 		            
-		            
-				<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 172px height = 172px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 172px height = 172px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 172px height = 172px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 172px height = 172px>
-		            
+		            <!--
+					<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 172px height = 172px> 
+		            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 172px height = 172px> 
+		            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 172px height = 172px> 
+		            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 172px height = 172px>
+		            -->
 		            
 		            <!-- 'DYNAMIC' SLIDESHOW -->
 		            
-		            <!--
-		            <img src = "assets/mocha2.jpg" alt = "slideshow image 1" width = 200px height = 200px> 
-		            <img src = "assets/mocha1.jpg" alt = "slideshow image 2" width = 50px height = 50px> 
-		            <img src = "assets/tippy.jpg" alt = "slideshow image 3" width = 50px height = 50px> 
-		            <img src = "assets/marble.jpg" alt = "slideshow image 4" width = 50px height = 50px>
-		            --> 
+		           <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		           <script>
+		           		var index = 1;	
+		           		function start(){
+		           			setTimeout(changeActiveImage, 2000, index);
+		           			if(index < 4){
+		           				index++
+		           			}
+		           			else{
+		           				index = 1;
+		           			}
+		           		}
+		           		function changeActiveImage(index){
+		           			var imageString = "img" + index;
+		           			console.log(imageString);
+		           			var image = document.getElementById(imageString)
+		           			if(index == 1){
+		           				document.getElementById("img1").width = 200;
+		           				document.getElementById("img1").height = 200;
+		           				document.getElementById("img2").width = 0;
+		           				document.getElementById("img2").height = 0;
+		           				document.getElementById("img3").width = 0;
+		           				document.getElementById("img3").height = 0;
+		           				document.getElementById("img4").width = 0;
+		           				document.getElementById("img4").height = 0;
+		           			}
+		           			if(index == 2){
+		           				document.getElementById("img1").width = 0;
+		           				document.getElementById("img1").height = 0;
+		           				document.getElementById("img2").width = 200;
+		           				document.getElementById("img2").height = 200;
+		           				document.getElementById("img3").width = 0;
+		           				document.getElementById("img3").height = 0;
+		           				document.getElementById("img4").width = 0;
+		           				document.getElementById("img4").height = 0;
+		           			}
+		           			if(index == 3){
+		           				document.getElementById("img1").width = 0;
+		           				document.getElementById("img1").height = 0;
+		           				document.getElementById("img2").width = 0;
+		           				document.getElementById("img2").height = 0;
+		           				document.getElementById("img3").width = 200;
+		           				document.getElementById("img3").height = 200;
+		           				document.getElementById("img4").width = 0;
+		           				document.getElementById("img4").height = 0;
+		           			}
+		           			if(index == 4){
+		           				document.getElementById("img1").width = 0;
+		           				document.getElementById("img1").height = 0;
+		           				document.getElementById("img2").width = 0;
+		           				document.getElementById("img2").height = 0;
+		           				document.getElementById("img3").width = 0;
+		           				document.getElementById("img3").height = 0;
+		           				document.getElementById("img4").width = 200;
+		           				document.getElementById("img4").height = 200;
+		           			}
+		           			//image.width = 200;
+		           			//image.height = 200;
+		           			start();
+		           		}
+		           		start();
+		           </script>
+					<img id = "img1" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 200px height = 200px> 
+		            <img id = "img2" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 50px height = 50px> 
+		            <img id = "img3" src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 50px height = 50px> 
+		            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 50px height = 50px>
+		            
 		            
 		            <!-- VIDEO -->
 		            
@@ -195,87 +233,86 @@ TODO: needs to be displayed
 	  		<!--  STUDENT EDIT PAGE -->
 		   	
 		   	<c:if test="${mode == 'graduateEdit'}">
-		   	<div id="layoutEditSelectionBox">
-				<b style="font-size: 23px">Select your layout</b><hr>
-				<select name="layoutSelection">
-					<option value="static" selected>Static Slideshow</option>
-					<option value="dynamic">Dynamic Slideshow</option>
-					<option value="video">Video</option>
-				</select>
-				<hr>
-				<!--  
-				TODO These two buttons have to be differentiated somehow in order
-				TODO to determine whether possible changes are being saved and 
-				TODO submitted to the advisor, or if they are being discarded
-				 -->
-				<input type="button" value="Save changes" onclick="setGraduateSaveOption(1)">
-				<hr>
-				<input type="button" value="Delete changes" onclick="setGraduateSaveOption(0)">
-			</div>
-	        <div id="studentBox">
-	            <div id="pictureBox">
-	                <img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
-	            </div>
-	            <div id="infoBox">
-	                <table id="infoTable">
-		            	<tr>
-		             		<td id = "studentName">${studentName}</td>
-		                </tr>
-		                <tr>
-		                	<td id = "academicInformation">${studentAcademicInformation}</td>
-		                </tr>
-		                <tr>
-		                    <td id = "extraInformation">${studentExtraInformation}</td>
-		                </tr>
-			    	</table>
-	            </div>
-	        </div>
-	        <br><br>
-	        <div id = "mediaBox">
-	            <!-- NOTE: ONLY ONE OF THESE WOULD BE DISPLAYED DEPENDING ON THE GRADUATE'S INFOSTATE TYPE-->
-	            
-				<h3> NOTE: ONLY ONE OF THESE WILL BE DISPLAYED DEPENDING ON THE GRADUATE'S INFOSTATE TYPE</h3>
-	            <!-- STATIC SLIDESHOW -->
-				<h3> STATIC SLIDESHOW EXAMPLE </h3>
-				<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 170px height = 170px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 170px height = 170px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 170px height = 170px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 170px height = 170px>
-				
-	            <p> Upload leftmost image - display dimensions: 170px x 170px</p>
-	            <input type="file" name="file1" accept="image/*">
-				<p> Upload center-left image - display dimensions: 170px x 170px</p>
-				<input type="file" name="file2" accept="image/*">
-				<p> Upload center-right image - display dimensions: 170px x 170px</p>
-				<input type="file" name="file3" accept="image/*">
-				<p> Upload rightmost image - display dimensions: 170px x 170px</p>
-				<input type="file" name="file4" accept="image/*">
-	            
-	            <!-- 'DYNAMIC' SLIDESHOW -->
-	            <h3> DYNAMIC SLIDESHOW EXAMPLE </h3>
-				<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 410px height = 410px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 70px height = 70px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 70px height = 70px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 70px height = 70px>
-	            <p> Upload leftmost image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-	            <input type="file" name="file1" accept="image/*">
-				<p> Upload center-left image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-				<input type="file" name="file2" accept="image/*">
-				<p> Upload center-right image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-				<input type="file" name="file3" accept="image/*">
-				<p> Upload rightmost image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-				<input type="file" name="file4" accept="image/*">
-	            
-	            
-	            <!-- VIDEO -->
-				<h3> VIDEO EXAMPLE </h3>
-	            <video width = 680px height = 680px controls>       <source src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.mp4" type = "video/mp4">
-	            </video>
-				<p> Upload video - optimal length: &lt; 6 seconds</p>
-				<input type="file" name="file1" accept="video/*">
-	            
-	            
-	        </div>
+			   	<div id="layoutEditSelectionBox">
+					<b style="font-size: 23px">Select your layout</b><hr>
+					<select id="layoutSelection" name="layoutSelection" onchange="changeGraduateLayout(this.selectedValue)">
+						<option value="static">Select an Option</option>
+						<option value="static">Static Slideshow</option>
+						<option value="dynamic">Dynamic Slideshow</option>
+						<option value="video">Video</option>
+					</select>
+					<hr>
+
+					<input type="button" value="Save changes" onclick="setGraduateSaveOption(1)">
+					<hr>
+					<input type="button" value="Delete changes" onclick="setGraduateSaveOption(0)">
+				</div>
+		        <div id="studentBox">
+		            <div id="pictureBox">
+		                <img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+		            </div>
+		            <div id="infoBox">
+		                <table id="infoTable">
+			            	<tr>
+			             		<td id = "studentName">${studentName}</td>
+			                </tr>
+			                <tr>
+			                	<td id = "academicInformation">${studentAcademicInformation}</td>
+			                </tr>
+			                <tr>
+			                    <td id = "extraInformation">${studentExtraInformation}</td>
+			                </tr>
+				    	</table>
+		            </div>
+		        </div>
+		        <br><br>
+		        <div id = "mediaBox">
+		        
+		            <!-- STATIC SLIDESHOW -->
+		            <c:if test="${graduateLayout == 'static slideshow'}">
+						<h3> STATIC SLIDESHOW EXAMPLE </h3>
+						<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 170px height = 170px> 
+			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 170px height = 170px> 
+			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 170px height = 170px> 
+			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 170px height = 170px>
+						
+			            <p> Upload leftmost image - display dimensions: 170px x 170px</p>
+			            <input type="file" name="file1" accept="image/*">
+						<p> Upload center-left image - display dimensions: 170px x 170px</p>
+						<input type="file" name="file2" accept="image/*">
+						<p> Upload center-right image - display dimensions: 170px x 170px</p>
+						<input type="file" name="file3" accept="image/*">
+						<p> Upload rightmost image - display dimensions: 170px x 170px</p>
+						<input type="file" name="file4" accept="image/*">
+		            </c:if>
+		            
+		            <!-- 'DYNAMIC' SLIDESHOW -->
+		            <c:if test="${graduateLayout == 'dynamic slideshow'}">
+			            <h3> DYNAMIC SLIDESHOW EXAMPLE </h3>
+						<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 410px height = 410px> 
+			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 70px height = 70px> 
+			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 70px height = 70px> 
+			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 70px height = 70px>
+			            <p> Upload leftmost image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
+			            <input type="file" name="file1" accept="image/*">
+						<p> Upload center-left image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
+						<input type="file" name="file2" accept="image/*">
+						<p> Upload center-right image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
+						<input type="file" name="file3" accept="image/*">
+						<p> Upload rightmost image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
+						<input type="file" name="file4" accept="image/*">
+		            </c:if>
+		            
+		            <!-- VIDEO -->
+		            <c:if test="${graduateLayout == 'video'}">
+						<h3> VIDEO EXAMPLE </h3>
+			            <video width = 680px height = 680px controls>
+			            	<source src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.mp4" type = "video/mp4">
+			            </video>
+						<p> Upload video - optimal length: &lt; 6 seconds</p>
+						<input type="file" name="file1" accept="video/*">
+		            </c:if>
+		        </div>
 		   	</c:if>
 	    	
 	    	<!--  ADVISOR VIEW PAGE -->
@@ -415,6 +452,8 @@ TODO: needs to be displayed
 	    	<input type="hidden" name="studentExtraInformation" value="${studentExtraInformation}">
 	    	<input type="hidden" name="toggleText" value="${toggleText}">
 	    	<input type="hidden" name="studentStatus" value="${studentStatus}">
+	    	<input type="hidden" id = "graduateLayout"name="graduateLayout" value="${graduateLayout}">
+	    	<input type="hidden" id = "graduateLayoutChange"name="graduateLayoutChange" value="${graduateLayout}">
 	    	<input type="hidden" id="studentSaveChanges"name="studentSaveChanges" value="${studentSaveChanges}">
 	    	
 	    	<!-- Advisor Attributes -->
