@@ -1,9 +1,8 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.model;
 
-
 // Advisor model class
 public class Advisor extends User{
-	private Graduate[] graduates;
+	private Graduate[] graduates, pendingGraduates, completedGraduates;
 	private int numGraduates, numCompletedGraduates;
 	private boolean status;
 	private String academicInformation;
@@ -108,6 +107,24 @@ public class Advisor extends User{
 		}
 	}
 	
+	public void generatePendingAndCompletedGraduateList() {
+		calculateNumCompletedGraduates();
+		completedGraduates = new Graduate[numCompletedGraduates];
+		pendingGraduates = new Graduate[numGraduates - numCompletedGraduates];
+		int pendingCounter = 0;
+		int completedCounter = 0;
+		for(Graduate grad : graduates) {
+			if(grad.getStatus() == true) {
+				completedGraduates[completedCounter] = grad;
+				completedCounter++;
+			}
+			else {
+				pendingGraduates[pendingCounter] = grad;
+				pendingCounter++;
+			}
+		}
+	}
+	
 	public void calculateNumCompletedGraduates() {
 		numCompletedGraduates = 0;
 		for(Graduate grad : graduates) {
@@ -115,6 +132,14 @@ public class Advisor extends User{
 				numCompletedGraduates++;
 			}
 		}
+	}
+	
+	public Graduate[] getCompletedGraduates() {
+		return completedGraduates;
+	}
+	
+	public Graduate[] getPendingGraduates() {
+		return pendingGraduates;
 	}
 	
 }

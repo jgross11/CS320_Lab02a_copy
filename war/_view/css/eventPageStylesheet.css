@@ -1,0 +1,62 @@
+#studentBox{
+    margin-top: 50px;
+    border: 1px solid black;
+    height: 250px;
+    max-width: 650px;
+
+}
+
+#studentBox2{
+	float: right;
+    margin-top: 50px;
+    border: 1px solid black;
+    height: 250px;
+   max-width: 650px;
+}
+
+#pictureBox{
+    float: left;
+    width: 250px;
+    height: 250px;
+    border-right: 1px solid black;
+}
+
+#infoBox{
+    float: left;
+    font-size: 150%;
+}
+
+#infoBox2{
+    float: right;
+    font-size: 150%;
+}
+
+
+#mediaBox{
+    float: none;
+    width: 650px;
+}
+
+#academicInformation{
+    font-size: 30px;
+    border-bottom: 1px solid black;
+    width: 340px;
+}
+#extraInformation{
+    font-size: 25px;
+    width: 340px;
+}
+
+#extraInformationTB{
+    font-size: 25px;
+	resize: none;
+	maxlength: 155;
+	height: 148px;
+    width: 337px;
+}
+
+#studentName{
+    height: 20px;
+    width: 340px;
+    font-size: 40px;
+    border-bottom: 1px solid black;

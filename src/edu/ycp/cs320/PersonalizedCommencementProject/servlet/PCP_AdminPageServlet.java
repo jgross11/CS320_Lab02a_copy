@@ -7,9 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import edu.ycp.cs320.PersonalizedCommencementProject.controller.AdminController;
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.AdvisorController;
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.GraduateController;
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.Admin;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.User;
@@ -29,12 +31,13 @@ import edu.ycp.cs320.PersonalizedCommencementProject.model.User;
  * TODO: Everything
  * TODO: Everything
  */
-public class PCP_AdvisorPageServlet extends HttpServlet {
+public class PCP_AdminPageServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
 	// acts as a temporary 'database' for login verification
 	private Advisor[] advisorLogins = new Advisor[1];
 	private Graduate[] graduateLogins = new Graduate[2];
+	private Admin[] AdminLogins = new Admin[1]; 
 	
 	// indicates that login matches a login stored in 'database'
 	private boolean infoInDB;
@@ -46,7 +49,49 @@ public class PCP_AdvisorPageServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
+		
+		System.out.println("PCP_AdvisorPage Servlet: doGet");
+		
+		// populate 'databases' with acceptable logins
+		advisorLogins[0] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
+		graduateLogins[0] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
+		graduateLogins[1] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
+		AdminLogins[0] = new Admin(new User("jgross11","jgross11","admin","Josh","Gross")); 
+				
+		infoInDB = false;
+		
+		System.out.println("PCP_AdminPage Servlet: doGet");
+		
+		// create controller that holds Advisor controller
+		AdminController controller = new AdminController();
+		 
+		
+		// create Advisor model that holds Advisor information
+		Admin Adminmodel = null;
+		
+		// attempt to find advisor based on username
+		String username = req.getParameter("adminUserName");
+		for(Admin ad : AdminLogins) {
+			// found advisor
+			if(ad.getUsername().equals(username)) {
+				Adminmodel = ad;
+				controller.setModel(Adminmodel);
+				infoInDB = true;
+				break;
+			}
+		}
+		// no advisor found - redirect to login
+		if(!infoInDB) {
+			req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
+			System.out.println("Redirecting to login page due to no admin being found");
+		}
+		// advisor found set attributes and reload advisor page
+		else {
+			req.setAttribute("adminName",Adminmodel.getFirstName() + " " + Adminmodel.getLastName());
+			req.setAttribute("advisorUsername", username);
+			req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
+		}
+		
 	}
 
 	@Override
@@ -61,67 +106,25 @@ public class PCP_AdvisorPageServlet extends HttpServlet {
 		advisorLogins[0] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
 		graduateLogins[0] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
 		graduateLogins[1] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
+		AdminLogins[0] = new Admin(new User("jgross11","jgross11","admin","Josh","Gross")); 
 		infoInDB = false;
 		
 		System.out.println("PCP_AdvisorPage Servlet: doPost");
 		
-		// look for graduate information
-		String studentToView = req.getParameter("studentToView");
+		// create controller that holds Advisor controller
+		AdminController controller = new AdminController();
+		
+		// create Advisor model that holds Advisor information
+		Admin adminModel;
 		
 		// correct input - obtain that student's information, redirect to student page
-		if(studentToView != null) {
-			
-			// create controller that holds Graduate controller
-			GraduateController graduateController = new GraduateController();
-			
-			// create Graduate model that holds Graduate information
-			Graduate graduateModel = new Graduate();
-			
-			// find graduate in graduate 'database'
-			for(Graduate grad : graduateLogins) {
-				grad.setAdvisor(advisorLogins[0]);
-				if(grad.getUsername().equals(studentToView)) {
-					graduateModel = grad;
-					break;
-				}
-			}
-			
-			// displays view version of student page
-			req.setAttribute("mode", "advisorView");
-			
-			// informs student page jsp that the page needs to be loaded
-			req.setAttribute("validLogIn", true);
-			
-			// sets page attribute to remember advisor's name
-			req.setAttribute("advisorUsername", graduateModel.getAdvisor().getUsername());
-			
-			// sets page attribute to display graduate name
-			req.setAttribute("studentName", graduateModel.getName());
-			
-			// sets page attribute to display graduate status
-			req.setAttribute("studentStatus", graduateModel.getStatus());
-			
-			// sets page attribute to display graduate academic information
-			req.setAttribute("studentAcademicInformation", "Major in Testing");
-			
-			// sets page attribute to display graduate's additional information
-			req.setAttribute("studentExtraInformation", "excels at Testology");
-			
-			// TODO once the Infostate and ContentComponent classes are correctly implemented, there will need to be calls
-			// TODO here setting the media page elements (video, photo, etc.) with the graduate's ContentComponents
-			
-			// redirect to the student page
-			req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
+		if(req.getParameter("studentToView") != null) {
+			// TODO: create student model based off of that student's information,
+			// TODO: pass it's attributes to the student page and set mode to advisorView
 		}
-		// direct link to advisor page - redirect to login
+		// incorrect input - redirect to login page
 		else {
-			// create controller that holds Advisor controller
-			AdvisorController controller = new AdvisorController();
-			
-			// create Advisor model that holds Advisor information
-			Advisor advisorModel;
-			
-			req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
+			req.getRequestDispatcher("/_view/PCP_EventPage.jsp").forward(req, resp);
 		}
 	}
 }

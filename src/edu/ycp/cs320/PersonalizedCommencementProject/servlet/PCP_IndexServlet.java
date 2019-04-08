@@ -115,12 +115,6 @@ public class PCP_IndexServlet extends HttpServlet {
 			// redirect to student page
 			if(loginType.equals("student")) {
 				System.out.println("User supplied valid graduate data");
-				// The Graduate object must be instantiated here in order to load information
-				// to load student page. This also (probably) means that every object (Advisor, Admin) must
-				// be instantiated in the following logical statements in order to ensure data is loaded to screen
-				// since the graduate's view page should be displayed first, all of their information is required
-				// when the server is implemented, not only would the graduate's major/minor be extracted,
-				// but their InfoStates would also need to be obtained. 
 				
 				// transfers data from userModel to gradModel 
 				Graduate gradModel = new Graduate(userModel);
@@ -132,7 +126,7 @@ public class PCP_IndexServlet extends HttpServlet {
 				req.setAttribute("validLogIn", true);
 				
 				// sets page attribute to display graduate name
-				req.setAttribute("studentName", gradModel.getFirstName() + " " +  gradModel.getLastName());
+				req.setAttribute("studentName", gradModel.getName());
 				
 				req.setAttribute("studentStatus", (infoIndex == 1) ? true : false);
 				
@@ -158,6 +152,16 @@ public class PCP_IndexServlet extends HttpServlet {
 				 * TODO: this is where the Advisor's student list is populated, which will then be used to calculate the Advisor's
 				 * TODO: status in order to set the initial value of the advisorStatus attribute
 				 */
+				Graduate[] graduateList = new Graduate[2];
+				graduateList[0] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
+				graduateList[1] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
+				graduateList[0].setStatus(true);
+				graduateList[1].setStatus(false);
+				advisorModel.setGraduates(graduateList);
+				advisorModel.setNumGraduates(2);
+				advisorModel.generatePendingAndCompletedGraduateList();
+
+				req.setAttribute("model", advisorModel);
 				req.setAttribute("advisorName", advisorModel.getFirstName() + " " + advisorModel.getLastName());
 				req.setAttribute("academicInformation", advisorModel.getAcademicInformation());
 				req.setAttribute("advisorStatus", advisorModel.getStatus());
@@ -166,6 +170,8 @@ public class PCP_IndexServlet extends HttpServlet {
 			
 			// redirect to admin page
 			else if(loginType.equals("admin")){
+				Admin Adminmodel = new Admin(userModel); 
+				req.setAttribute("adminName", Adminmodel.getFirstName() + " " + Adminmodel.getLastName());
 				req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
 			}
 			else {

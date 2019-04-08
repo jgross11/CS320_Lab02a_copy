@@ -15,6 +15,28 @@
 #infoBox{
     text-align: center;
     float: left;
+<<<<<<< HEAD
+    font-size: 120%;
+}
+#dateChange{
+    height: 49px;
+    font-size: 150%;
+}
+
+#deadlineInformation{
+	width: 440px;
+	font-size: 170%;
+	height: 49px;
+	border-bottom: 1px solid black;
+}
+#adminName{
+    height: 20px;
+    font-size: 150%;
+    border-top: 0px solid black;
+    border-right: 0px solid black;
+    border-left: 0px solid black;
+    border-bottom: 1px solid black;
+=======
     font-size: 150%;
 }
 #eventStatus{
@@ -78,4 +100,5 @@ td{
     font-size: 130%;
     border: 1px solid black;
     text-align: center;
+>>>>>>> refs/heads/Local_Project
 }
