@@ -86,4 +86,9 @@ public class Admin extends User{
 	public void setDate(int year, int month, int day) {
 		Deadline = new Date(year ,month, day); 
 	}
+	
+public Date getDate() {
+		
+		return Deadline; 
+	}
 }
