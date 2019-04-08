@@ -1,8 +1,6 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.model;
 
 
-
-
 import java.sql.Date;
 
 
