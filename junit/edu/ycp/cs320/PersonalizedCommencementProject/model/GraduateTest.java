@@ -59,7 +59,7 @@ public class GraduateTest {
 	}
 	
 	@Test
-	public void testGetAndStatus() {
+	public void testGetAndSetStatus() {
 		model1.setStatus(true);
 		model2.setStatus(false);
 		model3.setStatus(true);
@@ -70,7 +70,7 @@ public class GraduateTest {
 	}
 	
 	@Test
-	public void testGetAdvisor() {
+	public void testGetAndSetAdvisor() {
 		// Edit when database is finished 
 		Advisor advisor = new Advisor();
 		//Advisor advisor2 = new Advisor();
@@ -85,7 +85,7 @@ public class GraduateTest {
 	}
 	
 	@Test
-	public void testGetCurrentInfo() {
+	public void testGetAndSetCurrentInfo() {
 		// Edit when database is finished 
 		InfoState currentInfo = new InfoState();
 		//InfoState currentInfo2 = new InfoState();
@@ -100,7 +100,7 @@ public class GraduateTest {
 	}
 	
 	@Test
-	public void testGetPendingInfo() {
+	public void testGetAndSetPendingInfo() {
 		// Edit when database is finished 
 		InfoState pendingInfo = new InfoState();
 		//InfoState pendingInfo2 = new InfoState();
