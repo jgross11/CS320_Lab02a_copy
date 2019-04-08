@@ -86,7 +86,7 @@ public class GraduateControllerTest {
 	}
 	
 	@Test
-	public void testGetAdvisor() {
+	public void testGetAndSetAdvisor() {
 		// Edit when database is finished 
 		Advisor advisor = new Advisor();
 		//Advisor advisor2 = new Advisor();
@@ -101,7 +101,7 @@ public class GraduateControllerTest {
 	}
 	
 	@Test
-	public void testGetCurrentInfo() {
+	public void testGetAndSetCurrentInfo() {
 		// Edit when database is finished 
 		InfoState currentInfo = new InfoState();
 		//InfoState currentInfo2 = new InfoState();
@@ -116,7 +116,7 @@ public class GraduateControllerTest {
 	}
 	
 	@Test
-	public void testGetPendingInfo() {
+	public void testGetAndSetPendingInfo() {
 		// Edit when database is finished 
 		InfoState pendingInfo = new InfoState();
 		//InfoState pendingInfo2 = new InfoState();
