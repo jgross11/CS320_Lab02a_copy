@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.ycp.cs320.PersonalizedCommencementProject.miscellaneousClasses.InfoState;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
 
 /*
@@ -81,5 +83,50 @@ public class GraduateControllerTest {
 		assertEquals(model1.getStatus(), false);
 		assertEquals(model2.getStatus(), true);
 		assertEquals(model3.getStatus(), false);
+	}
+	
+	@Test
+	public void testGetAdvisor() {
+		// Edit when database is finished 
+		Advisor advisor = new Advisor();
+		//Advisor advisor2 = new Advisor();
+		//Advisor advisor3 = new Advisor();
+		controller1.setAdvisor(advisor);
+		controller2.setAdvisor(advisor);
+		controller3.setAdvisor(advisor);
+		
+		assertEquals(model1.getAdvisor(), advisor);
+		assertEquals(model2.getAdvisor(), advisor);
+		assertEquals(model3.getAdvisor(), advisor); 
+	}
+	
+	@Test
+	public void testGetCurrentInfo() {
+		// Edit when database is finished 
+		InfoState currentInfo = new InfoState();
+		//InfoState currentInfo2 = new InfoState();
+		//InfoState currentInfo3 = new InfoState();
+		controller1.setCurrentInfo(currentInfo);
+		controller2.setCurrentInfo(currentInfo);
+		controller3.setCurrentInfo(currentInfo);
+		
+		assertEquals(model1.getCurrentInfo(), currentInfo);
+		assertEquals(model2.getCurrentInfo(), currentInfo);
+		assertEquals(model3.getCurrentInfo(), currentInfo); 
+	}
+	
+	@Test
+	public void testGetPendingInfo() {
+		// Edit when database is finished 
+		InfoState pendingInfo = new InfoState();
+		//InfoState pendingInfo2 = new InfoState();
+		//InfoState pendingInfo3 = new InfoState();
+		controller1.setPendingInfo(pendingInfo);
+		controller2.setPendingInfo(pendingInfo);
+		controller3.setPendingInfo(pendingInfo);
+		
+		assertEquals(model1.getPendingInfo(), pendingInfo);
+		assertEquals(model2.getPendingInfo(), pendingInfo);
+		assertEquals(model3.getPendingInfo(), pendingInfo); 
 	}
 }

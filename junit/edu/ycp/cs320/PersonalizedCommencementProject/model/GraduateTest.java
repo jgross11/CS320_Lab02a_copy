@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.ycp.cs320.PersonalizedCommencementProject.miscellaneousClasses.InfoState;
+
 /*
  * TODO: These tests are incomplete as the Graduate class currently (3/10)
  * TODO: contains only a portion of the attributes/functions in its class diagram
@@ -65,5 +67,50 @@ public class GraduateTest {
 		assertEquals(model1.getStatus(), true);
 		assertEquals(model2.getStatus(), false);
 		assertEquals(model3.getStatus(), true);
+	}
+	
+	@Test
+	public void testGetAdvisor() {
+		// Edit when database is finished 
+		Advisor advisor = new Advisor();
+		//Advisor advisor2 = new Advisor();
+		//Advisor advisor3 = new Advisor();
+		model1.setAdvisor(advisor);
+		model2.setAdvisor(advisor);
+		model3.setAdvisor(advisor);
+		
+		assertEquals(model1.getAdvisor(), advisor);
+		assertEquals(model2.getAdvisor(), advisor);
+		assertEquals(model3.getAdvisor(), advisor); 
+	}
+	
+	@Test
+	public void testGetCurrentInfo() {
+		// Edit when database is finished 
+		InfoState currentInfo = new InfoState();
+		//InfoState currentInfo2 = new InfoState();
+		//InfoState currentInfo3 = new InfoState();
+		model1.setCurrentInfo(currentInfo);
+		model2.setCurrentInfo(currentInfo);
+		model3.setCurrentInfo(currentInfo);
+		
+		assertEquals(model1.getCurrentInfo(), currentInfo);
+		assertEquals(model2.getCurrentInfo(), currentInfo);
+		assertEquals(model3.getCurrentInfo(), currentInfo); 
+	}
+	
+	@Test
+	public void testGetPendingInfo() {
+		// Edit when database is finished 
+		InfoState pendingInfo = new InfoState();
+		//InfoState pendingInfo2 = new InfoState();
+		//InfoState pendingInfo3 = new InfoState();
+		model1.setPendingInfo(pendingInfo);
+		model2.setPendingInfo(pendingInfo);
+		model3.setPendingInfo(pendingInfo);
+		
+		assertEquals(model1.getPendingInfo(), pendingInfo);
+		assertEquals(model2.getPendingInfo(), pendingInfo);
+		assertEquals(model3.getPendingInfo(), pendingInfo); 
 	}
 }
