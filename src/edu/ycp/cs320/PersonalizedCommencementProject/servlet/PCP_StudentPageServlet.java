@@ -113,20 +113,31 @@ public class PCP_StudentPageServlet extends HttpServlet {
 			System.out.println("Switching graduate mode from view to edit");
 		}
 		else if(mode.equals("graduateEdit")){
-			req.setAttribute("mode", "graduateView");
-			System.out.println("Switching graduate mode from edit to view");
-			if(studentSaveChanges.equals("true")) {
-				System.out.println("\n\nStudent wishes to save changes");
-				// TODO: call function to save changes
-				// TODO: call function to save changes
-			}
-			else if(studentSaveChanges.equals("false")){
-				System.out.println("\n\nStudent wishes to discard changes");
-				// TODO: call function to discard changes
-				// TODO: call function to discard changes
+			System.out.println(req.getParameter("graduateLayoutChange"));
+			if(req.getParameter("graduateLayoutChange").equals("true")){
+				// TODO: set graduate's layout mode to the chosen value
+				// TODO: this is temporary; will eventually change model
+				req.setAttribute("graduateLayout", req.getParameter("graduateLayout"));
+				req.setAttribute("graduateLayoutChange", "false");
+				req.setAttribute("mode", "graduateEdit");
+				System.out.println("Returning to graduate edit mode after modifying layout");
 			}
 			else {
-				System.out.println("Invalid Values, save: " + studentSaveChanges);
+				req.setAttribute("mode", "graduateView");
+				System.out.println("Switching graduate mode from edit to view");
+				if(studentSaveChanges.equals("true")) {
+					System.out.println("\n\nStudent wishes to save changes");
+					// TODO: call function to save changes
+					// TODO: call function to save changes
+				}
+				else if(studentSaveChanges.equals("false")){
+					System.out.println("\n\nStudent wishes to discard changes");
+					// TODO: call function to discard changes
+					// TODO: call function to discard changes
+				}
+				else {
+					System.out.println("Invalid Values, save: " + studentSaveChanges);
+				}
 			}
 		}
 		else if(mode.equals("advisorView")){
