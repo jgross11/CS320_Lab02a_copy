@@ -4,17 +4,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 
 <!-- 
-TODO: Develop a version of StudentPage.html (/war/_view/html) that would
-TODO: represent the viewing state of the page from the advisor's standpoint.
-TODO: Then, change this jsp to determine which version of the StudentPage 
-TODO: needs to be displayed
-
-TODO: Develop a version of StudentPage.html (/war/_view/html) that would
-TODO: represent the editing state of the page from the advisor's standpoint
-TODO: ex. add checkboxes indicating status of individual components
-TODO: Then, change this jsp to determine which version of the StudentPage 
-TODO: needs to be displayed
-
+TODOs go here
 -->
 
 <html>
@@ -60,6 +50,32 @@ TODO: needs to be displayed
 				document.getElementById("graduateLayoutChange").value = true;
 				console.log(layoutChoice);
 				submitForm();
+			}
+			
+			function submitMedia(img, index, type){ 
+				    var reader = new FileReader();
+				    if(type == "photo"){
+					    reader.onload = function(){
+					      var output = document.getElementById("img"+index);
+					      output.src = reader.result;
+						  console.log(output.src);
+					    };
+					    reader.readAsDataURL(event.target.files[0]);
+				    }
+				    else if(type == "video"){
+				    	reader.onload = function(){
+						      var output = document.getElementById("vid"+index);
+						      output.src = reader.result;
+							  console.log(output.src);
+						};
+						reader.readAsDataURL(event.target.files[0]);
+				    }
+				    else{
+				    	console.log("Bad function call");
+				    }
+				//TODO: Ignore this part for now - may or may not be utilized later
+				//document.getElementById("img"+index).src = URL.createObjectURL(event.target.files[0]);
+				//console.log(document.getElementById("img"+index).src);
 			}
 			
 			function submitForm(){
@@ -115,7 +131,6 @@ TODO: needs to be displayed
 					<hr>
 					<input type="submit" name="editInfoButton" value="Edit Information" >
 				</div>
-				
 			    <div id="studentBox">
 			    	<div id="pictureBox">
 			        	<img src="${pageContext.servletContext.contextPath}/_view/assets/kobe.jpg" alt="Student Image" width="250px" height="250px"> 
@@ -123,7 +138,7 @@ TODO: needs to be displayed
 			    	<div id="infoBox">
 			            <table id="infoTable">
 			            	<tr>
-			             		<td id = "studentName">${studentName}	</td>
+			             		<td id = "studentName">${studentName}</td>
 			                </tr>
 			                <tr>
 			                	<td id = "academicInformation">${studentAcademicInformation}</td>
@@ -151,8 +166,8 @@ TODO: needs to be displayed
 		            
 		            <!-- 'DYNAMIC' SLIDESHOW -->
 		            
-		           <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		           <script>
+					<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		          	<script>
 		           		var index = 1;	
 		           		function start(){
 		           			setTimeout(changeActiveImage, 2000, index);
@@ -167,9 +182,11 @@ TODO: needs to be displayed
 		           			var imageString = "img" + index;
 		           			console.log(imageString);
 		           			var image = document.getElementById(imageString)
+		           			// TODO: make this more elegant
+		           			// TODO: make this more elegant
 		           			if(index == 1){
-		           				document.getElementById("img1").width = 200;
-		           				document.getElementById("img1").height = 200;
+		           				document.getElementById("img1").width = 400;
+		           				document.getElementById("img1").height = 400;
 		           				document.getElementById("img2").width = 0;
 		           				document.getElementById("img2").height = 0;
 		           				document.getElementById("img3").width = 0;
@@ -180,8 +197,8 @@ TODO: needs to be displayed
 		           			if(index == 2){
 		           				document.getElementById("img1").width = 0;
 		           				document.getElementById("img1").height = 0;
-		           				document.getElementById("img2").width = 200;
-		           				document.getElementById("img2").height = 200;
+		           				document.getElementById("img2").width = 400;
+		           				document.getElementById("img2").height = 400;
 		           				document.getElementById("img3").width = 0;
 		           				document.getElementById("img3").height = 0;
 		           				document.getElementById("img4").width = 0;
@@ -192,8 +209,8 @@ TODO: needs to be displayed
 		           				document.getElementById("img1").height = 0;
 		           				document.getElementById("img2").width = 0;
 		           				document.getElementById("img2").height = 0;
-		           				document.getElementById("img3").width = 200;
-		           				document.getElementById("img3").height = 200;
+		           				document.getElementById("img3").width = 400;
+		           				document.getElementById("img3").height = 400;
 		           				document.getElementById("img4").width = 0;
 		           				document.getElementById("img4").height = 0;
 		           			}
@@ -204,8 +221,8 @@ TODO: needs to be displayed
 		           				document.getElementById("img2").height = 0;
 		           				document.getElementById("img3").width = 0;
 		           				document.getElementById("img3").height = 0;
-		           				document.getElementById("img4").width = 200;
-		           				document.getElementById("img4").height = 200;
+		           				document.getElementById("img4").width = 400;
+		           				document.getElementById("img4").height = 400;
 		           			}
 		           			//image.width = 200;
 		           			//image.height = 200;
@@ -271,46 +288,46 @@ TODO: needs to be displayed
 		            <!-- STATIC SLIDESHOW -->
 		            <c:if test="${graduateLayout == 'static slideshow'}">
 						<h3> STATIC SLIDESHOW EXAMPLE </h3>
-						<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 170px height = 170px> 
-			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 170px height = 170px> 
-			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 170px height = 170px> 
-			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 170px height = 170px>
+						<img id = "img1" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 170px height = 170px> 
+			            <img id = "img2" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 170px height = 170px> 
+			            <img id = "img3" src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 170px height = 170px> 
+			            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 170px height = 170px>
 						
-			            <p> Upload leftmost image - display dimensions: 170px x 170px</p>
-			            <input type="file" name="file1" accept="image/*">
-						<p> Upload center-left image - display dimensions: 170px x 170px</p>
-						<input type="file" name="file2" accept="image/*">
-						<p> Upload center-right image - display dimensions: 170px x 170px</p>
-						<input type="file" name="file3" accept="image/*">
-						<p> Upload rightmost image - display dimensions: 170px x 170px</p>
-						<input type="file" name="file4" accept="image/*">
+			            <p> Upload 1st image - display dimensions: 170px x 170px</p>
+			            <input type="file" name="file1" accept="image/*" onchange="submitMedia(event, 1, 'photo')">
+						<p> Upload 2nd - display dimensions: 170px x 170px</p>
+						<input type="file" name="file2" accept="image/*" onchange="submitMedia(event, 2, 'photo')">
+						<p> Upload 3rd image - display dimensions: 170px x 170px</p>
+						<input type="file" name="file3" accept="image/*" onchange="submitMedia(event, 3, 'photo')">
+						<p> Upload 4th image - display dimensions: 170px x 170px</p>
+						<input type="file" name="file4" accept="image/*" onchange="submitMedia(event, 4, 'photo')">
 		            </c:if>
 		            
 		            <!-- 'DYNAMIC' SLIDESHOW -->
 		            <c:if test="${graduateLayout == 'dynamic slideshow'}">
 			            <h3> DYNAMIC SLIDESHOW EXAMPLE </h3>
-						<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 410px height = 410px> 
-			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 70px height = 70px> 
-			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 70px height = 70px> 
-			            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 70px height = 70px>
+						<img id = "img1" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 410px height = 410px> 
+			            <img id = "img2" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 70px height = 70px> 
+			            <img id = "img3" src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 70px height = 70px> 
+			            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 70px height = 70px>
 			            <p> Upload leftmost image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-			            <input type="file" name="file1" accept="image/*">
+			            <input type="file" name="file1" accept="image/*" onchange="submitMedia(event, 1, 'photo')">
 						<p> Upload center-left image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-						<input type="file" name="file2" accept="image/*">
+						<input type="file" name="file2" accept="image/*" onchange="submitMedia(event, 2, 'photo')">
 						<p> Upload center-right image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-						<input type="file" name="file3" accept="image/*">
+						<input type="file" name="file3" accept="image/*" onchange="submitMedia(event, 3, 'photo')">
 						<p> Upload rightmost image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-						<input type="file" name="file4" accept="image/*">
+						<input type="file" name="file4" accept="image/*" onchange="submitMedia(event, 4, 'photo')">
 		            </c:if>
 		            
 		            <!-- VIDEO -->
 		            <c:if test="${graduateLayout == 'video'}">
 						<h3> VIDEO EXAMPLE </h3>
-			            <video width = 680px height = 680px controls>
+			            <video id = "vid1" width = 680px height = 680px controls>
 			            	<source src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.mp4" type = "video/mp4">
 			            </video>
 						<p> Upload video - optimal length: &lt; 6 seconds</p>
-						<input type="file" name="file1" accept="video/*">
+						<input type="file" name="file1" accept="video/*" onchange="submitMedia(event, 1, 'video')">
 		            </c:if>
 		        </div>
 		   	</c:if>
