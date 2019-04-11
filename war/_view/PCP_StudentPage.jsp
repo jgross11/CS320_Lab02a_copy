@@ -58,7 +58,7 @@ TODOs go here
 					    reader.onload = function(){
 					      var output = document.getElementById("img"+index);
 					      output.src = reader.result;
-						  console.log(output.src);
+						  console.log(output);
 					    };
 					    reader.readAsDataURL(event.target.files[0]);
 				    }
@@ -70,6 +70,14 @@ TODOs go here
 						};
 						reader.readAsDataURL(event.target.files[0]);
 				    }
+				    else if(type == "name"){
+				    	reader.onload = function(){
+						      var output = document.getElementById("namePronunciation");
+						      output.src = reader.result;
+							  console.log(output.src);
+						};
+						reader.readAsDataURL(event.target.files[0]);
+					}
 				    else{
 				    	console.log("Bad function call");
 				    }
@@ -266,7 +274,7 @@ TODOs go here
 				</div>
 		        <div id="studentBox">
 		            <div id="pictureBox">
-		                <img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+		                <img id = "img0" src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
 		            </div>
 		            <div id="infoBox">
 		                <table id="infoTable">
@@ -283,6 +291,13 @@ TODOs go here
 		            </div>
 		        </div>
 		        <br><br>
+		        <p> Upload student display image - display dimensions: 250px x 250px</p>
+			    <input type="file" name="file0" accept="image/*" onchange="submitMedia(event, 0, 'photo')">
+				<p> Upload student name pronunciation audio file</p>
+			    <input type="file" name="audio0" accept="audio/*" onchange="submitMedia(event, 0, 'name')">
+				<audio id = "namePronunciation"controls >
+					<source>
+				</audio>
 		        <div id = "mediaBox">
 		        
 		            <!-- STATIC SLIDESHOW -->
