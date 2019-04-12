@@ -29,6 +29,7 @@ public class InfoState {
 	
 	public void setNumContents(int numContents) {
 		this.numContents = numContents;
+		contents = new ContentComponent[numContents];
 	}
 	
 	public ContentComponent[] getContents() {
