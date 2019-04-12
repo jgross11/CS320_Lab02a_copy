@@ -43,4 +43,8 @@ public class GraduateController extends UserController{
 	public void setPendingInfo(InfoState pendingInfo) {
 		model.setPendingInfo(pendingInfo);
 	}
+	
+	public void calculateStatus() {
+		model.calculateStatus();
+	}
 }

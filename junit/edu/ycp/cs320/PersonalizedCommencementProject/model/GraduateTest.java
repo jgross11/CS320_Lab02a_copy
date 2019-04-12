@@ -5,14 +5,9 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.ycp.cs320.PersonalizedCommencementProject.miscellaneousClasses.ContentComponent;
 import edu.ycp.cs320.PersonalizedCommencementProject.miscellaneousClasses.InfoState;
 
-/*
- * TODO: These tests are incomplete as the Graduate class currently (3/10)
- * TODO: contains only a portion of the attributes/functions in its class diagram
- * TODO: As such, these tests are incomplete and will need to be updated when the 
- * TODO: other classes (admin, advisor, etc.) are implemented. 
- */
 
 // JUnits for Graduate
 public class GraduateTest {
@@ -48,7 +43,7 @@ public class GraduateTest {
 	}
 	
 	@Test
-	public void testGetAndQRCodeString() {
+	public void testGetAndSetQRCodeString() {
 		model1.setQRCodeString("model1");
 		model2.setQRCodeString("model2");
 		model3.setQRCodeString("model3");
@@ -73,44 +68,80 @@ public class GraduateTest {
 	public void testGetAndSetAdvisor() {
 		// Edit when database is finished 
 		Advisor advisor = new Advisor();
-		//Advisor advisor2 = new Advisor();
-		//Advisor advisor3 = new Advisor();
+		Advisor advisor2 = new Advisor();
+		Advisor advisor3 = new Advisor();
 		model1.setAdvisor(advisor);
-		model2.setAdvisor(advisor);
-		model3.setAdvisor(advisor);
+		model2.setAdvisor(advisor2);
+		model3.setAdvisor(advisor3);
 		
 		assertEquals(model1.getAdvisor(), advisor);
-		assertEquals(model2.getAdvisor(), advisor);
-		assertEquals(model3.getAdvisor(), advisor); 
+		assertEquals(model2.getAdvisor(), advisor2);
+		assertEquals(model3.getAdvisor(), advisor3); 
 	}
 	
 	@Test
 	public void testGetAndSetCurrentInfo() {
 		// Edit when database is finished 
 		InfoState currentInfo = new InfoState();
-		//InfoState currentInfo2 = new InfoState();
-		//InfoState currentInfo3 = new InfoState();
+		InfoState currentInfo2 = new InfoState();
+		InfoState currentInfo3 = new InfoState();
 		model1.setCurrentInfo(currentInfo);
-		model2.setCurrentInfo(currentInfo);
-		model3.setCurrentInfo(currentInfo);
+		model2.setCurrentInfo(currentInfo2);
+		model3.setCurrentInfo(currentInfo3);
 		
 		assertEquals(model1.getCurrentInfo(), currentInfo);
-		assertEquals(model2.getCurrentInfo(), currentInfo);
-		assertEquals(model3.getCurrentInfo(), currentInfo); 
+		assertEquals(model2.getCurrentInfo(), currentInfo2);
+		assertEquals(model3.getCurrentInfo(), currentInfo3); 
 	}
 	
 	@Test
 	public void testGetAndSetPendingInfo() {
 		// Edit when database is finished 
 		InfoState pendingInfo = new InfoState();
-		//InfoState pendingInfo2 = new InfoState();
-		//InfoState pendingInfo3 = new InfoState();
+		InfoState pendingInfo2 = new InfoState();
+		InfoState pendingInfo3 = new InfoState();
 		model1.setPendingInfo(pendingInfo);
-		model2.setPendingInfo(pendingInfo);
-		model3.setPendingInfo(pendingInfo);
+		model2.setPendingInfo(pendingInfo2);
+		model3.setPendingInfo(pendingInfo3);
 		
 		assertEquals(model1.getPendingInfo(), pendingInfo);
-		assertEquals(model2.getPendingInfo(), pendingInfo);
-		assertEquals(model3.getPendingInfo(), pendingInfo); 
+		assertEquals(model2.getPendingInfo(), pendingInfo2);
+		assertEquals(model3.getPendingInfo(), pendingInfo3); 
+	}
+	
+	@Test
+	public void testGetAndSetInfoStateComponent() {
+		InfoState test = new InfoState();
+		test.setNumContents(3);
+		assertEquals(test.getNumContents(), 3);
+		ContentComponent cmp1 = new ContentComponent("Hello");
+		ContentComponent cmp2 = new ContentComponent("Wor");
+		ContentComponent cmp3 = new ContentComponent("ld!");
+		test.setContentAtIndex(0, cmp1);
+		test.setContentAtIndex(1, cmp2);
+		test.setContentAtIndex(2, cmp3);
+		assertEquals(test.getContentAtIndex(0), cmp1);
+		assertEquals(test.getContentAtIndex(1), cmp2);
+		assertEquals(test.getContentAtIndex(2), cmp3);
+	}
+	
+	@Test
+	public void testStatusCalculation() {
+		InfoState bad = new InfoState();
+		bad.setNumContents(1);
+		InfoState good = new InfoState();
+		good.setNumContents(1);
+		ContentComponent badContent = new ContentComponent("bad");
+		ContentComponent goodContent = new ContentComponent("good");
+		badContent.setStatus(false);
+		goodContent.setStatus(true);
+		bad.setContentAtIndex(0, badContent);
+		good.setContentAtIndex(0, goodContent);
+		model1.setCurrentInfo(good);
+		model2.setCurrentInfo(bad);
+		model1.calculateStatus();
+		model2.calculateStatus();
+		assertTrue(model1.getStatus());
+		assertTrue(!model2.getStatus());
 	}
 }

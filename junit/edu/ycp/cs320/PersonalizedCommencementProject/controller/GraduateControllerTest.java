@@ -5,16 +5,10 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.ycp.cs320.PersonalizedCommencementProject.miscellaneousClasses.ContentComponent;
 import edu.ycp.cs320.PersonalizedCommencementProject.miscellaneousClasses.InfoState;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
-
-/*
- * TODO: These tests are incomplete as the Graduate class currently (3/10)
- * TODO: contains only a portion of the attributes/functions in its class diagram
- * TODO: As such, these tests are incomplete and will need to be updated when the 
- * TODO: other classes (admin, advisor, etc.) are implemented. 
-*/
 
 // JUnits for GraduateController
 public class GraduateControllerTest {
@@ -128,5 +122,25 @@ public class GraduateControllerTest {
 		assertEquals(model1.getPendingInfo(), pendingInfo);
 		assertEquals(model2.getPendingInfo(), pendingInfo);
 		assertEquals(model3.getPendingInfo(), pendingInfo); 
+	}
+	
+	@Test
+	public void testStatusCalculation() {
+		InfoState bad = new InfoState();
+		bad.setNumContents(1);
+		InfoState good = new InfoState();
+		good.setNumContents(1);
+		ContentComponent badContent = new ContentComponent("bad");
+		ContentComponent goodContent = new ContentComponent("good");
+		badContent.setStatus(false);
+		goodContent.setStatus(true);
+		bad.setContentAtIndex(0, badContent);
+		good.setContentAtIndex(0, goodContent);
+		controller1.setCurrentInfo(good);
+		controller2.setCurrentInfo(bad);
+		controller1.calculateStatus();
+		controller2.calculateStatus();
+		assertTrue(model1.getStatus());
+		assertTrue(!model2.getStatus());
 	}
 }
