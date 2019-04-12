@@ -15,7 +15,6 @@
 #infoBox{
     text-align: center;
     float: left;
-<<<<<<< HEAD
     font-size: 120%;
 }
 #dateChange{
@@ -36,7 +35,6 @@
     border-right: 0px solid black;
     border-left: 0px solid black;
     border-bottom: 1px solid black;
-=======
     font-size: 150%;
 }
 #eventStatus{
@@ -100,5 +98,4 @@ td{
     font-size: 130%;
     border: 1px solid black;
     text-align: center;
->>>>>>> refs/heads/Local_Project
 }

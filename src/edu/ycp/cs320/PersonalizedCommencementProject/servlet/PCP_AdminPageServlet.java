@@ -45,12 +45,10 @@ public class PCP_AdminPageServlet extends HttpServlet {
 	// indicates index of login match
 	private int infoIndex;
 	
-	
-	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		System.out.println("PCP_AdvisorPage Servlet: doGet");
+		System.out.println("PCP_AdminPage Servlet: doGet");
 		
 		// populate 'databases' with acceptable logins
 		advisorLogins[0] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
@@ -89,7 +87,7 @@ public class PCP_AdminPageServlet extends HttpServlet {
 		else {
 			req.setAttribute("adminName",Adminmodel.getFirstName() + " " + Adminmodel.getLastName());
 			req.setAttribute("advisorUsername", username);
-			req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
+			req.getRequestDispatcher("/_view/PCP_EventPage.jsp").forward(req, resp);
 		}
 		
 	}
@@ -122,7 +120,6 @@ public class PCP_AdminPageServlet extends HttpServlet {
 			// TODO: create student model based off of that student's information,
 			// TODO: pass it's attributes to the student page and set mode to advisorView
 		}
-		// incorrect input - redirect to login page
 		else {
 			req.getRequestDispatcher("/_view/PCP_EventPage.jsp").forward(req, resp);
 		}
