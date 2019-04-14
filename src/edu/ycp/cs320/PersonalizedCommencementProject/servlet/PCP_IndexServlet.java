@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Admin;
@@ -27,11 +28,34 @@ public class PCP_IndexServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
 		System.out.println("PCP_Index Servlet: doGet");
-
-		// call JSP to generate empty form
-		req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
+		// Redirect according to user's username
+		String username = "";
+		try {
+			username = req.getSession().getAttribute("username").toString();
+		}
+		catch(NullPointerException e) {
+			// if null, no username supplied, so user hasn't logged in
+		}
+		// TODO: make this search userDB for session information's username and
+		// TODO: redirect to the appropriate page based on that users' type
+		
+		// graduate search
+		if(username.equals("dchism") || username.equals("wabram")) {
+			req.getSession().setAttribute("mode", "graduateView");
+			resp.sendRedirect(req.getContextPath() + "/PCP_StudentPage");
+		}
+		// advisor search
+		else if(username.equals("agrove9")) {
+			resp.sendRedirect(req.getContextPath() + "/PCP_AdvisorPage");
+		}
+		// admin search
+		else if(username.equals("jgross11")) {
+			resp.sendRedirect(req.getContextPath() + "/PCP_AdminPage");
+		}
+		else {
+			req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
+		}
 	}
 
 	@Override
@@ -89,28 +113,24 @@ public class PCP_IndexServlet extends HttpServlet {
 				}
 			}
 			
-		// Add parameters as request attributes
-		// this creates attributes named "first" and "second for the response, and grabs
-		// the
-		// values that were originally assigned to the request attributes, also named
-		// "first" and "second"
-		// they don't have to be named the same, but in this case, since we are passing
-		// them back
-		// and forth, it's a good idea
-		req.setAttribute("username", userModel.getUsername());
-		req.setAttribute("password", userModel.getPassword());
+		// HttpSesssion will store attributes as long as 
+		// the project is running, useful for local persistence
+		HttpSession session = req.getSession();
 		
-		// add result objects as attributes
+		// store username for use throughout session
+		session.setAttribute("username", userModel.getUsername());
+		
 		// this adds the errorMessage text and the result to the response
 		req.setAttribute("errorMessage", errorMessage);
-
-		req.setAttribute("model", userModel);
 		
 		// Redirect accordingly
 		// correct login
 		if(infoInDB) {
 			// get login account type
 			String loginType = logins[infoIndex].getType();
+			
+			// informs session that login is successful
+			session.setAttribute("validLogIn", true);
 			
 			// redirect to student page
 			if(loginType.equals("student")) {
@@ -120,27 +140,37 @@ public class PCP_IndexServlet extends HttpServlet {
 				Graduate gradModel = new Graduate(userModel);
 				
 				// displays view version of student page
-				req.setAttribute("mode", "graduateView");
+				session.setAttribute("mode", "graduateView");
 				
-				// informs student page jsp that the page needs to be loaded
-				req.setAttribute("validLogIn", true);
+				// sets session attribute to display graduate name
+				session.setAttribute("studentName", gradModel.getName());
 				
-				// sets page attribute to display graduate name
-				req.setAttribute("studentName", gradModel.getName());
+				// sets session attribute to display student status 
+				// TODO: actually calculate status here instead of hardcoding value
+				session.setAttribute("studentStatus", (infoIndex == 1) ? true : false);
 				
-				req.setAttribute("studentStatus", (infoIndex == 1) ? true : false);
+				// sets session attribute to display graduate academic information
+				// TODO: call graduate object to obtain this information
+				session.setAttribute("studentAcademicInformation", "Major in Testing");
 				
-				// sets page attribute to display graduate academic information
-				req.setAttribute("studentAcademicInformation", "Major in Testing");
+				// sets session attribute to display graduate's additional information
+				// TODO: call graduate object to obtain this information
+				session.setAttribute("studentExtraInformation", "excels at Testology");
 				
-				// sets page attribute to display graduate's additional information
-				req.setAttribute("studentExtraInformation", "excels at Testology");
+				// sets session attribute to reference graduate model object when looking for information
+				// TODO: implement way to eliminate the numerous attribute setting calls by having JSP 
+				// TODO: reference the model's methods to obtain attributes as opposed to directly setting attributes
+				session.setAttribute("model", gradModel);
+				
+				//TODO: add logic determining layout of graduate's information, load appropriate value
+				session.setAttribute("graduateLayout", "static slideshow");
 				
 				// TODO once the Infostate and ContentComponent classes are correctly implemented, there will need to be calls
 				// TODO here setting the media page elements (video, photo, etc.) with the graduate's ContentComponents
 				
 				// redirect to the student page
-				req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
+				
+				resp.sendRedirect(req.getContextPath() + "/PCP_StudentPage");
 			}
 			
 			// redirect to advisor page
@@ -161,18 +191,20 @@ public class PCP_IndexServlet extends HttpServlet {
 				advisorModel.setNumGraduates(2);
 				advisorModel.generatePendingAndCompletedGraduateList();
 
-				req.setAttribute("model", advisorModel);
-				req.setAttribute("advisorName", advisorModel.getFirstName() + " " + advisorModel.getLastName());
-				req.setAttribute("academicInformation", advisorModel.getAcademicInformation());
-				req.setAttribute("advisorStatus", advisorModel.getStatus());
-				req.getRequestDispatcher("/_view/PCP_AdvisorPage.jsp").forward(req, resp);
+				// TODO: implement way to eliminate the numerous attribute setting calls by having JSP 
+				// TODO: reference the model's methods to obtain attributes as opposed to directly setting attributes
+				session.setAttribute("model", advisorModel);
+				session.setAttribute("advisorName", advisorModel.getName());
+				session.setAttribute("academicInformation", advisorModel.getAcademicInformation());
+				session.setAttribute("advisorStatus", advisorModel.getStatus());
+				resp.sendRedirect(req.getContextPath() + "/PCP_AdvisorPage");
 			}
 			
 			// redirect to admin page
 			else if(loginType.equals("admin")){
-				Admin Adminmodel = new Admin(userModel); 
-				req.setAttribute("adminName", Adminmodel.getFirstName() + " " + Adminmodel.getLastName());
-				req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
+				Admin adminModel = new Admin(userModel); 
+				session.setAttribute("adminName", adminModel.getName());
+				resp.sendRedirect(req.getContextPath() + "/PCP_AdminPage");
 			}
 			else {
 				System.out.println("Unknown account type, redirecting to login.");
