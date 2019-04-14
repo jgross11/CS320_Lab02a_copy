@@ -35,10 +35,12 @@ TODOs go here
 			
 			function navToStudentList(){
 				document.getElementById("advisorGoBack").value = "true";
+				document.getElementById("advisorSwitch").value = "false";
 				submitForm();
 			}
 			
 			function navToEditMode(){
+				document.getElementById("advisorGoBack").value = "false";
 				document.getElementById("advisorSwitch").value = "true";
 				submitForm();
 			}
@@ -47,8 +49,8 @@ TODOs go here
 				var layoutOBJ = document.getElementById("layoutSelection");
 				var layoutChoice = layoutOBJ.options[layoutOBJ.selectedIndex].text.toLowerCase();
 				document.getElementById("graduateLayout").value = layoutChoice;
-				document.getElementById("graduateLayoutChange").value = true;
 				console.log(layoutChoice);
+				document.getElementById("graduateLayoutChange").value = true;
 				submitForm();
 			}
 			
@@ -58,7 +60,6 @@ TODOs go here
 					    reader.onload = function(){
 					      var output = document.getElementById("img"+index);
 					      output.src = reader.result;
-						  console.log(output);
 					    };
 					    reader.readAsDataURL(event.target.files[0]);
 				    }
@@ -66,7 +67,6 @@ TODOs go here
 				    	reader.onload = function(){
 						      var output = document.getElementById("vid"+index);
 						      output.src = reader.result;
-							  console.log(output.src);
 						};
 						reader.readAsDataURL(event.target.files[0]);
 				    }
@@ -74,7 +74,6 @@ TODOs go here
 				    	reader.onload = function(){
 						      var output = document.getElementById("namePronunciation");
 						      output.src = reader.result;
-							  console.log(output.src);
 						};
 						reader.readAsDataURL(event.target.files[0]);
 					}
@@ -161,96 +160,96 @@ TODOs go here
 			    <br><br>
 			    
 			    <div id = "mediaBox">
-		            <!-- Uncomment one of these options to display-->
 		            
 		            <!-- STATIC SLIDESHOW -->
-		            
-		            <!--
-					<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 172px height = 172px> 
-		            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 172px height = 172px> 
-		            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 172px height = 172px> 
-		            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 172px height = 172px>
-		            -->
-		            
-		            <!-- 'DYNAMIC' SLIDESHOW -->
-		            
-					<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-		          	<script>
-		           		var index = 1;	
-		           		function start(){
-		           			setTimeout(changeActiveImage, 2000, index);
-		           			if(index < 4){
-		           				index++
-		           			}
-		           			else{
-		           				index = 1;
-		           			}
-		           		}
-		           		function changeActiveImage(index){
-		           			var imageString = "img" + index;
-		           			console.log(imageString);
-		           			var image = document.getElementById(imageString)
-		           			// TODO: make this more elegant
-		           			// TODO: make this more elegant
-		           			if(index == 1){
-		           				document.getElementById("img1").width = 400;
-		           				document.getElementById("img1").height = 400;
-		           				document.getElementById("img2").width = 0;
-		           				document.getElementById("img2").height = 0;
-		           				document.getElementById("img3").width = 0;
-		           				document.getElementById("img3").height = 0;
-		           				document.getElementById("img4").width = 0;
-		           				document.getElementById("img4").height = 0;
-		           			}
-		           			if(index == 2){
-		           				document.getElementById("img1").width = 0;
-		           				document.getElementById("img1").height = 0;
-		           				document.getElementById("img2").width = 400;
-		           				document.getElementById("img2").height = 400;
-		           				document.getElementById("img3").width = 0;
-		           				document.getElementById("img3").height = 0;
-		           				document.getElementById("img4").width = 0;
-		           				document.getElementById("img4").height = 0;
-		           			}
-		           			if(index == 3){
-		           				document.getElementById("img1").width = 0;
-		           				document.getElementById("img1").height = 0;
-		           				document.getElementById("img2").width = 0;
-		           				document.getElementById("img2").height = 0;
-		           				document.getElementById("img3").width = 400;
-		           				document.getElementById("img3").height = 400;
-		           				document.getElementById("img4").width = 0;
-		           				document.getElementById("img4").height = 0;
-		           			}
-		           			if(index == 4){
-		           				document.getElementById("img1").width = 0;
-		           				document.getElementById("img1").height = 0;
-		           				document.getElementById("img2").width = 0;
-		           				document.getElementById("img2").height = 0;
-		           				document.getElementById("img3").width = 0;
-		           				document.getElementById("img3").height = 0;
-		           				document.getElementById("img4").width = 400;
-		           				document.getElementById("img4").height = 400;
-		           			}
-		           			//image.width = 200;
-		           			//image.height = 200;
-		           			start();
-		           		}
-		           		start();
-		           </script>
-					<img id = "img1" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 200px height = 200px> 
-		            <img id = "img2" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 50px height = 50px> 
-		            <img id = "img3" src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 50px height = 50px> 
-		            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 50px height = 50px>
+		            <c:if test="${graduateLayout == 'static slideshow'}">
+						<h3> STATIC SLIDESHOW EXAMPLE </h3>
+						<img id = "img1" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 170px height = 170px> 
+			            <img id = "img2" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 170px height = 170px> 
+			            <img id = "img3" src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 170px height = 170px> 
+			            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 170px height = 170px>
+		            </c:if>
+	
+					<!-- 'DYNAMIC' SLIDESHOW -->
+		            <c:if test="${graduateLayout == 'dynamic slideshow'}">
+			            <script>
+			           		var index = 1;	
+			           		function start(){
+			           			setTimeout(changeActiveImage, 2000, index);
+			           			if(index < 4){
+			           				index++
+			           			}
+			           			else{
+			           				index = 1;
+			           			}
+			           		}
+			           		function changeActiveImage(index){
+			           			var imageString = "img" + index;
+			           			var image = document.getElementById(imageString)
+			           			// TODO: make this more elegant
+			           			// TODO: make this more elegant
+			           			if(index == 1){
+			           				document.getElementById("img1").width = 400;
+			           				document.getElementById("img1").height = 400;
+			           				document.getElementById("img2").width = 0;
+			           				document.getElementById("img2").height = 0;
+			           				document.getElementById("img3").width = 0;
+			           				document.getElementById("img3").height = 0;
+			           				document.getElementById("img4").width = 0;
+			           				document.getElementById("img4").height = 0;
+			           			}
+			           			if(index == 2){
+			           				document.getElementById("img1").width = 0;
+			           				document.getElementById("img1").height = 0;
+			           				document.getElementById("img2").width = 400;
+			           				document.getElementById("img2").height = 400;
+			           				document.getElementById("img3").width = 0;
+			           				document.getElementById("img3").height = 0;
+			           				document.getElementById("img4").width = 0;
+			           				document.getElementById("img4").height = 0;
+			           			}
+			           			if(index == 3){
+			           				document.getElementById("img1").width = 0;
+			           				document.getElementById("img1").height = 0;
+			           				document.getElementById("img2").width = 0;
+			           				document.getElementById("img2").height = 0;
+			           				document.getElementById("img3").width = 400;
+			           				document.getElementById("img3").height = 400;
+			           				document.getElementById("img4").width = 0;
+			           				document.getElementById("img4").height = 0;
+			           			}
+			           			if(index == 4){
+			           				document.getElementById("img1").width = 0;
+			           				document.getElementById("img1").height = 0;
+			           				document.getElementById("img2").width = 0;
+			           				document.getElementById("img2").height = 0;
+			           				document.getElementById("img3").width = 0;
+			           				document.getElementById("img3").height = 0;
+			           				document.getElementById("img4").width = 400;
+			           				document.getElementById("img4").height = 400;
+			           			}
+			           			//image.width = 200;
+			           			//image.height = 200;
+			           			start();
+			           		}
+			           		start();
+			           	</script>
+			           	
+			            <h3> DYNAMIC SLIDESHOW EXAMPLE </h3>
+						<img id = "img1" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 410px height = 410px> 
+			            <img id = "img2" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 70px height = 70px> 
+			            <img id = "img3" src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 70px height = 70px> 
+			            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 70px height = 70px>
+		            </c:if>
 		            
 		            
 		            <!-- VIDEO -->
-		            
-		            <!--
-		            <video width = 325px height = 325px controls>       <source src = "assets/tippy.mp4" type = "video/mp4">
-		            </video>
-		            
-		            -->
+		            <c:if test="${graduateLayout == 'video'}">
+						<h3> VIDEO EXAMPLE </h3>
+			            <video id = "vid1" width = 680px height = 680px controls>
+			            	<source src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.mp4" type = "video/mp4">
+			            </video>
+		            </c:if>
 		    	</div>
 		   	</c:if>
 		   	
@@ -260,12 +259,27 @@ TODOs go here
 		   	<c:if test="${mode == 'graduateEdit'}">
 			   	<div id="layoutEditSelectionBox">
 					<b style="font-size: 23px">Select your layout</b><hr>
-					<select id="layoutSelection" name="layoutSelection" onchange="changeGraduateLayout(this.selectedValue)">
-						<option value="static">Select an Option</option>
-						<option value="static">Static Slideshow</option>
-						<option value="dynamic">Dynamic Slideshow</option>
-						<option value="video">Video</option>
-					</select>
+					<c:if test="${graduateLayout == 'dynamic slideshow'}">
+						<select id="layoutSelection" name="layoutSelection" onchange="changeGraduateLayout(this.selectedValue)">
+							<option value="static">Static Slideshow</option>
+							<option value="dynamic" selected>Dynamic Slideshow</option>
+							<option value="video">Video</option>
+						</select>
+					</c:if>
+					<c:if test="${graduateLayout == 'video'}">
+						<select id="layoutSelection" name="layoutSelection" onchange="changeGraduateLayout(this.selectedValue)">
+							<option value="static">Static Slideshow</option>
+							<option value="dynamic">Dynamic Slideshow</option>
+							<option value="video" selected>Video</option>
+						</select>
+					</c:if>
+					<c:if test="${graduateLayout != 'video' && graduateLayout != 'dynamic slideshow'}">
+						<select id="layoutSelection" name="layoutSelection" onchange="changeGraduateLayout(this.selectedValue)">
+							<option value="static" selected>Static Slideshow</option>
+							<option value="dynamic">Dynamic Slideshow</option>
+							<option value="video">Video</option>
+						</select>
+					</c:if>					
 					<hr>
 
 					<input type="button" value="Save changes" onclick="setGraduateSaveOption(1)">
