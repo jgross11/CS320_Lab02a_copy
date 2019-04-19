@@ -8,20 +8,20 @@
 
   <!-- Servlets -->
   <servlet>
-    <servlet-name>IndexServlet</servlet-name>
-    <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.IndexServlet</servlet-class>
+    <servlet-name>ZUNUSED_IndexServlet</servlet-name>
+    <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ZUNUSED_IndexServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>AddNumbersServlet</servlet-name>
-    <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.AddNumbersServlet</servlet-class>
+    <servlet-name>ZUNUSED_AddNumbersServlet</servlet-name>
+    <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ZUNUSED_AddNumbersServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>MultiplyNumbersServlet</servlet-name>
-    <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.MultiplyNumbersServlet</servlet-class>
+    <servlet-name>ZUNUSED_MultiplyNumbersServlet</servlet-name>
+    <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ZUNUSED_MultiplyNumbersServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>GuessingGameServlet</servlet-name>
-    <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.GuessingGameServlet</servlet-class>
+    <servlet-name>ZUNUSED_GuessingGameServlet</servlet-name>
+    <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ZUNUSED_GuessingGameServlet</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>PCP_IndexServlet</servlet-name>
@@ -42,15 +42,15 @@
   
   <!-- AJAX servlets. -->
   <servlet>
-    <servlet-name>AddNumbersAjaxServlet</servlet-name>
+    <servlet-name>ZUNUSED_AddNumbersAjaxServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ajax.AddNumbersAjaxServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>MultiplyNumbersAjaxServlet</servlet-name>
+    <servlet-name>ZUNUSED_MultiplyNumbersAjaxServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ajax.MultiplyNumbersAjaxServlet</servlet-class>
   </servlet>
   <servlet>
-    <servlet-name>NextGuessAjaxServlet</servlet-name>
+    <servlet-name>ZUNUSED_NextGuessAjaxServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ajax.NextGuessAjaxServlet</servlet-class>
   </servlet>
   <servlet>
@@ -64,20 +64,20 @@
 
   <!-- Servlet mappings -->
   <servlet-mapping>
-    <servlet-name>IndexServlet</servlet-name>
-    <url-pattern>/index</url-pattern>
+    <servlet-name>ZUNUSED_IndexServlet</servlet-name>
+    <url-pattern>/ZUNUSED_index</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>AddNumbersServlet</servlet-name>
-    <url-pattern>/addNumbers</url-pattern>
+    <servlet-name>ZUNUSED_AddNumbersServlet</servlet-name>
+    <url-pattern>/ZUNUSED_addNumbers</url-pattern>
   </servlet-mapping>
    <servlet-mapping>
-    <servlet-name>MultiplyNumbersServlet</servlet-name>
-    <url-pattern>/multiplyNumbers</url-pattern>
+    <servlet-name>ZUNUSED_MultiplyNumbersServlet</servlet-name>
+    <url-pattern>/ZUNUSED_multiplyNumbers</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>GuessingGameServlet</servlet-name>
-    <url-pattern>/guessingGame</url-pattern>
+    <servlet-name>ZUNUSED_GuessingGameServlet</servlet-name>
+    <url-pattern>/ZUNUSED_guessingGame</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>PCP_IndexServlet</servlet-name>
@@ -99,15 +99,15 @@
   
   <!--  AJAX servlet mappings. -->
   <servlet-mapping>
-    <servlet-name>AddNumbersAjaxServlet</servlet-name>
+    <servlet-name>ZUNUSED_AddNumbersAjaxServlet</servlet-name>
     <url-pattern>/ajax/addNumbers</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>MultiplyNumbersAjaxServlet</servlet-name>
+    <servlet-name>ZUNUSED_MultiplyNumbersAjaxServlet</servlet-name>
     <url-pattern>/ajax/multiplyNumbers</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
-    <servlet-name>NextGuessAjaxServlet</servlet-name>
+    <servlet-name>ZUNUSED_NextGuessAjaxServlet</servlet-name>
     <url-pattern>/ajax/nextGuess</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
