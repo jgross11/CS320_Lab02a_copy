@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.ycp.cs320.PersonalizedCommencementProject.controller.GuessingGameController;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.GuessingGame;
+import edu.ycp.cs320.PersonalizedCommencementProject.controller.ZUNUSED_GuessingGameController;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.ZUNUSED_GuessingGame;
 
 public class NextGuessAjaxServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -33,14 +33,14 @@ public class NextGuessAjaxServlet extends HttpServlet {
 			return;
 		}
 
-		GuessingGame model = new GuessingGame();
+		ZUNUSED_GuessingGame model = new ZUNUSED_GuessingGame();
 		model.setMin(min);
 		model.setMax(max);
 
 		// If an action was specified, use a GuessingGameController to carry it out
 		String action = req.getParameter("action");
 		if (action != null) {
-			GuessingGameController controller = new GuessingGameController();
+			ZUNUSED_GuessingGameController controller = new ZUNUSED_GuessingGameController();
 			controller.setModel(model);
 
 			if (action.equals("less")) {

@@ -1,11 +1,11 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.controller;
 
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Numbers;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.ZUNUSED_Numbers;
 
-public class NumbersController {
-	private Numbers model;
+public class ZUNUSED_NumbersController {
+	private ZUNUSED_Numbers model;
 
-	public void setModel(Numbers a) {
+	public void setModel(ZUNUSED_Numbers a) {
 		this.model = a;
 	}
 

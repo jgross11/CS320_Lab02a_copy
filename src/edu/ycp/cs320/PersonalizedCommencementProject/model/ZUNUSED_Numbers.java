@@ -1,9 +1,9 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.model;
 
-public class Numbers {
+public class ZUNUSED_Numbers {
 	private double result, a, b, c;
 
-	public Numbers() {
+	public ZUNUSED_Numbers() {
 
 	}
 

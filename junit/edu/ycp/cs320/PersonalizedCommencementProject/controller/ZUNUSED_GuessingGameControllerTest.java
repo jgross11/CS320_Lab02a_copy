@@ -5,17 +5,17 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.ycp.cs320.PersonalizedCommencementProject.controller.GuessingGameController;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.GuessingGame;
+import edu.ycp.cs320.PersonalizedCommencementProject.controller.ZUNUSED_GuessingGameController;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.ZUNUSED_GuessingGame;
 
-public class GuessingGameControllerTest {
-	private GuessingGame model;
-	private GuessingGameController controller;
+public class ZUNUSED_GuessingGameControllerTest {
+	private ZUNUSED_GuessingGame model;
+	private ZUNUSED_GuessingGameController controller;
 
 	@Before
 	public void setUp() {
-		model = new GuessingGame();
-		controller = new GuessingGameController();
+		model = new ZUNUSED_GuessingGame();
+		controller = new ZUNUSED_GuessingGameController();
 		controller.setModel(model);
 		controller.startGame();
 	}

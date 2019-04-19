@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.ycp.cs320.PersonalizedCommencementProject.controller.GuessingGameController;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.GuessingGame;
+import edu.ycp.cs320.PersonalizedCommencementProject.controller.ZUNUSED_GuessingGameController;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.ZUNUSED_GuessingGame;
 
-public class GuessingGameServlet extends HttpServlet {
+public class ZUNUSED_GuessingGameServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -29,11 +29,11 @@ public class GuessingGameServlet extends HttpServlet {
 
 		// create GuessingGame model - model does not persist between requests
 		// must recreate it each time a Post comes in
-		GuessingGame model = new GuessingGame();
+		ZUNUSED_GuessingGame model = new ZUNUSED_GuessingGame();
 
 		// create GuessingGame controller - controller does not persist between requests
 		// must recreate it each time a Post comes in
-		GuessingGameController controller = new GuessingGameController();
+		ZUNUSED_GuessingGameController controller = new ZUNUSED_GuessingGameController();
 
 		// assign model reference to controller so that controller can access model
 		controller.setModel(model);

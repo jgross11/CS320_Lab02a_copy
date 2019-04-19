@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import edu.ycp.cs320.PersonalizedCommencementProject.controller.NumbersController;
+import edu.ycp.cs320.PersonalizedCommencementProject.controller.ZUNUSED_NumbersController;
 
 public class PCP_StudentPageAjaxServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -35,7 +35,7 @@ public class PCP_StudentPageAjaxServlet extends HttpServlet {
 		}
 
 		// Use a controller to process the request
-		NumbersController controller = new NumbersController();
+		ZUNUSED_NumbersController controller = new ZUNUSED_NumbersController();
 		Double result = controller.add(first, second, third);
 
 		// Send back a response

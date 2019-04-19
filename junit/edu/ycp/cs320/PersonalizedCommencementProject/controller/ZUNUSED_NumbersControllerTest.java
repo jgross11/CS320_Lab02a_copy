@@ -5,17 +5,17 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.ycp.cs320.PersonalizedCommencementProject.controller.NumbersController;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Numbers;
+import edu.ycp.cs320.PersonalizedCommencementProject.controller.ZUNUSED_NumbersController;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.ZUNUSED_Numbers;
 
-public class NumbersControllerTest {
-	private NumbersController controller;
-	private Numbers model;
+public class ZUNUSED_NumbersControllerTest {
+	private ZUNUSED_NumbersController controller;
+	private ZUNUSED_Numbers model;
 
 	@Before
 	public void setup() {
-		controller = new NumbersController();
-		model = new Numbers();
+		controller = new ZUNUSED_NumbersController();
+		model = new ZUNUSED_Numbers();
 		controller.setModel(model);
 	}
 

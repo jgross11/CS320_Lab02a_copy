@@ -7,10 +7,10 @@ package edu.ycp.cs320.PersonalizedCommencementProject.model;
 //    a call to model.getMin()
 // when the JSP specifies if(game.done), that gets converted to
 //    a call to model.isDone()
-public class GuessingGame {
+public class ZUNUSED_GuessingGame {
 	private int min, max;
 
-	public GuessingGame() {
+	public ZUNUSED_GuessingGame() {
 	}
 
 	public void setMin(int min) {

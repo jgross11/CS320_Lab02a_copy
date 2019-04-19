@@ -1,19 +1,19 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.controller;
 
-import edu.ycp.cs320.PersonalizedCommencementProject.model.GuessingGame;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.ZUNUSED_GuessingGame;
 
 /**
  * Controller for the guessing game.
  */
-public class GuessingGameController {
-	private GuessingGame model;
+public class ZUNUSED_GuessingGameController {
+	private ZUNUSED_GuessingGame model;
 
 	/**
 	 * Set the model.
 	 * 
 	 * @param model the model to set
 	 */
-	public void setModel(GuessingGame model) {
+	public void setModel(ZUNUSED_GuessingGame model) {
 		this.model = model;
 	}
 
