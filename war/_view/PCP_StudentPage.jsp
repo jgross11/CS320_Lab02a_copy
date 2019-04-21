@@ -122,7 +122,7 @@ TODOs go here
 	    		 <b> Personalized Commencement - Advisor Edit Page </b>
 	    	</c:if> 	 	 	
         </div>
-  		<form id = "studentForm" name="studentForm" action="${pageContext.servletContext.contextPath}/PCP_StudentPage" method="post">
+  		<form id = "studentForm" name="studentForm" action="${pageContext.servletContext.contextPath}/PCP_StudentPage" enctype="multipart/form-data" method="post">
   		
   			<!--  STUDENT VIEW PAGE -->
   			<!--  STUDENT VIEW PAGE -->
@@ -306,9 +306,9 @@ TODOs go here
 		        </div>
 		        <br><br>
 		        <p> Upload student display image - display dimensions: 250px x 250px</p>
-			    <input type="file" name="file0" accept="image/*" onchange="submitMedia(event, 0, 'photo')">
+			    <input type="file" name="profilePictureUpload" accept="image/*" onchange="submitMedia(event, 0, 'photo')">
 				<p> Upload student name pronunciation audio file</p>
-			    <input type="file" name="audio0" accept="audio/*" onchange="submitMedia(event, 0, 'name')">
+			    <input type="file" name="namePronunciationUpload" accept="audio/*" onchange="submitMedia(event, 0, 'name')">
 				<audio id = "namePronunciation"controls >
 					<source>
 				</audio>
@@ -323,13 +323,13 @@ TODOs go here
 			            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 170px height = 170px>
 						
 			            <p> Upload 1st image - display dimensions: 170px x 170px</p>
-			            <input type="file" name="file1" accept="image/*" onchange="submitMedia(event, 1, 'photo')">
+			            <input type="file" name="image1Upload" accept="image/*" onchange="submitMedia(event, 1, 'photo')">
 						<p> Upload 2nd - display dimensions: 170px x 170px</p>
-						<input type="file" name="file2" accept="image/*" onchange="submitMedia(event, 2, 'photo')">
+						<input type="file" name="image2Upload" accept="image/*" onchange="submitMedia(event, 2, 'photo')">
 						<p> Upload 3rd image - display dimensions: 170px x 170px</p>
-						<input type="file" name="file3" accept="image/*" onchange="submitMedia(event, 3, 'photo')">
+						<input type="file" name="image3Upload" accept="image/*" onchange="submitMedia(event, 3, 'photo')">
 						<p> Upload 4th image - display dimensions: 170px x 170px</p>
-						<input type="file" name="file4" accept="image/*" onchange="submitMedia(event, 4, 'photo')">
+						<input type="file" name="image4Upload" accept="image/*" onchange="submitMedia(event, 4, 'photo')">
 		            </c:if>
 		            
 		            <!-- 'DYNAMIC' SLIDESHOW -->
@@ -340,13 +340,13 @@ TODOs go here
 			            <img id = "img3" src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 70px height = 70px> 
 			            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 70px height = 70px>
 			            <p> Upload leftmost image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-			            <input type="file" name="file1" accept="image/*" onchange="submitMedia(event, 1, 'photo')">
+			            <input type="file" name="image1Upload" accept="image/*" onchange="submitMedia(event, 1, 'photo')">
 						<p> Upload center-left image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-						<input type="file" name="file2" accept="image/*" onchange="submitMedia(event, 2, 'photo')">
+						<input type="file" name="image2Upload" accept="image/*" onchange="submitMedia(event, 2, 'photo')">
 						<p> Upload center-right image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-						<input type="file" name="file3" accept="image/*" onchange="submitMedia(event, 3, 'photo')">
+						<input type="file" name="image3Upload" accept="image/*" onchange="submitMedia(event, 3, 'photo')">
 						<p> Upload rightmost image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
-						<input type="file" name="file4" accept="image/*" onchange="submitMedia(event, 4, 'photo')">
+						<input type="file" name="image4Upload" accept="image/*" onchange="submitMedia(event, 4, 'photo')">
 		            </c:if>
 		            
 		            <!-- VIDEO -->
@@ -356,7 +356,7 @@ TODOs go here
 			            	<source src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.mp4" type = "video/mp4">
 			            </video>
 						<p> Upload video - optimal length: &lt; 6 seconds</p>
-						<input type="file" name="file1" accept="video/*" onchange="submitMedia(event, 1, 'video')">
+						<input type="file" name="videoUpload" accept="video/*" onchange="submitMedia(event, 1, 'video')">
 		            </c:if>
 		        </div>
 		   	</c:if>
