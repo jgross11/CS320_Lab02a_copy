@@ -28,5 +28,10 @@
 	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-webapp-9.4.3.v20170317.jar"/>
 	<classpathentry kind="lib" path="CS320_Jetty9/lib/jetty-xml-9.4.3.v20170317.jar"/>
 	<classpathentry kind="lib" path="CS320_Jetty9/lib/servlet-api-3.1.jar"/>
+	<classpathentry kind="lib" path="CS320_Derby/lib/derby.jar"/>
+	<classpathentry kind="lib" path="CS320_Derby/lib/derbyclient.jar"/>
+	<classpathentry kind="lib" path="CS320_Derby/lib/derbynet.jar"/>
+	<classpathentry kind="lib" path="CS320_Derby/lib/derbyrun.jar"/>
+	<classpathentry kind="lib" path="CS320_Derby/lib/derbytools.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>
