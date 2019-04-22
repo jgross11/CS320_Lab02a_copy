@@ -94,10 +94,10 @@ public class DerbyDatabase implements IDatabase {
 				
 				try {
 					stmt = conn.prepareStatement(
-							"select users.*, students.major, infostates.* "
-							+ "from users, students, infostates where "
-							+ "users.username = students.username and "
-							+ "students.username = infostates.username and students.username = ?"
+							"select users.*, graduates.*, infostates.* "
+							+ "from users, graduates, infostates where "
+							+ "users.username = graduates.username and "
+							+ "graduates.username = infostates.username and graduates.username = ?"
 					);
 					stmt.setString(1, username);
 					
@@ -113,7 +113,7 @@ public class DerbyDatabase implements IDatabase {
 						User user = new User();
 						loadUser(user, resultSet, 1);
 						Graduate graduate = new Graduate(user);
-						loadGraduate(graduate, resultSet, 7);
+						loadGraduate(graduate, resultSet, 8);
 						result.add(graduate);
 					}
 					
@@ -141,7 +141,7 @@ public class DerbyDatabase implements IDatabase {
 				
 				try {
 					stmt = conn.prepareStatement(
-							"select users.*, advisors.* from users, advisors where advisors.username = ? and users.username = advisors.username;"
+							"select users.*, advisors.* from users, advisors where advisors.username = ? and users.username = advisors.username"
 					);
 					stmt.setString(1, username);
 					
@@ -249,7 +249,7 @@ public class DerbyDatabase implements IDatabase {
 		private void loadUser(User user, ResultSet resultSet, int index) throws SQLException {
 			
 			// users.username
-			user.setUsername(resultSet.getString(index));
+			user.setUsername(resultSet.getString(index++));
 			
 			// users.password
 			user.setPassword(resultSet.getString(index++)); 
@@ -271,11 +271,16 @@ public class DerbyDatabase implements IDatabase {
 		private void loadGraduate(Graduate graduate, ResultSet resultSet, int index) throws SQLException {
 			
 			// graduates.major
-			graduate.setMajor((resultSet.getString(index)));
+			graduate.setMajor(resultSet.getString(index++));
+			
+			// graduates.advisorUsername
+			graduate.setAdvisor(resultSet.getString(index++));
+			
+			// graduates.status
+			graduate.setStatus(Boolean.valueOf(resultSet.getString(index++)));
 			
 			// skips infostates.username
 			index++;
-			
 			
 			// TODO: this could be improved to call a function to iterate instead of 
 			// TODO: copying / pasting the same four loops 
@@ -289,7 +294,7 @@ public class DerbyDatabase implements IDatabase {
 				
 				// iterates through results adding, in order: extra info->name pronunciation->slideshowphoto1..4->video
 				for(int i = 0; i < currentIS.getNumContents(); i++) {
-					currentIS.setContentAtIndex(i, new ContentComponent(resultSet.getString(index++)));
+					currentIS.getContents().add(i, new ContentComponent(resultSet.getString(index++)));
 				}
 				
 				// set created infostate to graduate's current
@@ -300,12 +305,18 @@ public class DerbyDatabase implements IDatabase {
 				// iterates through results adding, in order: extra info->name pronunciation->slideshowphoto1..4->video
 				
 				for(int i = 0; i < pendingIS.getNumContents(); i++) {
-					pendingIS.setContentAtIndex(i, new ContentComponent(resultSet.getString(index++)));
+					pendingIS.getContents().add(i, new ContentComponent(resultSet.getString(index++)));
 				}
 				
 				// set created infostate to graduate's pending
 				graduate.setPendingInfo(pendingIS);
 			}
+			
+			// move to next query
+			resultSet.next();
+			
+			// skips information already set
+			index = 12;
 			
 			// 2nd infostate creation
 			infostateType = resultSet.getString(index++);
@@ -314,7 +325,7 @@ public class DerbyDatabase implements IDatabase {
 				
 				// iterates through results adding, in order: extra info->name pronunciation->slideshowphoto1..4->video
 				for(int i = 0; i < currentIS.getNumContents(); i++) {
-					currentIS.setContentAtIndex(i, new ContentComponent(resultSet.getString(index++)));
+					currentIS.getContents().add(i, new ContentComponent(resultSet.getString(index++)));
 				}
 				
 				// set created infostate to graduate's current
@@ -325,7 +336,7 @@ public class DerbyDatabase implements IDatabase {
 				
 				// iterates through results adding, in order: extra info->name pronunciation->slideshowphoto1..4->video
 				for(int i = 0; i < pendingIS.getNumContents(); i++) {
-					pendingIS.setContentAtIndex(i, new ContentComponent(resultSet.getString(index++)));
+					pendingIS.getContents().add(i, new ContentComponent(resultSet.getString(index++)));
 				}
 				
 				// set created infostate to graduate's pending
@@ -338,6 +349,7 @@ public class DerbyDatabase implements IDatabase {
 		private void loadAdvisor(Advisor advisor, ResultSet resultSet, int index) throws SQLException {
 					
 			// skip advisors.username
+			index++;
 			
 			// advisors.academicInfo
 			advisor.setAcademicInformation((resultSet.getString(index++))); 
@@ -980,7 +992,7 @@ public class DerbyDatabase implements IDatabase {
 					stmt4 = conn.prepareStatement(
 							"create table admins("
 							+ "username varchar(50), "
-							+ "eventDate int"
+							+ "eventDate varchar(50)"
 							+ ")"
 					);
 					stmt4.executeUpdate();
@@ -1025,12 +1037,14 @@ public class DerbyDatabase implements IDatabase {
 				List<Graduate> graduateList;
 				List<Advisor> advisorList;
 				List<Admin> adminList;
+				List<InfoState> infoStateList;
 				
 				try {
 					userList = InitialData.getUsers();
 					graduateList = InitialData.getGraduates();
 					advisorList = InitialData.getAdvisors();
 					adminList = InitialData.getAdmins();
+					infoStateList = InitialData.getInfoStates();
 				} catch (IOException e) {
 					throw new SQLException("Couldn't read initial data", e);
 				}
@@ -1039,6 +1053,7 @@ public class DerbyDatabase implements IDatabase {
 				PreparedStatement insertGraduate = null;
 				PreparedStatement insertAdvisor = null;
 				PreparedStatement insertAdmin = null;
+				PreparedStatement insertInfoState = null;
 
 				try {
 					// insert users into users table
@@ -1062,6 +1077,7 @@ public class DerbyDatabase implements IDatabase {
 						insertGraduate.setString(2, graduate.getMajor());
 						insertGraduate.setString(3, graduate.getAdvisor());
 						insertGraduate.setString(4, String.valueOf(graduate.getStatus()));
+						insertGraduate.addBatch();
 					}
 					insertGraduate.executeBatch();
 					System.out.println("Graduates table populated");
@@ -1072,6 +1088,7 @@ public class DerbyDatabase implements IDatabase {
 						insertAdvisor.setString(1, advisor.getUsername());
 						insertAdvisor.setString(2, advisor.getAcademicInformation());
 						insertAdvisor.setString(3, String.valueOf(advisor.getStatus()));
+						insertAdvisor.addBatch();
 					}
 					insertAdvisor.executeBatch();
 					System.out.println("Advisors table populated");
@@ -1079,11 +1096,28 @@ public class DerbyDatabase implements IDatabase {
 					// insert admins into admins table
 					insertAdmin = conn.prepareStatement("insert into admins (username, eventDate) values (?, ?)");
 					for(Admin admin : adminList) {
-						insertGraduate.setString(1, admin.getUsername());
-						insertGraduate.setString(2, String.valueOf(admin.getDate()));
+						insertAdmin.setString(1, admin.getUsername());
+						insertAdmin.setString(2, String.valueOf(admin.getDate()));
+						insertAdmin.addBatch();
 					}
-					insertGraduate.executeBatch();
+					insertAdmin.executeBatch();
 					System.out.println("Admins table populated");
+					
+					// insert infoState into infoState table
+					insertInfoState = conn.prepareStatement("insert into infostates ("
+							+ "username, infoStateType, extraInfo, namePronunciation, slideshowPhoto1, "
+							+ "slideshowPhoto2, slideshowPhoto3, slideshowPhoto4, video) values ("
+							+ "?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					for(InfoState infoState : infoStateList) {
+						insertInfoState.setString(1, infoState.getUsername());
+						insertInfoState.setString(2, infoState.getFormatType());
+						for(int i = 0; i < infoState.getNumContents(); i++) {
+							insertInfoState.setString(i + 3, infoState.getContentAtIndex(i).getContent());
+						}
+						insertInfoState.addBatch();
+					}
+					insertInfoState.executeBatch();
+					System.out.println("InfoState table populated");
 					
 					return true;
 				} finally {
@@ -1091,6 +1125,7 @@ public class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(insertGraduate);
 					DBUtil.closeQuietly(insertAdvisor);	
 					DBUtil.closeQuietly(insertAdmin);
+					DBUtil.closeQuietly(insertInfoState);
 				}
 			}
 		});
