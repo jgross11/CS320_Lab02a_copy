@@ -9,6 +9,8 @@ import edu.ycp.cs320.PersonalizedCommencementProject.persist.IDatabase;
 import edu.ycp.cs320.PersonalizedCommencementProject.persist.InitDatabase;
 
 public class AUserQuery {
+	// find user by this username
+	private final static String userToFind = "acastro";
 	public static void main(String[] args) throws Exception {
 		Scanner keyboard = new Scanner(System.in);
 
@@ -17,7 +19,7 @@ public class AUserQuery {
 		
 		// get the DB instance and execute transaction
 		IDatabase db = DatabaseProvider.getInstance();
-		List<User> userList = db.findUserByUsername("jgross11");
+		List<User> userList = db.findUserByUsername(userToFind);
 		
 		// check if anything was returned and output the list
 		if (userList.isEmpty()) {
@@ -25,7 +27,10 @@ public class AUserQuery {
 		}
 		else {
 			for (User user : userList) {
-				System.out.println(user.getName());
+				System.out.println("name: " + user.getName());
+				System.out.println("password: " + user.getPassword());
+				System.out.println("type: " + user.getType());
+				System.out.println("image: " + user.getImage());
 			}
 		}
 	}
