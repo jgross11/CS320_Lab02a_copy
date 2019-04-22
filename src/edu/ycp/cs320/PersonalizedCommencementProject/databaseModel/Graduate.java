@@ -11,7 +11,7 @@ public class Graduate extends User{
 	}
 	
 	public Graduate(User userModel) {
-		super(userModel.getUsername(), userModel.getPassword(), userModel.getType(), userModel.getFirstName(), userModel.getLastName());
+		super(userModel.getUsername(), userModel.getPassword(), userModel.getType(), userModel.getFirstName(), userModel.getLastName(), userModel.getImage());
 	}
 	
 	public String getMajor() {

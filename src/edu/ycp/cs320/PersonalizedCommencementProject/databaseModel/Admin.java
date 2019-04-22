@@ -10,7 +10,7 @@ private Date deadline;
 	}
 	
 	public Admin(User user) {
-		super(user.getUsername(), user.getPassword(), user.getType(), user.getFirstName(), user.getLastName());
+		super(user.getUsername(), user.getPassword(), user.getType(), user.getFirstName(), user.getLastName(), user.getImage());
 	}
 	
 	public void setDate(long date) {

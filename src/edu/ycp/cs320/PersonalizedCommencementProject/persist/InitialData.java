@@ -7,7 +7,9 @@ import java.util.List;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Admin;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Advisor;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.ContentComponent;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.InfoState;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
 
 
@@ -23,7 +25,9 @@ import edu.ycp.cs320.PersonalizedCommencementProject.model.ZUNUSED_BookAuthor;
  */
 
 public class InitialData {
-
+	
+	private static List<User> globalUsersList;
+	private static List<Graduate> globalGraduatesList;
 	// reads initial User data from CSV file and returns a List of Users
 	public static List<User> getUsers() throws IOException {
 		List<User> userList = new ArrayList<User>();
@@ -45,6 +49,7 @@ public class InitialData {
 				userList.add(user);
 			}
 			System.out.println("userList loaded from CSV file");
+			globalUsersList = userList;
 			return userList;
 		} finally {
 			readUsers.close();
@@ -56,8 +61,7 @@ public class InitialData {
 		List<Graduate> graduateList = new ArrayList<Graduate>();
 		ReadCSV readGraduates = new ReadCSV("graduates.csv");
 		try {
-			// generate user information to store in graduate class
-			List<User> userList = getUsers();
+
 			while (true) {
 				List<String> tuple = readGraduates.next();
 				if (tuple == null) {
@@ -70,7 +74,7 @@ public class InitialData {
 				String username = i.next();
 				
 				// search user list for Users with the same username
-				for(User user : userList) {
+				for(User user : globalUsersList) {
 					
 					// found graduate's user information, transfer to graduate class 
 					if(user.getUsername().equals(username)) {
@@ -83,9 +87,11 @@ public class InitialData {
 				}
 				graduate.setMajor(i.next());
 				graduate.setAdvisor(i.next());
+				graduate.setStatus(i.next().equals("ready"));
 				graduateList.add(graduate);
 			}
 			System.out.println("GraduateList loaded from CSV file");			
+			globalGraduatesList = graduateList;
 			return graduateList;
 		} finally {
 			readGraduates.close();
@@ -97,12 +103,6 @@ public class InitialData {
 		List<Advisor> advisorList = new ArrayList<Advisor>();
 		ReadCSV readAdvisors = new ReadCSV("advisors.csv");
 		try {
-			
-			// generate user information to store in advisor class
-			List<User> userList = getUsers();
-			
-			// generate graduate information to store in advisor class
-			List<Graduate> graduateList = getGraduates();
 			
 			while (true) {
 				List<String> tuple = readAdvisors.next();
@@ -116,7 +116,7 @@ public class InitialData {
 				String username = i.next();
 				
 				// search user list for Users with the same username
-				for(User user : userList) {
+				for(User user : globalUsersList) {
 					
 					// found advisor's user information, transfer to advisor class 
 					if(user.getUsername().equals(username)) {
@@ -131,7 +131,7 @@ public class InitialData {
 				advisor.setStatus(Boolean.parseBoolean(i.next()));
 				
 				// iterate through graduate list and add those with this advisor
-				for(Graduate graduate : graduateList) {
+				for(Graduate graduate : globalGraduatesList) {
 					if(graduate.getAdvisor().equals(username)) {
 						advisor.addGraduate(graduate);
 					}
@@ -151,9 +151,6 @@ public class InitialData {
 		ReadCSV readAdmins = new ReadCSV("admins.csv");
 		try {
 			
-			// generate user information to store in admin class
-			List<User> userList = getUsers();
-			
 			while (true) {
 				List<String> tuple = readAdmins.next();
 				if (tuple == null) {
@@ -166,7 +163,7 @@ public class InitialData {
 				String username = i.next();
 				
 				// search user list for Users with the same username
-				for(User user : userList) {
+				for(User user : globalUsersList) {
 					
 					// found admin's user information, transfer to admin class 
 					if(user.getUsername().equals(username)) {
@@ -187,4 +184,56 @@ public class InitialData {
 		}
 	}
 	
+	// reads initial InfoState data from CSV file and returns a List of InfoStates
+	public static List<InfoState> getInfoStates() throws IOException {
+		List<InfoState> infoStateList = new ArrayList<InfoState>();
+		ReadCSV readInfoStates = new ReadCSV("infoStates.csv");
+		try {
+			
+			while (true) {
+				List<String> tuple = readInfoStates.next();
+				if (tuple == null) {
+					break;
+				}
+				Iterator<String> i = tuple.iterator();
+				InfoState infoState = null; 
+				
+				// obtain infoState graduates' username
+				String username = i.next();
+				
+				// search graduate list for Graduate with the same username
+				for(Graduate grad : globalGraduatesList) {
+					
+					// found graduate, set infostate
+					if(grad.getUsername().equals(username)) {
+						infoState = new InfoState();
+						infoState.setUsername(username);
+						// obtain and check infostate's type
+						String type = i.next();
+						System.out.println(type);
+						if(type.equals("current")) {
+							grad.setCurrentInfo(infoState);
+							infoState.setFormatType("current");
+						}
+						else {
+							grad.setPendingInfo(infoState);
+							infoState.setFormatType("pending");
+						}
+						for(int w = 0; w < infoState.getNumContents(); w++) {
+							infoState.getContents().add(new ContentComponent(i.next()));
+						}
+					}
+				}
+				// check if infoState's info was found
+				if(infoState == null) {
+					System.err.println(". . . . INFOSTATE NOT FOUND. . . .");
+				}
+				infoStateList.add(infoState);
+			}
+			System.out.println("InfoStateList loaded from CSV file");		
+			return infoStateList;
+		} finally {
+			readInfoStates.close();
+		}
+	}
 }

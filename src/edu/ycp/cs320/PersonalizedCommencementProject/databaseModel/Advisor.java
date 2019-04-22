@@ -13,7 +13,7 @@ public class Advisor extends User{
 	}
 	
 	public Advisor(User user) {
-		super(user.getUsername(), user.getPassword(), user.getType(), user.getFirstName(), user.getLastName());
+		super(user.getUsername(), user.getPassword(), user.getType(), user.getFirstName(), user.getLastName(), user.getImage());
 		graduates = new ArrayList<Graduate>();
 	}
 	

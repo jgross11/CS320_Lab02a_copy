@@ -5,12 +5,13 @@ public class User {
 	public User() {
 
 	}
-	public User(String username, String password, String type, String firstName, String lastName) {
+	public User(String username, String password, String type, String firstName, String lastName, String image) {
 		this.username = username;
 		this.password = password;
 		this.type = type;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.image = image;
 	}
 	public String getUsername() {
 		return username;
