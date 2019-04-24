@@ -177,8 +177,46 @@ public class DerbyDatabase implements IDatabase {
 
 	@Override
 	public List<Admin> findAdminByUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		return executeTransaction(new Transaction<List<Admin>>() {
+			@Override
+			public List<Admin> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement(
+							"select users.*, admins.* from users, admins where admins.username = ? and users.username = admins.username"
+					);
+					stmt.setString(1, username);
+					
+					List<Admin> result = new ArrayList<Admin>();
+					
+					resultSet = stmt.executeQuery();
+					
+					// for testing that a result was returned
+					Boolean found = false;
+					
+					while (resultSet.next()) {
+						found = true;
+						User user = new User();
+						loadUser(user, resultSet, 1);
+						Admin admin = new Admin(user);
+						loadAdmin(admin, resultSet, 7);
+						result.add(admin);
+					}
+					
+					// check if the username was found
+					if (!found) {
+						System.out.println(username + " was not found in the user table");
+					}
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
 	}
 
 	@Override
@@ -356,6 +394,16 @@ public class DerbyDatabase implements IDatabase {
 			
 			// advisors.status
 			advisor.setStatus(Boolean.parseBoolean(resultSet.getString(index++))); 
+		}
+		
+		// retrieves Admin information from query result set
+		private void loadAdmin(Admin admin, ResultSet resultSet, int index) throws SQLException {
+					
+			// skip admins.username
+			index++;
+			
+			// admins.eventDate
+			admin.setDate(resultSet.getString(index++)); 
 		}		
 		
 	/*
