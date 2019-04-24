@@ -49,7 +49,13 @@ public class SQLDemo {
 		Connection conn = null;
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-			conn = DriverManager.getConnection("jdbc:derby:C:/CS320-2019-PersonalizedCommencementProject-DB/pcp.db;create=true");
+			String os = System.getProperty("os.name");
+			if(os.equals("Linux")) {
+				conn = DriverManager.getConnection("jdbc:derby:home/CS320-2019-PersonalizedCommencementProject-DB/pcp.db;create=true");
+			}
+			else {
+				conn = DriverManager.getConnection("jdbc:derby:C:/CS320-2019-PersonalizedCommencementProject-DB/pcp.db;create=true");		
+			}
 			conn.setAutoCommit(true);
 	
 			queryLoop(conn);
