@@ -2,6 +2,7 @@ package edu.ycp.cs320.PersonalizedCommencementProject.persist;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -274,7 +275,15 @@ public class DerbyDatabase implements IDatabase {
 		// TODO: Change it here and in SQLDemo.java under CS320_LibraryExample_Lab06->edu.ycp.cs320.sqldemo
 		// TODO: DO NOT PUT THE DB IN THE SAME FOLDER AS YOUR PROJECT - that will cause conflicts later w/Git
 		private Connection connect() throws SQLException {
-			Connection conn = DriverManager.getConnection("jdbc:derby:C:/CS320-2019-PersonalizedCommencementProject-DB/pcp.db;create=true");		
+			// set conn to database relative to os
+			String os = System.getProperty("os.name");
+			Connection conn;
+			if(os.equals("Linux")) {
+				conn = DriverManager.getConnection("jdbc:derby:home/CS320-2019-PersonalizedCommencementProject-DB/pcp.db;create=true");
+			}
+			else {
+				conn = DriverManager.getConnection("jdbc:derby:C:/CS320-2019-PersonalizedCommencementProject-DB/pcp.db;create=true");		
+			}
 			
 			// Set autocommit() to false to allow the execution of
 			// multiple queries/statements as part of the same transaction.
@@ -403,7 +412,7 @@ public class DerbyDatabase implements IDatabase {
 			index++;
 			
 			// admins.eventDate
-			admin.setDate(resultSet.getString(index++)); 
+			admin.setDate(Date.valueOf(resultSet.getString(index++))); 
 		}		
 		
 	/*
