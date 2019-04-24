@@ -13,7 +13,7 @@ import edu.ycp.cs320.PersonalizedCommencementProject.controller.LoginController;
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Admin;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.LoginModel;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
 
@@ -81,7 +81,10 @@ public class PCP_IndexServlet extends HttpServlet {
 		// stores inputted username and password
 		String username = req.getParameter("username");
 		String password = req.getParameter("password");
-
+		// HttpSesssion will store attributes as long as 
+		// the project is running, useful for local persistence
+		
+		HttpSession session = null;
 		
 		// check for errors in the form data before using is in a calculation
 		if (username.equals("") || password.equals("") || username == null || password == null) {
@@ -101,6 +104,11 @@ public class PCP_IndexServlet extends HttpServlet {
 					System.out.println(user.getPassword());
 					System.out.println(user.getType());
 					System.out.println(user.getImage());
+					session = req.getSession();
+					
+					// store User for use throughout session
+					session.setAttribute("user", user);
+					
 					break;
 				}
 			}
@@ -109,13 +117,7 @@ public class PCP_IndexServlet extends HttpServlet {
 				errorMessage = "Username and password not found.";
 			}
 		}
-			
-		// HttpSesssion will store attributes as long as 
-		// the project is running, useful for local persistence
-		HttpSession session = req.getSession();
 		
-		// store User for use throughout session
-		session.setAttribute("user", user);
 		
 		// this adds the errorMessage text and the result to the response
 		req.setAttribute("errorMessage", errorMessage);
@@ -126,52 +128,65 @@ public class PCP_IndexServlet extends HttpServlet {
 		
 		if(user != null) {
 			
-			// get login account type
-			String loginType = user.getType();
-			
-			// informs session that login is successful
-			session.setAttribute("validLogIn", true);
-			
-			// redirect to student page
-			if(loginType.equals("graduate")) {
-				System.out.println("User supplied valid graduate data");
-				
-				// transfers data from userModel to gradModel 
-				//Graduate gradModel = new Graduate(userModel);
-				
-				// displays view version of student page
-				session.setAttribute("mode", "graduateView");
-				
-				// sets session attribute to display graduate name
-				//session.setAttribute("studentName", gradModel.getName());
-				
-				// sets session attribute to display student status 
-				// TODO: actually calculate status here instead of hardcoding value
-				session.setAttribute("studentStatus", (infoIndex == 1) ? true : false);
-				
-				// sets session attribute to display graduate academic information
-				// TODO: call graduate object to obtain this information
-				session.setAttribute("studentAcademicInformation", "Major in Testing");
-				
-				// sets session attribute to display graduate's additional information
-				// TODO: call graduate object to obtain this information
-				session.setAttribute("studentExtraInformation", "excels at Testology");
-				
-				// sets session attribute to reference graduate model object when looking for information
-				// TODO: implement way to eliminate the numerous attribute setting calls by having JSP 
-				// TODO: reference the model's methods to obtain attributes as opposed to directly setting attributes
-				//session.setAttribute("model", gradModel);
-				
-				//TODO: add logic determining layout of graduate's information, load appropriate value
-				session.setAttribute("graduateLayout", "static slideshow");
-				
-				// TODO once the Infostate and ContentComponent classes are correctly implemented, there will need to be calls
-				// TODO here setting the media page elements (video, photo, etc.) with the graduate's ContentComponents
-				
-				// redirect to the student page
-				
-				resp.sendRedirect(req.getContextPath() + "/PCP_StudentPage");
+		// get login account type
+		String loginType = user.getType();
+		
+		// informs session that login is successful
+		session.setAttribute("validLogIn", true);
+		
+		// redirect to student page
+		if(loginType.equals("graduate")) {
+			System.out.println("User supplied valid graduate data");
+			Graduate graduate = null;
+			ArrayList<Graduate> graduates = controller.getGraduateByUsername(username);
+			for(Graduate graduateInList : graduates) {
+				// found graduate with same username
+				if(graduateInList.getUsername().equals(user.getUsername())) {
+					graduate = graduateInList;
+					System.out.println("Graduate FOUND");
+					System.out.println(graduate.getMajor());
+					System.out.println(graduate.getAdvisor());
+					System.out.println(graduate.getStatus());
+					for(int i = 0; i < graduate.getCurrentInfo().getNumContents(); i++) {
+						System.out.println(graduate.getCurrentInfo().getContentAtIndex(i).getContent());
+						System.out.println(graduate.getPendingInfo().getContentAtIndex(i).getContent());
+					}
+					break;
+				}
 			}
+			
+			// check if no graduate was found
+			if(graduate == null) {
+				System.err.println("*** NO GRADUATE WAS FOUND***");
+			}
+			
+			// transfers data from userModel to gradModel 
+			//Graduate gradModel = new Graduate(userModel);
+			
+			// displays view version of student page
+			session.setAttribute("mode", "graduateView");
+			
+			session.setAttribute("user", graduate);
+			
+			// sets session attribute to display graduate name
+			session.setAttribute("studentName", graduate.getName());
+			
+			// sets session attribute to display student status 
+			session.setAttribute("studentStatus", graduate.getStatus());
+			
+			// sets session attribute to display graduate academic information
+			session.setAttribute("studentAcademicInformation", graduate.getMajor());
+			
+			// sets session attribute to display graduate's additional information
+			session.setAttribute("studentExtraInformation", graduate.getCurrentInfo().getContentAtIndex(0).getContent());
+			
+			//TODO: add logic determining layout of graduate's information, load appropriate value
+			session.setAttribute("graduateLayout", "static slideshow");
+			
+			// redirect to the student page
+			
+			resp.sendRedirect(req.getContextPath() + "/PCP_StudentPage");
+		}
 			
 			// redirect to advisor page
 			else if(loginType.equals("advisor")) {
