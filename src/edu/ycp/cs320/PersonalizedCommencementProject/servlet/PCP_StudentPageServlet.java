@@ -117,7 +117,6 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		// the user is interacting with the project
 		HttpSession session = req.getSession();
 		Graduate graduate = (Graduate) session.getAttribute("graduate");
-		System.out.println(graduate.getImage());
 		
 		// TODO: create reference to model
 		// TODO: Graduate model = controller.getModel();
@@ -149,7 +148,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 			req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
 		}
 		
-		// student wishes to either save or discard their
+		// student wishes to either save or discard()); their
 		// changes to their media
 		else if(mode.equals("graduateEdit")){
 			System.out.println(req.getParameter("graduateLayoutChange"));
@@ -255,21 +254,6 @@ public class PCP_StudentPageServlet extends HttpServlet {
 			}
 			else if(session.getAttribute("advisorGoBack").equals("true")) {
 				System.out.println("Navigating back to advisor home page");
-				// advisorModel.setStatus(false);
-				// advisorModel.setAcademicInformation("Department of Etestimology");
-				Graduate[] graduateList = new Graduate[2];
-				// graduateList[0] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
-				// graduateList[1] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
-				graduateList[0].setStatus(true);
-				graduateList[1].setStatus(false);
-				// advisorModel.setGraduates(graduateList);
-				// advisorModel.setNumGraduates(2);
-				// advisorModel.generatePendingAndCompletedGraduateList();
-
-				// req.setAttribute("model", advisorModel);
-				// req.setAttribute("advisorName", advisorModel.getFirstName() + " " + advisorModel.getLastName());
-				// req.setAttribute("academicInformation", advisorModel.getAcademicInformation());
-				// req.setAttribute("advisorStatus", advisorModel.getStatus());
 				resp.sendRedirect(req.getContextPath() + "/PCP_AdvisorPage");
 			}
 			

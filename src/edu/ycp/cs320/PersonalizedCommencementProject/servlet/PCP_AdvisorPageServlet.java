@@ -11,8 +11,8 @@ import javax.servlet.http.HttpSession;
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.AdvisorController;
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.GraduateController;
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Advisor;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
 
 public class PCP_AdvisorPageServlet extends HttpServlet {
@@ -59,10 +59,6 @@ public class PCP_AdvisorPageServlet extends HttpServlet {
 		// check for valid studentToView input from JSP and
 		// redirect accordingly
 		
-		// populate 'databases' with acceptable logins
-		advisorLogins[0] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
-		graduateLogins[0] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
-		graduateLogins[1] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
 		infoInDB = false;
 		
 		System.out.println("PCP_AdvisorPage Servlet: doPost");
@@ -76,45 +72,21 @@ public class PCP_AdvisorPageServlet extends HttpServlet {
 		// correct input - obtain that student's information, redirect to student page
 		if(studentToView != null) {
 			
-			// create controller that holds Graduate controller
-			GraduateController graduateController = new GraduateController();
-			
 			// create Graduate model that holds Graduate information
-			Graduate graduateModel = new Graduate();
+			Advisor advisor = (Advisor) session.getAttribute("advisor");
 			
 			// find graduate in graduate 'database'
-			for(Graduate grad : graduateLogins) {
-				grad.setAdvisor(advisorLogins[0]);
+			for(Graduate grad : advisor.getGraduates()) {
 				if(grad.getUsername().equals(studentToView)) {
-					graduateModel = grad;
+					
+					// allows advisor to access student page
+					session.setAttribute("studentToView", grad);
 					break;
 				}
 			}
 			
-			// allows advisor to access student page
-			session.setAttribute("studentToView", studentToView);
-			
 			// displays view version of student page
 			session.setAttribute("mode", "advisorView");
-			
-			// sets page attribute to display graduate name
-			session.setAttribute("studentName", graduateModel.getName());
-			
-			// sets page attribute to display graduate status
-			session.setAttribute("studentStatus", graduateModel.getStatus());
-			
-			// sets page attribute to display graduate academic information
-			session.setAttribute("studentAcademicInformation", "Major in Testing");
-			
-			// sets page attribute to display graduate's additional information
-			session.setAttribute("studentExtraInformation", "excels at Testology");
-			
-			// TODO: fix these statements that only serve to correct a null 
-			// TODO: pointer when the student servlet looks for these values
-
-			
-			// TODO once the Infostate and ContentComponent classes are correctly implemented, there will need to be calls
-			// TODO here setting the media page elements (video, photo, etc.) with the graduate's ContentComponents
 			
 			// redirect to the student page
 			resp.sendRedirect(req.getContextPath() + "/PCP_StudentPage");
