@@ -28,7 +28,7 @@ TODO: back and forth between JSP and servlet
         <form id = "advisorForm" name="advisorForm" action="${pageContext.servletContext.contextPath}/PCP_AdvisorPage" method="post">
 	        <div id="advisorBox">
 	            <div id="pictureBox">
-	                <img src="advisor.image" alt="Advisor Photo" width="150px" height="150px"/> 
+	                <img src="${advisor.image}" alt="Advisor Photo" width="150px" height="150px"/> 
 	            </div>
 	            <div id="infoBox">
 	                <table id="infoTable">

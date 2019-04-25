@@ -236,10 +236,10 @@ TODOs go here
 			           	</script>
 			           	
 			            <h3> DYNAMIC SLIDESHOW EXAMPLE </h3>
-						<img id = "img1" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 410px height = 410px> 
-			            <img id = "img2" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 70px height = 70px> 
-			            <img id = "img3" src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 70px height = 70px> 
-			            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 70px height = 70px>
+						<img id = "img1" src = "${graduate.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 410px height = 410px> 
+			            <img id = "img2" src = "${graduate.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 70px height = 70px> 
+			            <img id = "img3" src = "${graduate.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 70px height = 70px> 
+			            <img id = "img4" src = "${graduate.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 70px height = 70px>
 		            </c:if>
 		            
 		            
@@ -247,7 +247,7 @@ TODOs go here
 		            <c:if test="${graduateLayout == 'video'}">
 						<h3> VIDEO EXAMPLE </h3>
 			            <video id = "vid1" width = 680px height = 680px controls>
-			            	<source src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.mp4" type = "video/mp4">
+			            	<source src = "${graduate.currentInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
 			            </video>
 		            </c:if>
 		    	</div>
@@ -288,18 +288,18 @@ TODOs go here
 				</div>
 		        <div id="studentBox">
 		            <div id="pictureBox">
-		                <img id = "img0" src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+		                <img id = "img0" src="${graduate.image}" alt="Student Image" width="250px" height="250px"> 
 		            </div>
 		            <div id="infoBox">
 		                <table id="infoTable">
 			            	<tr>
-			             		<td id = "studentName">${studentName}</td>
+			             		<td id = "studentName">${graduate.name}</td>
 			                </tr>
 			                <tr>
-			                	<td id = "academicInformation">${studentAcademicInformation}</td>
+			                	<td id = "academicInformation">${graduate.major}</td>
 			                </tr>
 			                <tr>
-			                    <td id = "extraInformation">${studentExtraInformation}</td>
+			                    <td id = "extraInformation">${graduate.currentInfo.getContentAtIndex(0).getContent()}</td>
 			                </tr>
 				    	</table>
 		            </div>
@@ -317,10 +317,10 @@ TODOs go here
 		            <!-- STATIC SLIDESHOW -->
 		            <c:if test="${graduateLayout == 'static slideshow'}">
 						<h3> STATIC SLIDESHOW EXAMPLE </h3>
-						<img id = "img1" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 170px height = 170px> 
-			            <img id = "img2" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 170px height = 170px> 
-			            <img id = "img3" src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 170px height = 170px> 
-			            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 170px height = 170px>
+						<img id = "img1" src = "${graduate.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 170px height = 170px> 
+			            <img id = "img2" src = "${graduate.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 170px height = 170px> 
+			            <img id = "img3" src = "${graduate.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 170px height = 170px> 
+			            <img id = "img4" src = "${graduate.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 170px height = 170px>
 						
 			            <p> Upload 1st image - display dimensions: 170px x 170px</p>
 			            <input type="file" name="image1Upload" accept="image/*" onchange="submitMedia(event, 1, 'photo')">
@@ -335,10 +335,10 @@ TODOs go here
 		            <!-- 'DYNAMIC' SLIDESHOW -->
 		            <c:if test="${graduateLayout == 'dynamic slideshow'}">
 			            <h3> DYNAMIC SLIDESHOW EXAMPLE </h3>
-						<img id = "img1" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 410px height = 410px> 
-			            <img id = "img2" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 70px height = 70px> 
-			            <img id = "img3" src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 70px height = 70px> 
-			            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 70px height = 70px>
+						<img id = "img1" src = "${graduate.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 410px height = 410px> 
+			            <img id = "img2" src = "${graduate.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 70px height = 70px> 
+			            <img id = "img3" src = "${graduate.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 70px height = 70px> 
+			            <img id = "img4" src = "${graduate.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 70px height = 70px>
 			            <p> Upload leftmost image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
 			            <input type="file" name="image1Upload" accept="image/*" onchange="submitMedia(event, 1, 'photo')">
 						<p> Upload center-left image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
@@ -353,7 +353,7 @@ TODOs go here
 		            <c:if test="${graduateLayout == 'video'}">
 						<h3> VIDEO EXAMPLE </h3>
 			            <video id = "vid1" width = 680px height = 680px controls>
-			            	<source src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.mp4" type = "video/mp4">
+			            	<source src = "${graduate.currentInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
 			            </video>
 						<p> Upload video - optimal length: &lt; 6 seconds</p>
 						<input type="file" name="videoUpload" accept="video/*" onchange="submitMedia(event, 1, 'video')">
@@ -367,18 +367,18 @@ TODOs go here
 	    	<c:if test="${mode=='advisorView'}">
 			    <div id="studentBox">
 			    	<div id="pictureBox">
-			        	<img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+			        	<img src="${studentToView.image}" alt="Student Image" width="250px" height="250px"> 
 			        </div>
 			    	<div id="infoBox">
 			            <table id="infoTable">
 			            	<tr>
-			             		<td id = "studentName">${studentName}</td>
+			             		<td id = "studentName">${studentToView.name}</td>
 			                </tr>
 			                <tr>
-			                	<td id = "academicInformation">${studentAcademicInformation}</td>
+			                	<td id = "academicInformation">${studentToView.major}</td>
 			                </tr>
 			                <tr>
-			                    <td id = "extraInformation">${studentExtraInformation}</td>
+			                    <td id = "extraInformation">${studentToView.currentInfo.getContentAtIndex(0).getContent()}</td>
 			                </tr>
 			            </table>
 			        </div>
@@ -392,26 +392,26 @@ TODOs go here
 		            <!-- STATIC SLIDESHOW -->
 		            
 		            <!-- 
-		  		<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 172px height = 172px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 172px height = 172px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 172px height = 172px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 172px height = 172px>
+		  		<img src = "${studentToView.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 172px height = 172px> 
+	            <img src = "${studentToView.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 172px height = 172px> 
+	            <img src = "${studentToView.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 172px height = 172px> 
+	            <img src = "${studentToView.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 172px height = 172px>
 		            
 		            -->
 		            
 		            <!-- 'DYNAMIC' SLIDESHOW -->
 		            
 		            <!--
-		            <img src = "assets/mocha2.jpg" alt = "slideshow image 1" width = 200px height = 200px> 
-		            <img src = "assets/mocha1.jpg" alt = "slideshow image 2" width = 50px height = 50px> 
-		            <img src = "assets/tippy.jpg" alt = "slideshow image 3" width = 50px height = 50px> 
-		            <img src = "assets/marble.jpg" alt = "slideshow image 4" width = 50px height = 50px>
+		            <img src = "${studentToView.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 200px height = 200px> 
+		            <img src = "${studentToView.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 50px height = 50px> 
+		            <img src = "${studentToView.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 50px height = 50px> 
+		            <img src = "${studentToView.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 50px height = 50px>
 		            --> 
 		            
 		            <!-- VIDEO -->
 		            
 		           
-		            <video width = 325px height = 325px controls>       <source src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.mp4" type = "video/mp4">
+		            <video width = 325px height = 325px controls>       <source src = "${studentToView.currentInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
 		            </video>
 		            <br><br>
 		           <input type="button" value="Back to Student List" onclick="navToStudentList()"/>
@@ -433,18 +433,18 @@ TODOs go here
 				</div>
 	    		<div id="studentBox">
 			    	<div id="pictureBox">
-			        	<img src="${pageContext.servletContext.contextPath}/_view/assets/mocha.png" alt="Student Image" width="250px" height="250px"> 
+			        	<img src="${studentToView.image}" alt="Student Image" width="250px" height="250px"> 
 			        </div>
 			    	<div id="infoBox">
 			            <table id="infoTable">
 			            	<tr>
-			             		<td id = "studentName">${studentName}</td>
+			             		<td id = "studentName">${studentToView.name}</td>
 			                </tr>
 			                <tr>
-			                	<td id = "academicInformation">${studentAcademicInformation}</td>
+			                	<td id = "academicInformation">${studentToView.major}</td>
 			                </tr>
 			                <tr>
-			                    <td id = "extraInformation">${studentExtraInformation}</td>
+			                    <td id = "extraInformation">${studentToView.currentInfo.getContentAtIndex(0).getContent()}</td>
 			                </tr>
 			            </table>
 			        </div>
@@ -458,26 +458,26 @@ TODOs go here
 		            <!-- STATIC SLIDESHOW -->
 		            
 		            <!-- 
-				<img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 172px height = 172px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 172px height = 172px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 172px height = 172px> 
-	            <img src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 172px height = 172px>
+				<img src = "${studentToView.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 172px height = 172px> 
+	            <img src = "${studentToView.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 172px height = 172px> 
+	            <img src = "${studentToView.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 172px height = 172px> 
+	            <img src = "${studentToView.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 172px height = 172px>
 		            
 		            -->
 		            
 		            <!-- 'DYNAMIC' SLIDESHOW -->
 		            
 		            <!--
-		            <img src = "assets/mocha2.jpg" alt = "slideshow image 1" width = 200px height = 200px> 
-		            <img src = "assets/mocha1.jpg" alt = "slideshow image 2" width = 50px height = 50px> 
-		            <img src = "assets/tippy.jpg" alt = "slideshow image 3" width = 50px height = 50px> 
-		            <img src = "assets/marble.jpg" alt = "slideshow image 4" width = 50px height = 50px>
+		            <img src = "${studentToView.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 200px height = 200px> 
+		            <img src = "${studentToView.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 50px height = 50px> 
+		            <img src = "${studentToView.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 50px height = 50px> 
+		            <img src = "${studentToView.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 50px height = 50px>
 		            --> 
 		            
 		            <!-- VIDEO -->
 		            
 		            
-		            <video width = 325px height = 325px controls>       <source src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.mp4" type = "video/mp4">
+		            <video width = 325px height = 325px controls>       <source src = "${studentToView.currentInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
 		            </video>
 		            
 		           
