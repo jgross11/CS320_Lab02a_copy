@@ -92,7 +92,7 @@ public class DerbyDatabase implements IDatabase {
 			public List<Graduate> execute(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
-				
+				System.out.println("Attempting to find graduate by username: " + username);
 				try {
 					stmt = conn.prepareStatement(
 							"select users.*, graduates.*, infostates.* "
@@ -122,7 +122,7 @@ public class DerbyDatabase implements IDatabase {
 					if (!found) {
 						System.out.println(username + " was not found in the user table");
 					}
-					
+					System.out.println(username + " was found");
 					return result;
 				} finally {
 					DBUtil.closeQuietly(resultSet);
@@ -224,6 +224,50 @@ public class DerbyDatabase implements IDatabase {
 	public List<InfoState> findGraduateInfoStateByGraduateUsername(String username) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public List<Graduate> findAdvisorGraduatesByAdvisorUsername(String username) {
+		return executeTransaction(new Transaction<List<Graduate>>() {
+			@Override
+			public List<Graduate> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement(
+							"select graduates.username from graduates where graduates.advisorUsername = ?"
+					);
+					stmt.setString(1, username);
+					
+					List<Graduate> result = new ArrayList<Graduate>();
+					
+					resultSet = stmt.executeQuery();
+					
+					// for testing that a result was returned
+					Boolean found = false;
+					int i = 1;
+					String graduateUsername = "";
+					while (resultSet.next()) {
+						found = true;
+						graduateUsername = resultSet.getString(i++);
+						System.out.println(graduateUsername);
+						result.addAll(findGraduateByUsername(graduateUsername));
+						i = 1;
+					}
+					
+					// check if the username was found
+					if (!found) {
+						System.out.println(username + " was not found in the advisor table");
+					}
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
 	}
 	
 	// wrapper SQL transaction function that calls actual transaction function (which has retries)
@@ -403,6 +447,8 @@ public class DerbyDatabase implements IDatabase {
 			
 			// advisors.status
 			advisor.setStatus(Boolean.parseBoolean(resultSet.getString(index++))); 
+			
+			// populate advisor's list of students
 		}
 		
 		// retrieves Admin information from query result set

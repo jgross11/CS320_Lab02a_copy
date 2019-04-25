@@ -35,4 +35,5 @@ public interface IDatabase {
 	public List<Advisor> findAdvisorByUsername(String username);
 	public List<Admin> findAdminByUsername(String username);
 	public List<InfoState> findGraduateInfoStateByGraduateUsername(String username);
+	List<Graduate> findAdvisorGraduatesByAdvisorUsername(String username);
 }

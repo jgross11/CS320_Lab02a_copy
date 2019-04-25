@@ -209,4 +209,10 @@ public class FakeDatabase implements IDatabase {
 		return null;
 	}
 	*/
+
+	@Override
+	public List<Graduate> findAdvisorGraduatesByAdvisorUsername(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
