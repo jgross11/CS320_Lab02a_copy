@@ -38,16 +38,18 @@ public class PCP_AdminPageServlet extends HttpServlet {
 		
 		// verify user attempting to 
 		// navigate here is an admin
-		String username = "";
+		User user = null;
 		try{
-			username = req.getSession().getAttribute("username").toString();
+			user = (User) req.getSession().getAttribute("user");
+			user.getType();
 		}
 		catch(NullPointerException e) {
 				// new users will be null, and will be directed to login
+			resp.sendRedirect(req.getContextPath() + "/PCP_Index");
 		}
 		// TODO: make this search userDB for session informations usernames' type
 		// TODO: and redirect to admin page only if type is admin
-		if(username.equals("jgross11")) {
+		if(user.getType().equals("admin")) {
 			req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
 		}
 		else {

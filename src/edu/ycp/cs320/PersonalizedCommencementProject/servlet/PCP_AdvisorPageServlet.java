@@ -13,7 +13,7 @@ import edu.ycp.cs320.PersonalizedCommencementProject.controller.GraduateControll
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.User;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
 
 public class PCP_AdvisorPageServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -32,16 +32,18 @@ public class PCP_AdvisorPageServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		System.out.println("PCP_AdvisorPage Servlet : doGet");
 		// verify that user is an advisor
-		String username = "";
+		User user = null;
 		try{
-			username = req.getSession().getAttribute("username").toString();
+			user = (User) req.getSession().getAttribute("user");
+			user.getType();
 		}
 		catch(NullPointerException e) {
 			// new users are null, and are redirected accordingly
+			resp.sendRedirect(req.getContextPath() + "/PCP_Index");
 		}
 		// TODO: make this search userDB for session informations usernames' type
 		// TODO: and redirect to advisor page only if type is advisor
-		if(username.equals("agrove9")) {
+		if(user.getType().equals("advisor")) {
 			req.getRequestDispatcher("/_view/PCP_AdvisorPage.jsp").forward(req, resp);
 		}
 		else {
