@@ -11,8 +11,8 @@ import javax.servlet.http.HttpSession;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.LoginController;
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Admin;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Admin;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Advisor;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.LoginModel;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
@@ -158,6 +158,7 @@ public class PCP_IndexServlet extends HttpServlet {
 			// check if no graduate was found
 			if(graduate == null) {
 				System.err.println("*** NO GRADUATE WAS FOUND***");
+				resp.sendRedirect(req.getContextPath() + "/PCP_IndexPage");
 			}
 			
 			// transfers data from userModel to gradModel 
@@ -166,16 +167,10 @@ public class PCP_IndexServlet extends HttpServlet {
 			// displays view version of student page
 			session.setAttribute("mode", "graduateView");
 			
-			session.setAttribute("user", graduate);
-			
-			// sets session attribute to display graduate name
-			session.setAttribute("studentName", graduate.getName());
+			session.setAttribute("graduate", graduate);
 			
 			// sets session attribute to display student status 
-			session.setAttribute("studentStatus", graduate.getStatus());
-			
-			// sets session attribute to display graduate academic information
-			session.setAttribute("studentAcademicInformation", graduate.getMajor());
+			session.setAttribute("studentStatus", graduate.getStatus() ? "Ready" : "Not Ready");
 			
 			// sets session attribute to display graduate's additional information
 			session.setAttribute("studentExtraInformation", graduate.getCurrentInfo().getContentAtIndex(0).getContent());
@@ -197,32 +192,59 @@ public class PCP_IndexServlet extends HttpServlet {
 				 * TODO: this is where the Advisor's student list is populated, which will then be used to calculate the Advisor's
 				 * TODO: status in order to set the initial value of the advisorStatus attribute
 				 */
-				Graduate[] graduateList = new Graduate[2];
-				//graduateList[0] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
-				//graduateList[1] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
-				//graduateList[0].setStatus(true);
-				graduateList[1].setStatus(false);
-				//advisorModel.setGraduates(graduateList);
-				//advisorModel.setNumGraduates(2);
-				//advisorModel.generatePendingAndCompletedGraduateList();
-
-				// TODO: implement way to eliminate the numerous attribute setting calls by having JSP 
-				// TODO: reference the model's methods to obtain attributes as opposed to directly setting attributes
-				//session.setAttribute("model", advisorModel);
-				//session.setAttribute("advisorName", advisorModel.getName());
-				//session.setAttribute("academicInformation", advisorModel.getAcademicInformation());
-				//session.setAttribute("advisorStatus", advisorModel.getStatus());
+				Advisor advisor = null;
+				ArrayList<Advisor> advisors = controller.getAdvisorByUsername(username);
+				for(Advisor advisorInList : advisors) {
+					// found advisor with same username
+					if(advisorInList.getUsername().equals(user.getUsername())) {
+						advisor = advisorInList;
+						System.out.println("Advisor FOUND");
+						System.out.println("Retrieving advisor's graduate list");
+						advisor.setGraduates(controller.getAdvisorGraduatesByAdvisorUsername(username));
+						System.out.println("Finished retrieving advisor's graduate list");
+						advisor.generatePendingAndCompletedGraduateList();
+						System.out.println(advisor.getAcademicInformation());
+						System.out.println(advisor.getStatus());
+						System.out.println("Begin list of advisor's graduates\n");
+						for(Graduate grad : advisor.getGraduates()) {
+							System.out.println(grad.getName());
+						}
+						System.out.println("\nEnd list of advisor's graduates");
+						session.setAttribute("advisor", advisor);
+						break;
+					}
+				}
+				
+				// check if no advisor was found
+				if(advisor == null) {
+					System.err.println("*** NO ADVISOR WAS FOUND***");
+					resp.sendRedirect(req.getContextPath() + "/PCP_IndexPage");
+				}
+				
 				resp.sendRedirect(req.getContextPath() + "/PCP_AdvisorPage");
 			}
 			
 			// redirect to admin page
 			else if(loginType.equals("admin")){
-				//Admin adminModel = new Admin(userModel); 
-				//session.setAttribute("adminName", adminModel.getName());
-				resp.sendRedirect(req.getContextPath() + "/PCP_AdminPage");
+				Admin admin = null;
+				ArrayList<Admin> admins = controller.getAdminByUsername(username);
+				for(Admin adminInList : admins) {
+					// found admin with same username
+					if(adminInList.getUsername().equals(user.getUsername())) {
+						admin = adminInList;
+						System.out.println("Admin FOUND");
+						System.out.println(admin.getName());
+						System.out.println(admin.getDate());
+						session.setAttribute("admin", admin);
+						req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
+						break;
+					}
+					
+				}
 			}
 			else {
 				System.out.println("Unknown account type, redirecting to login.");
+				req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
 			}
 		
 		}
