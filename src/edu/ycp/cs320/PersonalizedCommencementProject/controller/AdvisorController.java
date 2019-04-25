@@ -1,46 +1,54 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.controller;
 
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
+import java.util.ArrayList;
+import java.util.List;
 
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Admin;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Advisor;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.LoginModel;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.DatabaseProvider;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.DerbyDatabase;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.IDatabase;
 
-// Advisor controller class
-public class AdvisorController extends UserController{
+public class AdvisorController {
+	private IDatabase db = null;
 	private Advisor model;
-	
-	public Advisor getModel() {
-		return model;
+
+	public AdvisorController() {
+		
+		// creates DB instance
+		DatabaseProvider.setInstance(new DerbyDatabase());
+		db = DatabaseProvider.getInstance();		
 	}
 	
 	public void setModel(Advisor model) {
 		this.model = model;
 	}
 	
-	public void setNumGraduates(int numGraduates) {
-		model.setNumGraduates(numGraduates);
+	public Advisor getModel() {
+		return model;
 	}
 	
-	public void setNumCompletedGraduates(int numCompletedGraduates) {
-		model.setNumCompletedGraduates(numCompletedGraduates);
-	}
-	
-	public void setGraduates(Graduate[] graduates) {
-		model.setGraduates(graduates);
-	}
-	
-	public void setAcademicInformation(String academicInformation) {
-		model.setAcademicInformation(academicInformation);
-	}
-	
-	public void setStatus(boolean status) {
-		model.setStatus(status);
-	}
-	
-	public void calculateStatus() {
-		model.calculateStatus();
-	}
-	
-	public void calculateNumCompletedGraduates() {
-		model.calculateNumCompletedGraduates();
+	public ArrayList<Graduate> getGraduateByUsername(String username) {
+		
+		// get the list of users - should only return one
+		List<Graduate> graduateList = db.findGraduateByUsername(username);
+		ArrayList<Graduate> graduates = null;
+		
+		if (graduateList.isEmpty()) {
+			System.out.println("No graduates found");
+			return null;
+		}
+		else {
+			graduates = new ArrayList<Graduate>();
+			for (Graduate graduate : graduates) {
+				graduates.add(graduate);
+			}			
+		}
+		
+		// return found graduate
+		return graduates;
 	}
 }
