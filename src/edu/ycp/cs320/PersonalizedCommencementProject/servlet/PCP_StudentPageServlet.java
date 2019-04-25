@@ -17,7 +17,7 @@ import javax.servlet.http.Part;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.GraduateController;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
 
 
@@ -29,26 +29,53 @@ import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
 
 public class PCP_StudentPageServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private String uploadPath = "";
+	private String photoPath = "";
+	private String videoPath = "";
+	private String audioPath = "";
 	
-	// parent directory to save files in
-	// sets directory relative to os running servlet
-	String os = System.getProperty("os.name");
-	String uploadPath = os.equals("Linux") ? "\\home" + File.separator + "student-media-uploads" : "c:\\" + File.separator + "student-media-uploads";
-	File uploadDirectory = new File(uploadPath);
-	
-	// children directories
-	String photoPath = uploadPath + File.separator + "photos";
-	File photoDirectory = new File(photoPath);
-	
-	String videoPath = uploadPath + File.separator + "videos";
-	File videoDirectory = new File(videoPath);
-	
-	String audioPath = uploadPath + File.separator + "audios";
-	File audioDirectory = new File(audioPath);
+
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+		// parent directory to save files in
+		// sets directory relative to os running servlet
+		uploadPath =  getServletContext().getRealPath("") + "\\student-media-uploads";
+		System.out.println(uploadPath);
+		File uploadDirectory = new File(uploadPath);
+		
+		// children directories
+		photoPath = uploadPath + File.separator + "photos";
+		File photoDirectory = new File(photoPath);
+		
+		videoPath = uploadPath + File.separator + "videos";
+		File videoDirectory = new File(videoPath);
+		
+		audioPath = uploadPath + File.separator + "audios";
+		File audioDirectory = new File(audioPath);
+		
+		// ensure directories exists 
+		if (!uploadDirectory.exists()) {
+			// student-media-uploads
+			uploadDirectory.mkdir();
+			
+			// student-media-uploads\audio
+			audioDirectory.mkdir();
+			
+			// student-media-uploads\video
+			videoDirectory.mkdir();
+			
+			// student-media-uploads\photos
+			photoDirectory.mkdir();
+			System.out.println("Created " + uploadDirectory + " and its children directories");	
+		}
+		else {
+			System.out.println("parent: " + uploadDirectory);
+			System.out.println("audio: " + audioDirectory);
+			System.out.println("video: " + videoDirectory);
+			System.out.println("photo: " + photoDirectory);
+		}
+		
 		System.out.println("PCP_StudentPage Servlet : doGet");
 		// validate user should be allowed to access this page by checking
 		// the type of user associated with the provided username
@@ -79,21 +106,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		// ensure directories exists 
-		if (!uploadDirectory.exists()) {
-			// student-media-uploads
-			uploadDirectory.mkdir();
-			
-			// student-media-uploads\audio
-			audioDirectory.mkdir();
-			
-			// student-media-uploads\video
-			videoDirectory.mkdir();
-			
-			// student-media-uploads\photos
-			photoDirectory.mkdir();
-			System.out.println("Created " + uploadDirectory + "and its children directories");	
-		}
+
 		
 		System.out.println("PCP_StudentPage Servlet: doPost");
 		
@@ -104,17 +117,10 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		// the user is interacting with the project
 		HttpSession session = req.getSession();
 		Graduate graduate = (Graduate) session.getAttribute("graduate");
+		System.out.println(graduate.getImage());
 		
-		// store name of student for use across session
-		String studentName = session.getAttribute("studentName").toString();
-		
-		// create reference to model
-		Graduate model = controller.getModel();
-		
-		// this has to change once InfoState and ContentComponent are implemented correctly, but
-		// for now it can be assumed that if the graduate name is correct, so is this information.
-		String studentAcademicInformation = session.getAttribute("studentAcademicInformation").toString();
-		String studentExtraInformation = session.getAttribute("studentExtraInformation").toString();
+		// TODO: create reference to model
+		// TODO: Graduate model = controller.getModel();
 		
 		// determines whether or not student wishes
 		// to save changes to their media selections
@@ -283,11 +289,6 @@ public class PCP_StudentPageServlet extends HttpServlet {
 			System.out.println("Invalid mode");
 		}
 		
-		req.setAttribute("studentName", studentName);
-		req.setAttribute("studentAcademicInformation", studentAcademicInformation);
-		req.setAttribute("studentExtraInformation", studentExtraInformation);
-		req.setAttribute("model", model);
-		req.setAttribute("studentStatus", model.getStatus());
 		req.setAttribute("studentSaveChanges", studentSaveChanges);
 	}
 	
