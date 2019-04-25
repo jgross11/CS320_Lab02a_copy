@@ -140,18 +140,18 @@ TODOs go here
 				</div>
 			    <div id="studentBox">
 			    	<div id="pictureBox">
-			        	<img src="${pageContext.servletContext.contextPath}/_view/assets/kobe.jpg" alt="Student Image" width="250px" height="250px"> 
+			        	<img src="${graduate.image}" alt="Student Image" width="250px" height="250px"> 
 			        </div>
 			    	<div id="infoBox">
 			            <table id="infoTable">
 			            	<tr>
-			             		<td id = "studentName">${studentName}</td>
+			             		<td id = "studentName">${graduate.name}</td>
 			                </tr>
 			                <tr>
-			                	<td id = "academicInformation">${studentAcademicInformation}</td>
+			                	<td id = "academicInformation">${graduate.major}</td>
 			                </tr>
 			                <tr>
-			                    <td id = "extraInformation">${studentExtraInformation}</td>
+			                    <td id = "extraInformation">${graduate.currentInfo.getContentAtIndex(0).getContent()}</td>
 			                </tr>
 			            </table>
 			        </div>
@@ -164,10 +164,10 @@ TODOs go here
 		            <!-- STATIC SLIDESHOW -->
 		            <c:if test="${graduateLayout == 'static slideshow'}">
 						<h3> STATIC SLIDESHOW EXAMPLE </h3>
-						<img id = "img1" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha2.jpg" alt = "slideshow image 1" width = 170px height = 170px> 
-			            <img id = "img2" src = "${pageContext.servletContext.contextPath}/_view/assets/mocha1.jpg" alt = "slideshow image 2" width = 170px height = 170px> 
-			            <img id = "img3" src = "${pageContext.servletContext.contextPath}/_view/assets/tippy.jpg" alt = "slideshow image 3" width = 170px height = 170px> 
-			            <img id = "img4" src = "${pageContext.servletContext.contextPath}/_view/assets/marble.jpg" alt = "slideshow image 4" width = 170px height = 170px>
+						<img id = "img1" src = "${graduate.currentInfo.getContentAtIndex(2).getContent()}" width = 170px height = 170px> 
+			            <img id = "img2" src = "${graduate.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 170px height = 170px> 
+			            <img id = "img3" src = "${graduate.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 170px height = 170px> 
+			            <img id = "img4" src = "${graduate.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 170px height = 170px>
 		            </c:if>
 	
 					<!-- 'DYNAMIC' SLIDESHOW -->
