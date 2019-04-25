@@ -7,6 +7,7 @@
 
 
   <!-- Servlets -->
+  <!-- UNUSUED - REFERENCE ONLY 
   <servlet>
     <servlet-name>ZUNUSED_IndexServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ZUNUSED_IndexServlet</servlet-class>
@@ -23,6 +24,7 @@
     <servlet-name>ZUNUSED_GuessingGameServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ZUNUSED_GuessingGameServlet</servlet-class>
   </servlet>
+  -->
   <servlet>
     <servlet-name>PCP_IndexServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.PCP_IndexServlet</servlet-class>
@@ -41,6 +43,7 @@
   </servlet>
   
   <!-- AJAX servlets. -->
+  <!-- UNUSED - REFERENCE ONLY  
   <servlet>
     <servlet-name>ZUNUSED_AddNumbersAjaxServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ajax.AddNumbersAjaxServlet</servlet-class>
@@ -53,6 +56,7 @@
     <servlet-name>ZUNUSED_NextGuessAjaxServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ajax.NextGuessAjaxServlet</servlet-class>
   </servlet>
+  -->
   <servlet>
     <servlet-name>PCP_IndexAjaxServlet</servlet-name>
     <servlet-class>edu.ycp.cs320.PersonalizedCommencementProject.servlet.ajax.PCP_IndexAjaxServlet</servlet-class>
@@ -63,6 +67,7 @@
   </servlet>
 
   <!-- Servlet mappings -->
+  <!-- UNUSED - REFERENCE ONLY 
   <servlet-mapping>
     <servlet-name>ZUNUSED_IndexServlet</servlet-name>
     <url-pattern>/ZUNUSED_index</url-pattern>
@@ -79,6 +84,7 @@
     <servlet-name>ZUNUSED_GuessingGameServlet</servlet-name>
     <url-pattern>/ZUNUSED_guessingGame</url-pattern>
   </servlet-mapping>
+  -->
   <servlet-mapping>
     <servlet-name>PCP_IndexServlet</servlet-name>
     <url-pattern>/PCP_Index</url-pattern>
@@ -98,6 +104,7 @@
   </servlet-mapping>
   
   <!--  AJAX servlet mappings. -->
+  <!--  UNUSED - REFERENCE ONLY
   <servlet-mapping>
     <servlet-name>ZUNUSED_AddNumbersAjaxServlet</servlet-name>
     <url-pattern>/ajax/addNumbers</url-pattern>
@@ -110,6 +117,7 @@
     <servlet-name>ZUNUSED_NextGuessAjaxServlet</servlet-name>
     <url-pattern>/ajax/nextGuess</url-pattern>
   </servlet-mapping>
+  -->
   <servlet-mapping>
     <servlet-name>PCP_IndexAjaxServlet</servlet-name>
     <url-pattern>/ajax/PCP_Index</url-pattern>

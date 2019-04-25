@@ -1,6 +1,7 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -8,11 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import edu.ycp.cs320.PersonalizedCommencementProject.controller.LoginController;
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Admin;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.User;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Admin;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Advisor;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
+import edu.ycp.cs320.PersonalizedCommencementProject.model.LoginModel;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
 
 public class PCP_IndexServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -61,154 +64,189 @@ public class PCP_IndexServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-		// populate 'database' with acceptable logins
-		logins[0] = new Admin(new User("jgross11", "jgross11", "admin", "Josh", "Gross"));
-		logins[1] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
-		logins[2] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
-		logins[3] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
-		infoInDB = false;
-		
 		System.out.println("PCP_Index Servlet: doPost");
 
 		// holds the error message text, if there is any
 		String errorMessage = null;
 
 		// create controller that holds User model
-		UserController controller = new UserController();
+		LoginController controller = new LoginController();
+		User user = null;
 		
 		// create user model that holds user information
-		User userModel = new User();
-		controller.setModel(userModel);
+		// User userModel = new User();
+		// controller.setModel(userModel);
 
 		// decode POSTed form parameters and dispatch to controller
-			// stores inputted username and password
-			String username = req.getParameter("username");
-			String password = req.getParameter("password");
-
-			// check for errors in the form data before using is in a calculation
-			if (username.equals("") || password.equals("")) {
-				errorMessage = "Please enter a username and password";
-				controller.setUsername("");
-				controller.setPassword("");
-			}
-			// otherwise, data is good, store the user/pass
-			// must create the controller each time, since it doesn't persist between POSTs
-			// the view does not alter data, only controller methods should be used for that
-			// thus, always call a controller method to operate on the data
-			else {
-				controller.setUsername(username);
-				controller.setPassword(password);
-				// check if user/pass is in 'database'
-				for(int i = 0; i < logins.length; i++) {
-					if(username.equals(logins[i].getUsername()) && password.equals(logins[i].getPassword())) {
-						infoInDB = true;
-						infoIndex = i;
-						controller.setFirstName(logins[i].getFirstName());
-						controller.setLastName(logins[i].getLastName());
-						break;
-					}
-				}
-				if(!infoInDB) {
-					errorMessage = "Username and password not found.";
-				}
-			}
-			
+		// stores inputted username and password
+		String username = req.getParameter("username");
+		String password = req.getParameter("password");
 		// HttpSesssion will store attributes as long as 
 		// the project is running, useful for local persistence
-		HttpSession session = req.getSession();
 		
-		// store username for use throughout session
-		session.setAttribute("username", userModel.getUsername());
+		HttpSession session = null;
+		
+		// check for errors in the form data before using is in a calculation
+		if (username.equals("") || password.equals("") || username == null || password == null) {
+			errorMessage = "Please enter a username and password";
+		}
+		// otherwise, data is good, store the user/pass
+		// must create the controller each time, since it doesn't persist between POSTs
+		// the view does not alter data, only controller methods should be used for that
+		// thus, always call a controller method to operate on the data
+		else {
+			ArrayList<User> users = controller.getUserByUsername(username);
+			for(User userInList : users) {
+				if(userInList.getPassword().equals(password)) {
+					user = userInList;
+					System.out.println("USER FOUND");
+					System.out.println(user.getName());
+					System.out.println(user.getPassword());
+					System.out.println(user.getType());
+					System.out.println(user.getImage());
+					session = req.getSession();
+					
+					// store User for use throughout session
+					session.setAttribute("user", user);
+					
+					break;
+				}
+			}
+			// model still null if no user found, bad data
+			if(user == null) {
+				errorMessage = "Username and password not found.";
+			}
+		}
+		
 		
 		// this adds the errorMessage text and the result to the response
 		req.setAttribute("errorMessage", errorMessage);
 		
 		// Redirect accordingly
 		// correct login
-		if(infoInDB) {
-			// get login account type
-			String loginType = logins[infoIndex].getType();
+		
+		
+		if(user != null) {
 			
-			// informs session that login is successful
-			session.setAttribute("validLogIn", true);
-			
-			// redirect to student page
-			if(loginType.equals("student")) {
-				System.out.println("User supplied valid graduate data");
-				
-				// transfers data from userModel to gradModel 
-				Graduate gradModel = new Graduate(userModel);
-				
-				// displays view version of student page
-				session.setAttribute("mode", "graduateView");
-				
-				// sets session attribute to display graduate name
-				session.setAttribute("studentName", gradModel.getName());
-				
-				// sets session attribute to display student status 
-				// TODO: actually calculate status here instead of hardcoding value
-				session.setAttribute("studentStatus", (infoIndex == 1) ? true : false);
-				
-				// sets session attribute to display graduate academic information
-				// TODO: call graduate object to obtain this information
-				session.setAttribute("studentAcademicInformation", "Major in Testing");
-				
-				// sets session attribute to display graduate's additional information
-				// TODO: call graduate object to obtain this information
-				session.setAttribute("studentExtraInformation", "excels at Testology");
-				
-				// sets session attribute to reference graduate model object when looking for information
-				// TODO: implement way to eliminate the numerous attribute setting calls by having JSP 
-				// TODO: reference the model's methods to obtain attributes as opposed to directly setting attributes
-				session.setAttribute("model", gradModel);
-				
-				//TODO: add logic determining layout of graduate's information, load appropriate value
-				session.setAttribute("graduateLayout", "static slideshow");
-				
-				// TODO once the Infostate and ContentComponent classes are correctly implemented, there will need to be calls
-				// TODO here setting the media page elements (video, photo, etc.) with the graduate's ContentComponents
-				
-				// redirect to the student page
-				
-				resp.sendRedirect(req.getContextPath() + "/PCP_StudentPage");
+		// get login account type
+		String loginType = user.getType();
+		
+		// informs session that login is successful
+		session.setAttribute("validLogIn", true);
+		
+		// redirect to student page
+		if(loginType.equals("graduate")) {
+			System.out.println("User supplied valid graduate data");
+			Graduate graduate = null;
+			ArrayList<Graduate> graduates = controller.getGraduateByUsername(username);
+			for(Graduate graduateInList : graduates) {
+				// found graduate with same username
+				if(graduateInList.getUsername().equals(user.getUsername())) {
+					graduate = graduateInList;
+					System.out.println("Graduate FOUND");
+					System.out.println(graduate.getMajor());
+					System.out.println(graduate.getAdvisor());
+					System.out.println(graduate.getStatus());
+					for(int i = 0; i < graduate.getCurrentInfo().getNumContents(); i++) {
+						System.out.println(graduate.getCurrentInfo().getContentAtIndex(i).getContent());
+						System.out.println(graduate.getPendingInfo().getContentAtIndex(i).getContent());
+					}
+					break;
+				}
 			}
+			
+			// check if no graduate was found
+			if(graduate == null) {
+				System.err.println("*** NO GRADUATE WAS FOUND***");
+				resp.sendRedirect(req.getContextPath() + "/PCP_IndexPage");
+			}
+			
+			// transfers data from userModel to gradModel 
+			//Graduate gradModel = new Graduate(userModel);
+			
+			// displays view version of student page
+			session.setAttribute("mode", "graduateView");
+			
+			session.setAttribute("graduate", graduate);
+			
+			// sets session attribute to display student status 
+			session.setAttribute("studentStatus", graduate.getStatus() ? "Ready" : "Not Ready");
+			
+			// sets session attribute to display graduate's additional information
+			session.setAttribute("studentExtraInformation", graduate.getCurrentInfo().getContentAtIndex(0).getContent());
+			
+			//TODO: add logic determining layout of graduate's information, load appropriate value
+			session.setAttribute("graduateLayout", "static slideshow");
+			
+			// redirect to the student page
+			
+			resp.sendRedirect(req.getContextPath() + "/PCP_StudentPage");
+		}
 			
 			// redirect to advisor page
 			else if(loginType.equals("advisor")) {
-				Advisor advisorModel = new Advisor(userModel);
-				advisorModel.setStatus(false);
-				advisorModel.setAcademicInformation("Department of Etestimology");
+				//Advisor advisorModel = new Advisor(userModel);
+				//advisorModel.setStatus(false);
+				//advisorModel.setAcademicInformation("Department of Etestimology");
 				/*
 				 * TODO: this is where the Advisor's student list is populated, which will then be used to calculate the Advisor's
 				 * TODO: status in order to set the initial value of the advisorStatus attribute
 				 */
-				Graduate[] graduateList = new Graduate[2];
-				graduateList[0] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
-				graduateList[1] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
-				graduateList[0].setStatus(true);
-				graduateList[1].setStatus(false);
-				advisorModel.setGraduates(graduateList);
-				advisorModel.setNumGraduates(2);
-				advisorModel.generatePendingAndCompletedGraduateList();
-
-				// TODO: implement way to eliminate the numerous attribute setting calls by having JSP 
-				// TODO: reference the model's methods to obtain attributes as opposed to directly setting attributes
-				session.setAttribute("model", advisorModel);
-				session.setAttribute("advisorName", advisorModel.getName());
-				session.setAttribute("academicInformation", advisorModel.getAcademicInformation());
-				session.setAttribute("advisorStatus", advisorModel.getStatus());
+				Advisor advisor = null;
+				ArrayList<Advisor> advisors = controller.getAdvisorByUsername(username);
+				for(Advisor advisorInList : advisors) {
+					// found advisor with same username
+					if(advisorInList.getUsername().equals(user.getUsername())) {
+						advisor = advisorInList;
+						System.out.println("Advisor FOUND");
+						System.out.println("Retrieving advisor's graduate list");
+						advisor.setGraduates(controller.getAdvisorGraduatesByAdvisorUsername(username));
+						System.out.println("Finished retrieving advisor's graduate list");
+						advisor.generatePendingAndCompletedGraduateList();
+						System.out.println(advisor.getAcademicInformation());
+						System.out.println(advisor.getStatus());
+						System.out.println("Begin list of advisor's graduates\n");
+						for(Graduate grad : advisor.getGraduates()) {
+							System.out.println(grad.getName());
+						}
+						System.out.println("\nEnd list of advisor's graduates");
+						session.setAttribute("advisor", advisor);
+						break;
+					}
+				}
+				
+				// check if no advisor was found
+				if(advisor == null) {
+					System.err.println("*** NO ADVISOR WAS FOUND***");
+					resp.sendRedirect(req.getContextPath() + "/PCP_IndexPage");
+				}
+				
 				resp.sendRedirect(req.getContextPath() + "/PCP_AdvisorPage");
 			}
 			
 			// redirect to admin page
 			else if(loginType.equals("admin")){
-				Admin adminModel = new Admin(userModel); 
-				session.setAttribute("adminName", adminModel.getName());
-				resp.sendRedirect(req.getContextPath() + "/PCP_AdminPage");
+				Admin admin = null;
+				ArrayList<Admin> admins = controller.getAdminByUsername(username);
+				for(Admin adminInList : admins) {
+					// found admin with same username
+					if(adminInList.getUsername().equals(user.getUsername())) {
+						admin = adminInList;
+						System.out.println("Admin FOUND");
+						System.out.println(admin.getName());
+						System.out.println(admin.getDate());
+						session.setAttribute("admin", admin);
+						req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
+						break;
+					}
+					
+				}
 			}
 			else {
 				System.out.println("Unknown account type, redirecting to login.");
+				req.getRequestDispatcher("/_view/PCP_Index.jsp").forward(req, resp);
 			}
+		
 		}
 		
 		// incorrect login

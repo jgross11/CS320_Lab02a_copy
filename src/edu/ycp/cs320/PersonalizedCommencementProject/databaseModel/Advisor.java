@@ -94,6 +94,16 @@ public class Advisor extends User{
 			}
 		}
 		*/
+		completedGraduates = new ArrayList<Graduate>();
+		pendingGraduates = new ArrayList<Graduate>();
+		for(Graduate graduate : graduates) {
+			if(graduate.getStatus() == true) {
+				completedGraduates.add(graduate);
+			}
+			else {
+				pendingGraduates.add(graduate);
+			}
+		}
 	}
 	
 	public void calculateNumCompletedGraduates() {

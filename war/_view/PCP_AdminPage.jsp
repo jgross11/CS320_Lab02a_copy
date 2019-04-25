@@ -27,12 +27,12 @@ TODO: back and forth between JSP and servlet
 	                <table id="infoTable">
 	                    <tr>
 	                        <td id = "adminName">
-	                        	${adminName}
+	                        	${admin.name}
 	                        </td>
 	                    </tr>
 	                    <tr>
 	                        <td id = "deadlineInformation">
-	                        	 Deadline date: <b style="color: green"> ${eventDate} </b>
+	                        	 Deadline date: <b style="color: green"> ${admin.date} </b>
 	                        </td> 
 	                    </tr>
 	                    <tr>

@@ -2,6 +2,7 @@ package edu.ycp.cs320.PersonalizedCommencementProject.persist;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -91,7 +92,7 @@ public class DerbyDatabase implements IDatabase {
 			public List<Graduate> execute(Connection conn) throws SQLException {
 				PreparedStatement stmt = null;
 				ResultSet resultSet = null;
-				
+				System.out.println("Attempting to find graduate by username: " + username);
 				try {
 					stmt = conn.prepareStatement(
 							"select users.*, graduates.*, infostates.* "
@@ -121,7 +122,7 @@ public class DerbyDatabase implements IDatabase {
 					if (!found) {
 						System.out.println(username + " was not found in the user table");
 					}
-					
+					System.out.println(username + " was found");
 					return result;
 				} finally {
 					DBUtil.closeQuietly(resultSet);
@@ -177,14 +178,96 @@ public class DerbyDatabase implements IDatabase {
 
 	@Override
 	public List<Admin> findAdminByUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
+		return executeTransaction(new Transaction<List<Admin>>() {
+			@Override
+			public List<Admin> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement(
+							"select users.*, admins.* from users, admins where admins.username = ? and users.username = admins.username"
+					);
+					stmt.setString(1, username);
+					
+					List<Admin> result = new ArrayList<Admin>();
+					
+					resultSet = stmt.executeQuery();
+					
+					// for testing that a result was returned
+					Boolean found = false;
+					
+					while (resultSet.next()) {
+						found = true;
+						User user = new User();
+						loadUser(user, resultSet, 1);
+						Admin admin = new Admin(user);
+						loadAdmin(admin, resultSet, 7);
+						result.add(admin);
+					}
+					
+					// check if the username was found
+					if (!found) {
+						System.out.println(username + " was not found in the user table");
+					}
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
 	}
 
 	@Override
 	public List<InfoState> findGraduateInfoStateByGraduateUsername(String username) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public List<Graduate> findAdvisorGraduatesByAdvisorUsername(String username) {
+		return executeTransaction(new Transaction<List<Graduate>>() {
+			@Override
+			public List<Graduate> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement(
+							"select graduates.username from graduates where graduates.advisorUsername = ?"
+					);
+					stmt.setString(1, username);
+					
+					List<Graduate> result = new ArrayList<Graduate>();
+					
+					resultSet = stmt.executeQuery();
+					
+					// for testing that a result was returned
+					Boolean found = false;
+					int i = 1;
+					String graduateUsername = "";
+					while (resultSet.next()) {
+						found = true;
+						graduateUsername = resultSet.getString(i++);
+						System.out.println(graduateUsername);
+						result.addAll(findGraduateByUsername(graduateUsername));
+						i = 1;
+					}
+					
+					// check if the username was found
+					if (!found) {
+						System.out.println(username + " was not found in the advisor table");
+					}
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
 	}
 	
 	// wrapper SQL transaction function that calls actual transaction function (which has retries)
@@ -236,7 +319,15 @@ public class DerbyDatabase implements IDatabase {
 		// TODO: Change it here and in SQLDemo.java under CS320_LibraryExample_Lab06->edu.ycp.cs320.sqldemo
 		// TODO: DO NOT PUT THE DB IN THE SAME FOLDER AS YOUR PROJECT - that will cause conflicts later w/Git
 		private Connection connect() throws SQLException {
-			Connection conn = DriverManager.getConnection("jdbc:derby:C:/CS320-2019-PersonalizedCommencementProject-DB/pcp.db;create=true");		
+			// set conn to database relative to os
+			String os = System.getProperty("os.name");
+			Connection conn;
+			if(os.equals("Linux")) {
+				conn = DriverManager.getConnection("jdbc:derby:home/CS320-2019-PersonalizedCommencementProject-DB/pcp.db;create=true");
+			}
+			else {
+				conn = DriverManager.getConnection("jdbc:derby:C:/CS320-2019-PersonalizedCommencementProject-DB/pcp.db;create=true");		
+			}
 			
 			// Set autocommit() to false to allow the execution of
 			// multiple queries/statements as part of the same transaction.
@@ -356,6 +447,18 @@ public class DerbyDatabase implements IDatabase {
 			
 			// advisors.status
 			advisor.setStatus(Boolean.parseBoolean(resultSet.getString(index++))); 
+			
+			// populate advisor's list of students
+		}
+		
+		// retrieves Admin information from query result set
+		private void loadAdmin(Admin admin, ResultSet resultSet, int index) throws SQLException {
+					
+			// skip admins.username
+			index++;
+			
+			// admins.eventDate
+			admin.setDate(Date.valueOf(resultSet.getString(index++))); 
 		}		
 		
 	/*
