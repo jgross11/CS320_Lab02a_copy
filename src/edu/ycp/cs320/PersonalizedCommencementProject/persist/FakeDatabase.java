@@ -6,6 +6,7 @@ import java.util.List;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Admin;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Advisor;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.ContentComponent;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.InfoState;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
@@ -212,6 +213,12 @@ public class FakeDatabase implements IDatabase {
 
 	@Override
 	public List<Graduate> findAdvisorGraduatesByAdvisorUsername(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<ContentComponent> findContentComponentsByUsername(String username) {
 		// TODO Auto-generated method stub
 		return null;
 	}
