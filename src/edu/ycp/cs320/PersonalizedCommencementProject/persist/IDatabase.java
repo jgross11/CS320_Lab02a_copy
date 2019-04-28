@@ -4,6 +4,7 @@ import java.util.List;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Admin;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Advisor;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.ContentComponent;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.InfoState;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
@@ -35,5 +36,6 @@ public interface IDatabase {
 	public List<Advisor> findAdvisorByUsername(String username);
 	public List<Admin> findAdminByUsername(String username);
 	public List<InfoState> findGraduateInfoStateByGraduateUsername(String username);
-	List<Graduate> findAdvisorGraduatesByAdvisorUsername(String username);
+	public List<Graduate> findAdvisorGraduatesByAdvisorUsername(String username);
+	public List<ContentComponent> findContentComponentsByUsername(String username);
 }

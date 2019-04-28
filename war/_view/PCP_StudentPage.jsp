@@ -26,6 +26,20 @@ TODOs go here
 			function setAdvisorApprovalOption(choice){
 			    if(choice == 1){
 			    	document.getElementById("advisorSaveChanges").value = "true";
+			    	x = 0;
+			    	checkboxes = [];
+			    	checkboxes.push(document.getElementsByName("extraInfoCB")[0].checked);
+			    	checkboxes.push(document.getElementsByName("pronunciationCB")[0].checked);
+			    	checkboxes.push(document.getElementsByName("profilePictureCB")[0].checked);
+			    	checkboxes.push(document.getElementsByName("slideshow1CB")[0].checked);
+			    	checkboxes.push(document.getElementsByName("slideshow2CB")[0].checked);
+			    	checkboxes.push(document.getElementsByName("slideshow3CB")[0].checked);
+			    	checkboxes.push(document.getElementsByName("slideshow4CB")[0].checked);
+			    	checkboxes.push(document.getElementsByName("videoCB")[0].checked);
+			    	for(i = 0; i < checkboxes.length; i++){
+			    		x += (checkboxes[i] == true) ? Math.pow(2, i) : 0;
+			    	}
+			    	document.getElementById("studentNewInfoValue").value = x;
 			    }
 			    else{
 			    	document.getElementById("advisorSaveChanges").value = "false";
@@ -129,10 +143,10 @@ TODOs go here
   		
 	  		<c:if test="${mode == 'graduateView'}">
 			  	<div id="layoutViewSelectionBox">
-			  		<c:if test="${studentStatus == 'true'}">
+			  		<c:if test="${graduate.status == true}">
 						<b style="font-size: 23px">Status: <b style = "color: green; font-size: 23px"> Approved </b> </b>
 					</c:if>
-					<c:if test="${studentStatus == 'false'}">
+					<c:if test="${graduate.status == false}">
 						<b style="font-size: 23px">Status: <b style = "color: red; font-size: 20px"> Not Approved </b> </b>
 					</c:if>
 					<hr>
@@ -140,7 +154,7 @@ TODOs go here
 				</div>
 			    <div id="studentBox">
 			    	<div id="pictureBox">
-			        	<img src="${graduate.image}" alt="Student Image" width="250px" height="250px"> 
+			        	<img src="${graduate.pendingInfo.getContentAtIndex(0)}" alt="Student Image" width="250px" height="250px"> 
 			        </div>
 			    	<div id="infoBox">
 			            <table id="infoTable">
@@ -151,7 +165,7 @@ TODOs go here
 			                	<td id = "academicInformation">${graduate.major}</td>
 			                </tr>
 			                <tr>
-			                    <td id = "extraInformation">${graduate.currentInfo.getContentAtIndex(0).getContent()}</td>
+			                    <td id = "extraInformation">${graduate.pendingInfo.getContentAtIndex(1).getContent()}</td>
 			                </tr>
 			            </table>
 			        </div>
@@ -164,10 +178,10 @@ TODOs go here
 		            <!-- STATIC SLIDESHOW -->
 		            <c:if test="${graduateLayout == 'static slideshow'}">
 						<h3> STATIC SLIDESHOW EXAMPLE </h3>
-						<img id = "img1" src = "${graduate.currentInfo.getContentAtIndex(2).getContent()}" width = 170px height = 170px> 
-			            <img id = "img2" src = "${graduate.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 170px height = 170px> 
-			            <img id = "img3" src = "${graduate.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 170px height = 170px> 
-			            <img id = "img4" src = "${graduate.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 170px height = 170px>
+						<img id = "img1" src = "${graduate.pendingInfo.getContentAtIndex(2).getContent()}" width = 170px height = 170px> 
+			            <img id = "img2" src = "${graduate.pendingInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 170px height = 170px> 
+			            <img id = "img3" src = "${graduate.pendingInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 170px height = 170px> 
+			            <img id = "img4" src = "${graduate.pendingInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 170px height = 170px>
 		            </c:if>
 	
 					<!-- 'DYNAMIC' SLIDESHOW -->
@@ -236,10 +250,10 @@ TODOs go here
 			           	</script>
 			           	
 			            <h3> DYNAMIC SLIDESHOW EXAMPLE </h3>
-						<img id = "img1" src = "${graduate.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 410px height = 410px> 
-			            <img id = "img2" src = "${graduate.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 70px height = 70px> 
-			            <img id = "img3" src = "${graduate.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 70px height = 70px> 
-			            <img id = "img4" src = "${graduate.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 70px height = 70px>
+						<img id = "img1" src = "${graduate.pendingInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 410px height = 410px> 
+			            <img id = "img2" src = "${graduate.pendingInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 70px height = 70px> 
+			            <img id = "img3" src = "${graduate.pendingInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 70px height = 70px> 
+			            <img id = "img4" src = "${graduate.pendingInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 70px height = 70px>
 		            </c:if>
 		            
 		            
@@ -247,7 +261,7 @@ TODOs go here
 		            <c:if test="${graduateLayout == 'video'}">
 						<h3> VIDEO EXAMPLE </h3>
 			            <video id = "vid1" width = 680px height = 680px controls>
-			            	<source src = "${graduate.currentInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
+			            	<source src = "${graduate.pendingInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
 			            </video>
 		            </c:if>
 		    	</div>
@@ -288,7 +302,7 @@ TODOs go here
 				</div>
 		        <div id="studentBox">
 		            <div id="pictureBox">
-		                <img id = "img0" src="${graduate.image}" alt="Student Image" width="250px" height="250px"> 
+		                <img id = "img0" src="${graduate.pendingInfo.getContentAtIndex(0)}" alt="Student Image" width="250px" height="250px"> 
 		            </div>
 		            <div id="infoBox">
 		                <table id="infoTable">
@@ -299,7 +313,7 @@ TODOs go here
 			                	<td id = "academicInformation">${graduate.major}</td>
 			                </tr>
 			                <tr>
-			                    <td id = "extraInformation">${graduate.currentInfo.getContentAtIndex(0).getContent()}</td>
+			                    <td id = "extraInformation">${graduate.pendingInfo.getContentAtIndex(1).getContent()}</td>
 			                </tr>
 				    	</table>
 		            </div>
@@ -317,10 +331,10 @@ TODOs go here
 		            <!-- STATIC SLIDESHOW -->
 		            <c:if test="${graduateLayout == 'static slideshow'}">
 						<h3> STATIC SLIDESHOW EXAMPLE </h3>
-						<img id = "img1" src = "${graduate.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 170px height = 170px> 
-			            <img id = "img2" src = "${graduate.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 170px height = 170px> 
-			            <img id = "img3" src = "${graduate.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 170px height = 170px> 
-			            <img id = "img4" src = "${graduate.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 170px height = 170px>
+						<img id = "img1" src = "${graduate.pendingInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 170px height = 170px> 
+			            <img id = "img2" src = "${graduate.pendingInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 170px height = 170px> 
+			            <img id = "img3" src = "${graduate.pendingInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 170px height = 170px> 
+			            <img id = "img4" src = "${graduate.pendingInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 170px height = 170px>
 						
 			            <p> Upload 1st image - display dimensions: 170px x 170px</p>
 			            <input type="file" name="image1Upload" accept="image/*" onchange="submitMedia(event, 1, 'photo')">
@@ -335,10 +349,10 @@ TODOs go here
 		            <!-- 'DYNAMIC' SLIDESHOW -->
 		            <c:if test="${graduateLayout == 'dynamic slideshow'}">
 			            <h3> DYNAMIC SLIDESHOW EXAMPLE </h3>
-						<img id = "img1" src = "${graduate.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 410px height = 410px> 
-			            <img id = "img2" src = "${graduate.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 70px height = 70px> 
-			            <img id = "img3" src = "${graduate.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 70px height = 70px> 
-			            <img id = "img4" src = "${graduate.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 70px height = 70px>
+						<img id = "img1" src = "${graduate.pendingInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 410px height = 410px> 
+			            <img id = "img2" src = "${graduate.pendingInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 70px height = 70px> 
+			            <img id = "img3" src = "${graduate.pendingInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 70px height = 70px> 
+			            <img id = "img4" src = "${graduate.pendingInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 70px height = 70px>
 			            <p> Upload leftmost image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
 			            <input type="file" name="image1Upload" accept="image/*" onchange="submitMedia(event, 1, 'photo')">
 						<p> Upload center-left image - small display dimensions: 70px x 70px | large display dimensions: 410px x 410px</p>
@@ -353,7 +367,7 @@ TODOs go here
 		            <c:if test="${graduateLayout == 'video'}">
 						<h3> VIDEO EXAMPLE </h3>
 			            <video id = "vid1" width = 680px height = 680px controls>
-			            	<source src = "${graduate.currentInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
+			            	<source src = "${graduate.pendingInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
 			            </video>
 						<p> Upload video - optimal length: &lt; 6 seconds</p>
 						<input type="file" name="videoUpload" accept="video/*" onchange="submitMedia(event, 1, 'video')">
@@ -378,7 +392,7 @@ TODOs go here
 			                	<td id = "academicInformation">${studentToView.major}</td>
 			                </tr>
 			                <tr>
-			                    <td id = "extraInformation">${studentToView.currentInfo.getContentAtIndex(0).getContent()}</td>
+			                    <td id = "extraInformation">${studentToView.pendingInfo.getContentAtIndex(1).getContent()}</td>
 			                </tr>
 			            </table>
 			        </div>
@@ -392,26 +406,26 @@ TODOs go here
 		            <!-- STATIC SLIDESHOW -->
 		            
 		            <!-- 
-		  		<img src = "${studentToView.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 172px height = 172px> 
-	            <img src = "${studentToView.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 172px height = 172px> 
-	            <img src = "${studentToView.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 172px height = 172px> 
-	            <img src = "${studentToView.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 172px height = 172px>
+		  		<img src = "${studentToView.pendingInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 172px height = 172px> 
+	            <img src = "${studentToView.pendingInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 172px height = 172px> 
+	            <img src = "${studentToView.pendingInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 172px height = 172px> 
+	            <img src = "${studentToView.pendingInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 172px height = 172px>
 		            
 		            -->
 		            
 		            <!-- 'DYNAMIC' SLIDESHOW -->
 		            
 		            <!--
-		            <img src = "${studentToView.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 200px height = 200px> 
-		            <img src = "${studentToView.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 50px height = 50px> 
-		            <img src = "${studentToView.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 50px height = 50px> 
-		            <img src = "${studentToView.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 50px height = 50px>
+		            <img src = "${studentToView.pendingInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 200px height = 200px> 
+		            <img src = "${studentToView.pendingInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 50px height = 50px> 
+		            <img src = "${studentToView.pendingInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 50px height = 50px> 
+		            <img src = "${studentToView.pendingInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 50px height = 50px>
 		            --> 
 		            
 		            <!-- VIDEO -->
 		            
 		           
-		            <video width = 325px height = 325px controls>       <source src = "${studentToView.currentInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
+		            <video width = 325px height = 325px controls>       <source src = "${studentToView.pendingInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
 		            </video>
 		            <br><br>
 		           <input type="button" value="Back to Student List" onclick="navToStudentList()"/>
@@ -426,8 +440,13 @@ TODOs go here
 	    		<div id="advisorEditBox">
 					<b style="font-size: 18px">Approve</b><hr>
   					<input type="checkbox" name="extraInfoCB" value="extraInfoCB"> Extra Info <hr>
-  					<input type="checkbox" name="prounciationCB" value="prounciationCB"> Audio <hr>
-  					<input type="checkbox" name="extraInfoCB" value="extraInfoCB"> Video <hr>
+  					<input type="checkbox" name="pronunciationCB" value="prounciationCB"> Name Pronunciation <hr>
+  					<input type="checkbox" name="profilePictureCB" value="profilePictureCB"> Display picture <hr>
+  					<input type="checkbox" name="slideshow1CB" value="slideshow1CB"> Slideshow Photo 1 <hr>
+  					<input type="checkbox" name="slideshow2CB" value="slideshow2CB"> Slideshow Photo 2 <hr>
+  					<input type="checkbox" name="slideshow3CB" value="slideshow3CB"> Slideshow Photo 3 <hr>
+  					<input type="checkbox" name="slideshow4CB" value="slideshow4CB"> Slideshow Photo 4 <hr>
+  					<input type="checkbox" name="videoCB" value="videoCB"> Video <hr>
 					<input type="button" value="Save Approvals" onclick="setAdvisorApprovalOption(1)">
 					<input type="button" value="Discard Approvals" onclick="setAdvisorApprovalOption(0)">
 				</div>
@@ -444,7 +463,7 @@ TODOs go here
 			                	<td id = "academicInformation">${studentToView.major}</td>
 			                </tr>
 			                <tr>
-			                    <td id = "extraInformation">${studentToView.currentInfo.getContentAtIndex(0).getContent()}</td>
+			                    <td id = "extraInformation">${studentToView.pendingInfo.getContentAtIndex(1).getContent()}</td>
 			                </tr>
 			            </table>
 			        </div>
@@ -458,26 +477,26 @@ TODOs go here
 		            <!-- STATIC SLIDESHOW -->
 		            
 		            <!-- 
-				<img src = "${studentToView.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 172px height = 172px> 
-	            <img src = "${studentToView.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 172px height = 172px> 
-	            <img src = "${studentToView.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 172px height = 172px> 
-	            <img src = "${studentToView.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 172px height = 172px>
+				<img src = "${studentToView.pendingInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 172px height = 172px> 
+	            <img src = "${studentToView.pendingInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 172px height = 172px> 
+	            <img src = "${studentToView.pendingInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 172px height = 172px> 
+	            <img src = "${studentToView.pendingInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 172px height = 172px>
 		            
 		            -->
 		            
 		            <!-- 'DYNAMIC' SLIDESHOW -->
 		            
 		            <!--
-		            <img src = "${studentToView.currentInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 200px height = 200px> 
-		            <img src = "${studentToView.currentInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 50px height = 50px> 
-		            <img src = "${studentToView.currentInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 50px height = 50px> 
-		            <img src = "${studentToView.currentInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 50px height = 50px>
+		            <img src = "${studentToView.pendingInfo.getContentAtIndex(2).getContent()}" alt = "slideshow image 1" width = 200px height = 200px> 
+		            <img src = "${studentToView.pendingInfo.getContentAtIndex(3).getContent()}" alt = "slideshow image 2" width = 50px height = 50px> 
+		            <img src = "${studentToView.pendingInfo.getContentAtIndex(4).getContent()}" alt = "slideshow image 3" width = 50px height = 50px> 
+		            <img src = "${studentToView.pendingInfo.getContentAtIndex(5).getContent()}" alt = "slideshow image 4" width = 50px height = 50px>
 		            --> 
 		            
 		            <!-- VIDEO -->
 		            
 		            
-		            <video width = 325px height = 325px controls>       <source src = "${studentToView.currentInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
+		            <video width = 325px height = 325px controls>       <source src = "${studentToView.pendingInfo.getContentAtIndex(6).getContent()}" type = "video/mp4">
 		            </video>
 		            
 		           
@@ -501,6 +520,7 @@ TODOs go here
 	    	<input type="hidden" id = "graduateLayout"name="graduateLayout" value="${graduateLayout}">
 	    	<input type="hidden" id = "graduateLayoutChange"name="graduateLayoutChange" value="${graduateLayout}">
 	    	<input type="hidden" id="studentSaveChanges"name="studentSaveChanges" value="${studentSaveChanges}">
+	    	<input type="hidden" id="studentNewInfoValue"name="studentNewInfoValue" value="0">
 	    	
 	    	<!-- Advisor Attributes -->
 	    	<input type="hidden" id="advisorUsername" name="advisorUsername" value="${advisorUsername}">

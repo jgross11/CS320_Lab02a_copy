@@ -96,24 +96,26 @@ public class PCP_IndexServlet extends HttpServlet {
 		// thus, always call a controller method to operate on the data
 		else {
 			ArrayList<User> users = controller.getUserByUsername(username);
-			for(User userInList : users) {
-				if(userInList.getPassword().equals(password)) {
-					user = userInList;
-					System.out.println("USER FOUND");
-					System.out.println(user.getName());
-					System.out.println(user.getPassword());
-					System.out.println(user.getType());
-					System.out.println(user.getImage());
-					session = req.getSession();
-					
-					// store User for use throughout session
-					session.setAttribute("user", user);
-					
-					break;
+			// empty if no user found - bad data
+			if(users != null) {
+				for(User userInList : users) {
+					if(userInList.getPassword().equals(password)) {
+						user = userInList;
+						System.out.println("USER FOUND");
+						System.out.println(user.getName());
+						System.out.println(user.getPassword());
+						System.out.println(user.getType());
+						System.out.println(user.getImage());
+						session = req.getSession();
+						
+						// store User for use throughout session
+						session.setAttribute("user", user);
+						
+						break;
+					}
 				}
 			}
-			// model still null if no user found, bad data
-			if(user == null) {
+			else {
 				errorMessage = "Username and password not found.";
 			}
 		}
