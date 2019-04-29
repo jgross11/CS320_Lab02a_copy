@@ -1,5 +1,6 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.persist;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Admin;
@@ -36,4 +37,6 @@ public interface IDatabase {
 	public List<Admin> findAdminByUsername(String username);
 	public List<InfoState> findGraduateInfoStateByGraduateUsername(String username);
 	List<Graduate> findAdvisorGraduatesByAdvisorUsername(String username);
+	public String InsertIntoEventDate(String date) throws SQLException; 
+	
 }
