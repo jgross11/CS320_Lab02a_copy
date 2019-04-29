@@ -7,11 +7,11 @@
 }
 
 #studentBox2{
-	float: right;
+	float: left;
     margin-top: 50px;
     border: 1px solid black;
     height: 250px;
-   max-width: 650px;
+   	width: 650px;
 }
 
 #pictureBox{
@@ -36,13 +36,36 @@
     float: none;
     width: 650px;
 }
+#mediaBox2{
+    float: right;
+    width: 650px;
+}
 
 #academicInformation{
     font-size: 30px;
     border-bottom: 1px solid black;
     width: 340px;
 }
+#leftMajor{
+    font-size: 30px;
+    border-bottom: 1px solid black;
+    width: 340px;
+}
+#rightMajor{
+	font-size: 30px;
+    border-bottom: 1px solid black;
+    width: 340px;
+}
 #extraInformation{
+    font-size: 25px;
+    width: 340px;
+}
+
+#leftExtra{
+    font-size: 25px;
+    width: 340px;
+}
+#rightExtra{
     font-size: 25px;
     width: 340px;
 }
@@ -60,3 +83,16 @@
     width: 340px;
     font-size: 40px;
     border-bottom: 1px solid black;
+}
+#rightName{
+    height: 20px;
+    width: 100%;
+    font-size: 40px;
+    border-bottom: 1px solid black;
+}
+#leftName{
+    height: 20px;
+    width: 340px;
+    font-size: 40px;
+    border-bottom: 1px solid black;
+}
