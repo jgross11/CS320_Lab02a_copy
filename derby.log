@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Mon Apr 22 09:29:34 EDT 2019:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-016a-453c-cf0b-000006abe2d8 
+Mon Apr 29 08:46:48 EDT 2019:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.10.2.0 - (1582446): instance a816c00e-016a-6922-2ac2-000003938720 
 on database directory C:\CS320-2019-PersonalizedCommencementProject-DB\pcp.db with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
-Loaded from file:/C:/Users/J/git/Personalized-Commencement-Project/CS320_Derby/lib/derby.jar
+Loaded from file:/C:/Users/T440/git/Personalized-Commencement-Project/CS320_Derby/lib/derby.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_201-b09
-user.dir=C:\Users\J\git\Personalized-Commencement-Project
+user.dir=C:\Users\T440\git\Personalized-Commencement-Project
 os.name=Windows 10
 os.arch=amd64
 os.version=10.0
