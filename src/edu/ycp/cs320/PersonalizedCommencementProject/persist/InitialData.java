@@ -27,8 +27,182 @@ import edu.ycp.cs320.PersonalizedCommencementProject.model.ZUNUSED_BookAuthor;
 public class InitialData {
 	
 	private static List<User> globalUsersList;
+	private static List<User> globalYCPUsersList;
 	private static List<Graduate> globalGraduatesList;
+	private static List<Graduate> globalYCPGraduatesList;
 	private static List<ContentComponent> globalContentComponentList;
+	
+	/*
+	 * 
+	 * YCP DATABASE
+	 * 
+	 */
+	
+	// reads YCP User data from CSV file and returns a List of Users
+	public static List<User> getYCPUsers() throws IOException{
+		List<User> userList = new ArrayList<User>();
+		ReadCSV readUsers = new ReadCSV("YCP_users.csv");
+		try {
+			while (true) {
+				List<String> tuple = readUsers.next();
+				if (tuple == null) {
+					break;
+				}
+				Iterator<String> i = tuple.iterator();
+				User user = new User();
+				user.setUsername(i.next());
+				user.setPassword(i.next());
+				user.setFirstName(i.next());
+				user.setLastName(i.next());
+				user.setType(i.next());
+				user.setImage(i.next());
+				userList.add(user);
+			}
+			System.out.println("YCP userList loaded from CSV file");
+			globalYCPUsersList = userList;
+			return userList;
+		} finally {
+			readUsers.close();
+		}		
+	}
+
+	// reads YCP Graduate data from CSV file and returns a List of Graduates
+	public static List<Graduate> getYCPGraduates() throws IOException {
+		List<Graduate> graduateList = new ArrayList<Graduate>();
+		
+		// used to populate graduate infostates
+		globalContentComponentList = getContentComponents();
+		
+		ReadCSV readGraduates = new ReadCSV("YCP_graduates.csv");
+		try {
+
+			while (true) {
+				List<String> tuple = readGraduates.next();
+				if (tuple == null) {
+					break;
+				}
+				Iterator<String> i = tuple.iterator();
+				Graduate graduate = null; 
+				
+				// obtain graduate username
+				String username = i.next();
+				
+				// search user list for Users with the same username
+				for(User user : globalYCPUsersList) {
+					
+					// found graduate's user information, transfer to graduate class 
+					if(user.getUsername().equals(username)) {
+						graduate = new Graduate(user);
+					}
+				}
+				// check if graduate's info was found
+				if(graduate == null) {
+					System.err.println(". . . . GRADUATE INFO NOT FOUND. . . .");
+				}
+				graduate.setMajor(i.next());
+				graduate.setAdvisor(i.next());
+				graduate.setStatus(true);
+				graduateList.add(graduate);
+			}
+			System.out.println("YCP GraduateList loaded from CSV file");			
+			globalGraduatesList = graduateList;
+			return graduateList;
+		} finally {
+			readGraduates.close();
+		}
+	}
+	
+	// reads YCP Advisor data from CSV file and returns a List of Advisors
+	public static List<Advisor> getYCPAdvisors() throws IOException {
+		List<Advisor> advisorList = new ArrayList<Advisor>();
+		ReadCSV readAdvisors = new ReadCSV("YCP_advisors.csv");
+		try {
+			
+			while (true) {
+				List<String> tuple = readAdvisors.next();
+				if (tuple == null) {
+					break;
+				}
+				Iterator<String> i = tuple.iterator();
+				Advisor advisor = null; 
+				
+				// obtain advisor username
+				String username = i.next();
+				
+				// search user list for Users with the same username
+				for(User user : globalYCPUsersList) {
+					
+					// found advisor's user information, transfer to advisor class 
+					if(user.getUsername().equals(username)) {
+						advisor = new Advisor(user);
+					}
+				}
+				// check if advisor's info was found
+				if(advisor == null) {
+					System.err.println(". . . . ADVISOR INFO NOT FOUND. . . .");
+				}
+				advisor.setAcademicInformation(i.next());
+				advisor.setStatus(true);
+				
+				// iterate through graduate list and add those with this advisor
+				for(Graduate graduate : globalGraduatesList) {
+					if(graduate.getAdvisor().equals(username)) {
+						advisor.addGraduate(graduate);
+					}
+				}
+				advisorList.add(advisor);
+			}
+			System.out.println("YCP AdvisorList loaded from CSV file");			
+			return advisorList;
+		} finally {
+			readAdvisors.close();
+		}
+	}
+	
+	// reads YCP Advisor data from CSV file and returns a List of Advisors
+	public static List<Admin> getYCPAdmins() throws IOException {
+		List<Admin> adminList = new ArrayList<Admin>();
+		ReadCSV readAdmins = new ReadCSV("YCP_admins.csv");
+		try {
+			
+			while (true) {
+				List<String> tuple = readAdmins.next();
+				if (tuple == null) {
+					break;
+				}
+				Iterator<String> i = tuple.iterator();
+				Admin admin = null; 
+				
+				// obtain admin username
+				String username = i.next();
+				
+				// search user list for Users with the same username
+				for(User user : globalYCPUsersList) {
+					
+					// found admin's user information, transfer to admin class 
+					if(user.getUsername().equals(username)) {
+						admin = new Admin(user);
+					}
+				}
+				// check if admin's info was found
+				if(admin == null) {
+					System.err.println(". . . . ADMIN INFO NOT FOUND. . . .");
+				}
+				adminList.add(admin);
+			}
+			System.out.println("YCP AdminList loaded from CSV file");	
+			return adminList;
+		} finally {
+			readAdmins.close();
+		}
+	}
+	
+	/*
+	 * 
+	 * PCP DATABASE 
+	 * 
+	 */
+	
 	// reads initial User data from CSV file and returns a List of Users
 	public static List<User> getUsers() throws IOException {
 		List<User> userList = new ArrayList<User>();
@@ -223,11 +397,6 @@ public class InitialData {
 							infoState.setFormatType("pending");
 							grad.setPendingInfo(infoState);
 						}
-						/*
-						for(int w = 0; w < infoState.getNumContents() - 1; w++) {
-							infoState.getContents().add(new ContentComponent(i.next()));
-						}
-						*/
 					}
 				}
 				// check if infoState's info was found
