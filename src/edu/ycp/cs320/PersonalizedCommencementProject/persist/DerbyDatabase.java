@@ -25,10 +25,14 @@ import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
  */
 
 public class DerbyDatabase implements IDatabase {
+	private List<User> YCPUserList;
 	private List<User> userList;
 	private List<Graduate> graduateList;
+	private List<Graduate> YCPGraduateList;
 	private List<Advisor> advisorList;
+	private List<Advisor> YCPAdvisorList;
 	private List<Admin> adminList;
+	private List<Admin> YCPAdminList;
 	private List<InfoState> infoStateList;
 	private List<ContentComponent> contentComponentList;
 	static {
@@ -418,8 +422,6 @@ public class DerbyDatabase implements IDatabase {
 			InfoState current = new InfoState();
 			InfoState pending = new InfoState();
 			do {
-				System.out.println("index: " + index);
-				
 				// contentcomponents.infostatetype
 				String infoStateType = resultSet.getString(index++);
 				
@@ -437,39 +439,36 @@ public class DerbyDatabase implements IDatabase {
 				int contentIndex = 0;
 				
 				switch(content.getType()) {
-				case "profilePicture":
+				case InfoState.PROFILE:
 					contentIndex = InfoState.PROFILE_INDEX;
 					break;
-				case "extraInformation":
+				case InfoState.EXTRAINFORMATION:
 					contentIndex = InfoState.EXTRAINFORMATION_INDEX;
 					break;
-				case "namePronunciation":
+				case InfoState.NAMEPRONUNCIATION:
 					contentIndex = InfoState.NAMEPRONUNCIATION_INDEX;
 					break;
-				case "slideshow1":
+				case InfoState.SLIDESHOW1:
 					contentIndex = InfoState.SLIDESHOW1_INDEX;
 					break;
-				case "slideshow2":
+				case InfoState.SLIDESHOW2:
 					contentIndex = InfoState.SLIDESHOW2_INDEX;
 					break;
-				case "slideshow3":
+				case InfoState.SLIDESHOW3:
 					contentIndex = InfoState.SLIDESHOW3_INDEX;
 					break;
-				case "slideshow4":
-					contentIndex = InfoState.SLIDESHOW4_INDEX;
+				case InfoState.SLIDESHOW4:
+					contentIndex = InfoState.SLIDESHOW4_INDEX;  
 					break;
-				case "video":
+				case InfoState.VIDEO:
 					contentIndex = InfoState.VIDEO_INDEX;
 					break;
 				}
-				System.out.println("contentIndex for type " + contentType + ": " + contentIndex);
 				if(infoStateType.equals("pending")) {
-					pending.getContents().remove(contentIndex);
-					pending.getContents().add(contentIndex, content);
+					pending.getContents().set(contentIndex, content);
 				}
 				else {
-					current.getContents().remove(contentIndex);
-					current.getContents().add(contentIndex, content);
+					current.getContents().set(contentIndex, content);
 				}
 				index -= 4;
 			}
@@ -479,7 +478,7 @@ public class DerbyDatabase implements IDatabase {
 				System.out.println("pending for index " + i + ": " + pending.getContents().get(i).getContent());
 			}
 			graduate.setCurrentInfo(current);
-			graduate.setPendingInfo(current);
+			graduate.setPendingInfo(pending);
 		}
 		
 		// retrieves Advisor information from query result set
@@ -1197,7 +1196,7 @@ public class DerbyDatabase implements IDatabase {
 						+ "  infoStateType varchar(50), "
 						+ "  status varchar(5), "
 						+ "  type varchar(50), "
-						+ "  content varchar(50) "
+						+ "  content varchar(100) "
 						+ ")"
 					);	
 					stmt6.executeUpdate();
@@ -1212,6 +1211,7 @@ public class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(stmt4);
 					DBUtil.closeQuietly(stmt5);
 					DBUtil.closeQuietly(stmt6);
+					System.out.println("All resources closed");
 				}
 			}
 		});
@@ -1225,10 +1225,14 @@ public class DerbyDatabase implements IDatabase {
 			public Boolean execute(Connection conn) throws SQLException {
 				
 				try {
+					YCPUserList = InitialData.getYCPUsers();
 					userList = InitialData.getUsers();
 					graduateList = InitialData.getGraduates();
+					YCPGraduateList = InitialData.getYCPGraduates();
 					advisorList = InitialData.getAdvisors();
+					YCPAdvisorList = InitialData.getYCPAdvisors();
 					adminList = InitialData.getAdmins();
+					YCPAdminList = InitialData.getYCPAdmins();
 					infoStateList = InitialData.getInfoStates();
 					contentComponentList = InitialData.getContentComponents();
 				} catch (IOException e) {
@@ -1331,6 +1335,7 @@ public class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(insertAdvisor);	
 					DBUtil.closeQuietly(insertAdmin);
 					DBUtil.closeQuietly(insertInfoState);
+					System.out.println("Data already exists .. probably");
 				}
 			}
 		});
@@ -1346,5 +1351,178 @@ public class DerbyDatabase implements IDatabase {
 		db.loadInitialData();
 		
 		System.out.println("PCP DB successfully initialized!");
+	}
+
+	@Override
+	public Integer insertGraduateMediaIntoContentComponentTable(String username, String InfoStateType, ContentComponent content) {
+		return executeTransaction(new Transaction<Integer>() {
+			@Override
+			
+			public Integer execute(Connection conn) throws SQLException {
+				PreparedStatement stmt1 = null;
+				PreparedStatement stmt2 = null;
+				PreparedStatement stmt3 = null;
+				PreparedStatement stmt4 = null;
+				PreparedStatement stmt5 = null;
+				PreparedStatement stmt6 = null;				
+				
+				ResultSet resultSet1 = null;
+				ResultSet resultSet3 = null;
+				ResultSet resultSet5 = null;				
+				
+				// for saving author ID and book ID
+				Integer author_id = -1;
+				Integer book_id   = -1;
+	
+				// try to retrieve author_id (if it exists) from DB, for Author's full name, passed into query
+				try {
+					/*
+					   "create table contentComponents ( "
+						+ "  username varchar(50), "
+						+ "  infoStateType varchar(50), "
+						+ "  status varchar(5), "
+						+ "  type varchar(50), "
+						+ "  content varchar(50) "
+						+ ")"
+					 */
+					stmt1 = conn.prepareStatement(
+							"update contentcomponents set"
+							+ " status = 'false',"
+							+ " content = ? "
+							+ " where username = ? "
+							+ " and infoStateType = ?"
+							+ " and type = ?"
+					);
+					stmt1.setString(1, content.getContent());
+					stmt1.setString(2, content.getUsername());
+					stmt1.setString(3, content.getInfoStateType());
+					stmt1.setString(4, content.getType());
+					
+					// execute the query, get the result
+					return stmt1.executeUpdate();
+	
+					/*
+					// if Author was found then save author_id					
+					if (resultSet1.next())
+					{
+						author_id = resultSet1.getInt(1);
+						System.out.println("Author <" + lastName + ", " + firstName + "> found with ID: " + author_id);						
+					}
+					else
+					{
+						System.out.println("Author <" + lastName + ", " + firstName + "> not found");
+				
+						// if the Author is new, insert new Author into Authors table
+						if (author_id <= 0) {
+							// prepare SQL insert statement to add Author to Authors table
+							stmt2 = conn.prepareStatement(
+									"insert into authors (lastname, firstname) " +
+									"  values(?, ?) "
+							);
+							stmt2.setString(1, lastName);
+							stmt2.setString(2, firstName);
+							
+							// execute the update
+							stmt2.executeUpdate();
+							
+							System.out.println("New author <" + lastName + ", " + firstName + "> inserted in Authors table");						
+						
+							// try to retrieve author_id for new Author - DB auto-generates author_id
+							stmt3 = conn.prepareStatement(
+									"select author_id from authors " +
+									"  where lastname = ? and firstname = ? "
+							);
+							stmt3.setString(1, lastName);
+							stmt3.setString(2, firstName);
+							
+							// execute the query							
+							resultSet3 = stmt3.executeQuery();
+							
+							// get the result - there had better be one							
+							if (resultSet3.next())
+							{
+								author_id = resultSet3.getInt(1);
+								System.out.println("New author <" + lastName + ", " + firstName + "> ID: " + author_id);						
+							}
+							else	// really should throw an exception here - the new author should have been inserted, but we didn't find them
+							{
+								System.out.println("New author <" + lastName + ", " + firstName + "> not found in Authors table (ID: " + author_id);
+							}
+						}
+					}
+					
+					// now insert new Book into Books table
+					// prepare SQL insert statement to add new Book to Books table
+					stmt4 = conn.prepareStatement(
+							"insert into books (title, isbn, published) " +
+							"  values(?, ?, ?) "
+					);
+					stmt4.setString(1, title);
+					stmt4.setString(2, isbn);
+					stmt4.setInt(3, published);
+					
+					// execute the update
+					stmt4.executeUpdate();
+					
+					System.out.println("New book <" + title + "> inserted into Books table");					
+	
+					// now retrieve book_id for new Book, so that we can set up BookAuthor entry
+					// and return the book_id, which the DB auto-generates
+					// prepare SQL statement to retrieve book_id for new Book
+					stmt5 = conn.prepareStatement(
+							"select book_id from books " +
+							"  where title = ? and isbn = ? and published = ? "
+									
+					);
+					stmt5.setString(1, title);
+					stmt5.setString(2, isbn);
+					stmt5.setInt(3, published);
+	
+					// execute the query
+					resultSet5 = stmt5.executeQuery();
+					
+					// get the result - there had better be one
+					if (resultSet5.next())
+					{
+						book_id = resultSet5.getInt(1);
+						System.out.println("New book <" + title + "> ID: " + book_id);						
+					}
+					else	// really should throw an exception here - the new book should have been inserted, but we didn't find it
+					{
+						System.out.println("New book <" + title + "> not found in Books table (ID: " + book_id);
+					}
+					
+					// now that we have all the information, insert entry into BookAuthors table
+					// which is the junction table for Books and Authors
+					// prepare SQL insert statement to add new Book to Books table
+					stmt6 = conn.prepareStatement(
+							"insert into bookAuthors (book_id, author_id) " +
+							"  values(?, ?) "
+					);
+					stmt6.setInt(1, book_id);
+					stmt6.setInt(2, author_id);
+					
+					// execute the update
+					stmt6.executeUpdate();
+					
+					System.out.println("New entry for book ID <" + book_id + "> and author ID <" + author_id + "> inserted into BookAuthors junction table");						
+					
+					System.out.println("New book <" + title + "> inserted into Books table");					
+					
+					return book_id;
+					*/
+				} finally {
+					DBUtil.closeQuietly(resultSet1);
+					DBUtil.closeQuietly(stmt1);
+					DBUtil.closeQuietly(stmt2);					
+					DBUtil.closeQuietly(resultSet3);
+					DBUtil.closeQuietly(stmt3);					
+					DBUtil.closeQuietly(stmt4);
+					DBUtil.closeQuietly(resultSet5);
+					DBUtil.closeQuietly(stmt5);
+					DBUtil.closeQuietly(stmt6);
+				}
+			}
+		});
 	}
 }
