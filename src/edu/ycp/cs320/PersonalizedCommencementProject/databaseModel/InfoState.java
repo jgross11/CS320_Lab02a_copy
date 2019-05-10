@@ -4,13 +4,21 @@ import java.util.ArrayList;
 
 public class InfoState {
 	public static final int PROFILE_INDEX = 0;
+	public static final String PROFILE = "profilePicture";
 	public static final int EXTRAINFORMATION_INDEX = 1;
+	public static final String EXTRAINFORMATION = "extraInformation";
 	public static final int NAMEPRONUNCIATION_INDEX = 2;
+	public static final String NAMEPRONUNCIATION = "namePronunciation";
 	public static final int SLIDESHOW1_INDEX = 3;
+	public static final String SLIDESHOW1 = "slideshow1";
 	public static final int SLIDESHOW2_INDEX = 4;
+	public static final String SLIDESHOW2 = "slideshow2";
 	public static final int SLIDESHOW3_INDEX = 5;
+	public static final String SLIDESHOW3 = "slideshow3";
 	public static final int SLIDESHOW4_INDEX = 6;
+	public static final String SLIDESHOW4 = "slideshow4";
 	public static final int VIDEO_INDEX = 7;
+	public static final String VIDEO = "video";
 	private final int numContents = 8;
 	private String formatType;
 	private String username;
