@@ -38,4 +38,5 @@ public interface IDatabase {
 	public List<InfoState> findGraduateInfoStateByGraduateUsername(String username);
 	public List<Graduate> findAdvisorGraduatesByAdvisorUsername(String username);
 	public List<ContentComponent> findContentComponentsByUsername(String username);
+	public Integer insertGraduateMediaIntoContentComponentTable(String username, String type, ContentComponent content);
 }
