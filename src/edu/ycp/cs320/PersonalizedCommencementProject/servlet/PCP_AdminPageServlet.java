@@ -1,7 +1,9 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.servlet;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,8 +16,11 @@ import edu.ycp.cs320.PersonalizedCommencementProject.controller.GraduateControll
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Admin;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.User;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.DatabaseProvider;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.DerbyDatabase;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.IDatabase;
 
 public class PCP_AdminPageServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -66,12 +71,43 @@ public class PCP_AdminPageServlet extends HttpServlet {
 		// check for valid studentToView input from JSP and
 		// redirect accordingly
 		
-		// populate 'databases' with acceptable logins
-		advisorLogins[0] = new Advisor(new User("agrove9", "agrove9", "advisor", "Alyssa", "Grove"));
-		graduateLogins[0] = new Graduate(new User("dchism", "dchism", "student", "Dennis", "Chism"));
-		graduateLogins[1] = new Graduate(new User("wabram", "wabram", "student", "Bill", "Abram"));
-		AdminLogins[0] = new Admin(new User("jgross11","jgross11","admin","Josh","Gross")); 
-		infoInDB = false;
+		// create array of Graduate objects to demonstrate event
+		// creates DB instance
+		DatabaseProvider.setInstance(new DerbyDatabase());
+		IDatabase db = DatabaseProvider.getInstance();
+		ArrayList<Graduate> grads = null;
+		List<Graduate> gradList = db.findGraduateByUsername("dchism");
+		if (gradList.isEmpty()) {
+			System.out.println("No graduates found");
+		}
+		else {
+			grads = new ArrayList<Graduate>();
+			for (Graduate grad : gradList) {
+				grads.add(grad);
+				System.out.println("Adding " + grad.getName());
+			}			
+		}
+		gradList = db.findGraduateByUsername("acastro");
+		if (gradList.isEmpty()) {
+			System.out.println("No graduates found");
+		}
+		else {
+			for (Graduate grad : gradList) {
+				grads.add(grad);
+				System.out.println("Adding " + grad.getName());
+			}			
+		}
+		gradList = db.findGraduateByUsername("wabram");
+		if (gradList.isEmpty()) {
+			System.out.println("No graduates found");
+		}
+		else {
+			for (Graduate grad : gradList) {
+				grads.add(grad);
+				System.out.println("Adding " + grad.getName());
+			}			
+		}
+		req.setAttribute("gradList", grads);
 		
 		System.out.println("PCP_AdvisorPage Servlet: doPost");
 		if(req.getParameter("startEvent").equals("true")) {

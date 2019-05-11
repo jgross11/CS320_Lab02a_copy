@@ -28,6 +28,7 @@ public class InitialData {
 	
 	private static List<User> globalUsersList;
 	private static List<Graduate> globalGraduatesList;
+	private static List<ContentComponent> globalContentComponentList;
 	// reads initial User data from CSV file and returns a List of Users
 	public static List<User> getUsers() throws IOException {
 		List<User> userList = new ArrayList<User>();
@@ -61,6 +62,10 @@ public class InitialData {
 	// reads initial Graduate data from CSV file and returns a List of Graduates
 	public static List<Graduate> getGraduates() throws IOException {
 		List<Graduate> graduateList = new ArrayList<Graduate>();
+		
+		// used to populate graduate infostates
+		globalContentComponentList = getContentComponents();
+		
 		ReadCSV readGraduates = new ReadCSV("graduates.csv");
 		try {
 
@@ -211,22 +216,27 @@ public class InitialData {
 					
 					// found graduate, set infostate
 					if(grad.getUsername().equals(username)) {
+
 						infoState = new InfoState();
 						infoState.setUserID(Integer.parseInt(i.next())); 
+            
 						// obtain and check infostate's type
 						String type = i.next();
-						System.out.println(type);
+						infoState = populateInfoState(username, type);
+						infoState.setUsername(username);
 						if(type.equals("current")) {
-							grad.setCurrentInfo(infoState);
 							infoState.setFormatType("current");
+							grad.setCurrentInfo(infoState);
 						}
 						else {
-							grad.setPendingInfo(infoState);
 							infoState.setFormatType("pending");
+							grad.setPendingInfo(infoState);
 						}
-						for(int w = 0; w < infoState.getNumContents(); w++) {
+						/*
+						for(int w = 0; w < infoState.getNumContents() - 1; w++) {
 							infoState.getContents().add(new ContentComponent(i.next()));
 						}
+						*/
 					}
 				}
 				// check if infoState's info was found
@@ -241,4 +251,73 @@ public class InitialData {
 			readInfoStates.close();
 		}
 	}
+	
+	public static InfoState populateInfoState(String username, String type) {
+		InfoState state = new InfoState();
+		state.setFormatType(type);
+		for(ContentComponent component : globalContentComponentList) {
+			// component belongs to this user
+			if(component.getUsername().equals(username) && component.getInfoStateType().equals(type)) {
+				switch(component.getType()) {
+				case "profilePicture":
+					state.getContents().set(InfoState.PROFILE_INDEX, component);
+				case "extraInformation":
+					state.getContents().set(InfoState.EXTRAINFORMATION_INDEX, component);
+				case "namePronunciation":
+					state.getContents().set(InfoState.NAMEPRONUNCIATION_INDEX, component);
+				case "slideshow1":
+					state.getContents().set(InfoState.SLIDESHOW1_INDEX, component);
+				case "slideshow2":
+					state.setContentAtIndex(InfoState.SLIDESHOW2_INDEX, component);
+				case "slideshow3":
+					state.setContentAtIndex(InfoState.SLIDESHOW3_INDEX, component);
+				case "slideshow4":
+					state.setContentAtIndex(InfoState.SLIDESHOW4_INDEX, component);
+				case "video":
+					state.setContentAtIndex(InfoState.VIDEO_INDEX, component);
+				}
+			}
+		}
+		return state;
+	}
+
+		// reads initial contentComponent data from CSV file and returns a List of contentComponents
+		public static List<ContentComponent> getContentComponents() throws IOException {
+			List<ContentComponent> contentComponentList = new ArrayList<ContentComponent>();
+			ReadCSV readContentComponents = new ReadCSV("contentComponents.csv");
+			try {
+				
+				while (true) {
+					List<String> tuple = readContentComponents.next();
+					if (tuple == null) {
+						break;
+					}
+					Iterator<String> i = tuple.iterator();
+					ContentComponent component = new ContentComponent(); 
+					
+					// contentcomponent.username
+					component.setUsername(i.next());
+					
+					// contentcomponent.infostateType
+					component.setInfoStateType(i.next());
+					
+					// contentcomponent.status
+					component.setStatus(Boolean.valueOf(i.next()));
+					
+					// contentcomponent.type
+					component.setType(i.next());
+					
+					// contentcomponent.content
+					component.setContent(i.next());
+					
+					// add to list
+					contentComponentList.add(component);
+				}
+				System.out.println("ContentComponentList loaded from CSV file");		
+				return contentComponentList;
+			} finally {
+				readContentComponents.close();
+			}
+		}	
+	
 }

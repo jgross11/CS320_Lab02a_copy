@@ -25,7 +25,12 @@ import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
  */
 
 public class DerbyDatabase implements IDatabase {
-	
+	private List<User> userList;
+	private List<Graduate> graduateList;
+	private List<Advisor> advisorList;
+	private List<Admin> adminList;
+	private List<InfoState> infoStateList;
+	private List<ContentComponent> contentComponentList;
 	static {
 		try {
 			Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
@@ -95,13 +100,15 @@ public class DerbyDatabase implements IDatabase {
 				System.out.println("Attempting to find graduate by username: " + username);
 				try {
 					stmt = conn.prepareStatement(
-							"select users.*, graduates.*, infostates.* "
-							+ "from users, graduates, infostates where "
-							+ "users.username = graduates.username and "
-							+ "graduates.username = infostates.username and graduates.username = ?"
+							"select graduates.major, graduates.advisorusername, "
+							+ "graduates.status, contentComponents.infostatetype, "
+							+ "contentComponents.status, contentComponents.type, "
+							+ "contentComponents.content "
+							+ "from graduates, contentComponents where "
+							+ "graduates.username = contentComponents.username and graduates.username = ?"
 					);
 					stmt.setString(1, username);
-					
+					List<User> gradAsUser = findUserByUsername(username);
 					List<Graduate> result = new ArrayList<Graduate>();
 					
 					resultSet = stmt.executeQuery();
@@ -111,10 +118,8 @@ public class DerbyDatabase implements IDatabase {
 					
 					while (resultSet.next()) {
 						found = true;
-						User user = new User();
-						loadUser(user, resultSet, 1);
-						Graduate graduate = new Graduate(user);
-						loadGraduate(graduate, resultSet, 8);
+						Graduate graduate = new Graduate(gradAsUser.get(0));
+						loadGraduate(graduate, resultSet, 1);
 						result.add(graduate);
 					}
 					
@@ -221,6 +226,47 @@ public class DerbyDatabase implements IDatabase {
 	}
 
 	@Override
+	public List<ContentComponent> findContentComponentsByUsername(String username) {
+		return executeTransaction(new Transaction<List<ContentComponent>>() {
+			@Override
+			public List<ContentComponent> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement(
+							"select contentComponents.* from contentComponents where contentComponents.username = ?"
+					);
+					stmt.setString(1, username);
+					
+					List<ContentComponent> result = new ArrayList<ContentComponent>();
+					
+					resultSet = stmt.executeQuery();
+					
+					// for testing that a result was returned
+					Boolean found = false;
+					
+					while (resultSet.next()) {
+						found = true;
+						ContentComponent content = new ContentComponent();
+						loadContentComponent(content, resultSet, 1);
+					}
+					
+					// check if the contentComponents were found
+					if (!found) {
+						System.out.println("No contentComponents belonging to " + username + " were found in the contentComponent table");
+					}
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+	}
+	
+	@Override
 	public List<InfoState> findGraduateInfoStateByGraduateUsername(String username) {
 		// TODO Auto-generated method stub
 		return null;
@@ -251,7 +297,6 @@ public class DerbyDatabase implements IDatabase {
 					while (resultSet.next()) {
 						found = true;
 						graduateUsername = resultSet.getString(i++);
-						System.out.println(graduateUsername);
 						result.addAll(findGraduateByUsername(graduateUsername));
 						i = 1;
 					}
@@ -374,70 +419,71 @@ public class DerbyDatabase implements IDatabase {
 			// graduates.status
 			graduate.setStatus(Boolean.valueOf(resultSet.getString(index++)));
 			
-			// skips infostates.username
-			index++;
-			
-			// TODO: this could be improved to call a function to iterate instead of 
-			// TODO: copying / pasting the same four loops 
-			
-			// 1st infostate creation
-			
-			// infostates.type
-			String infostateType = resultSet.getString(index++);
-			if(infostateType.equals("current")) {
-				InfoState currentIS = new InfoState();
+			InfoState current = new InfoState();
+			InfoState pending = new InfoState();
+			do {
+				System.out.println("index: " + index);
 				
-				// iterates through results adding, in order: extra info->name pronunciation->slideshowphoto1..4->video
-				for(int i = 0; i < currentIS.getNumContents(); i++) {
-					currentIS.getContents().add(i, new ContentComponent(resultSet.getString(index++)));
+				// contentcomponents.infostatetype
+				String infoStateType = resultSet.getString(index++);
+				
+				// contentcomponents.status
+				String status = resultSet.getString(index++);
+				
+				// contentcomponents.type
+				String contentType = resultSet.getString(index++);
+				
+				// contentcomponents.path
+				String path = resultSet.getString(index++);
+				
+				ContentComponent content = new ContentComponent(path, Boolean.valueOf(status), contentType, graduate.getUsername());
+				
+				int contentIndex = 0;
+				
+				switch(content.getType()) {
+				case "profilePicture":
+					contentIndex = InfoState.PROFILE_INDEX;
+					break;
+				case "extraInformation":
+					contentIndex = InfoState.EXTRAINFORMATION_INDEX;
+					break;
+				case "namePronunciation":
+					contentIndex = InfoState.NAMEPRONUNCIATION_INDEX;
+					break;
+				case "slideshow1":
+					contentIndex = InfoState.SLIDESHOW1_INDEX;
+					break;
+				case "slideshow2":
+					contentIndex = InfoState.SLIDESHOW2_INDEX;
+					break;
+				case "slideshow3":
+					contentIndex = InfoState.SLIDESHOW3_INDEX;
+					break;
+				case "slideshow4":
+					contentIndex = InfoState.SLIDESHOW4_INDEX;
+					break;
+				case "video":
+					contentIndex = InfoState.VIDEO_INDEX;
+					break;
 				}
-				
-				// set created infostate to graduate's current
-				graduate.setCurrentInfo(currentIS);
-			}
-			else {
-				InfoState pendingIS = new InfoState();
-				// iterates through results adding, in order: extra info->name pronunciation->slideshowphoto1..4->video
-				
-				for(int i = 0; i < pendingIS.getNumContents(); i++) {
-					pendingIS.getContents().add(i, new ContentComponent(resultSet.getString(index++)));
+				System.out.println("contentIndex for type " + contentType + ": " + contentIndex);
+				if(infoStateType.equals("pending")) {
+					pending.getContents().remove(contentIndex);
+					pending.getContents().add(contentIndex, content);
 				}
-				
-				// set created infostate to graduate's pending
-				graduate.setPendingInfo(pendingIS);
-			}
-			
-			// move to next query
-			resultSet.next();
-			
-			// skips information already set
-			index = 12;
-			
-			// 2nd infostate creation
-			infostateType = resultSet.getString(index++);
-			if(infostateType.equals("current")) {
-				InfoState currentIS = new InfoState();
-				
-				// iterates through results adding, in order: extra info->name pronunciation->slideshowphoto1..4->video
-				for(int i = 0; i < currentIS.getNumContents(); i++) {
-					currentIS.getContents().add(i, new ContentComponent(resultSet.getString(index++)));
+				else {
+					current.getContents().remove(contentIndex);
+					current.getContents().add(contentIndex, content);
 				}
-				
-				// set created infostate to graduate's current
-				graduate.setCurrentInfo(currentIS);
+				index -= 4;
 			}
-			else {
-				InfoState pendingIS = new InfoState();
-				
-				// iterates through results adding, in order: extra info->name pronunciation->slideshowphoto1..4->video
-				for(int i = 0; i < pendingIS.getNumContents(); i++) {
-					pendingIS.getContents().add(i, new ContentComponent(resultSet.getString(index++)));
-				}
-				
-				// set created infostate to graduate's pending
-				graduate.setPendingInfo(pendingIS);
+			while(resultSet.next());
+			for(int i = 0; i < current.getContents().size(); i++) {
+				System.out.println("current for index " + i + ": " + current.getContents().get(i).getContent());
+				System.out.println("pending for index " + i + ": " + pending.getContents().get(i).getContent());
 			}
-			
+			graduate.setCurrentInfo(current);
+			graduate.setPendingInfo(current);
 		}
 		
 		// retrieves Advisor information from query result set
@@ -450,7 +496,7 @@ public class DerbyDatabase implements IDatabase {
 			advisor.setAcademicInformation((resultSet.getString(index++))); 
 			
 			// advisors.status
-			advisor.setStatus(Boolean.parseBoolean(resultSet.getString(index++))); 
+			advisor.setStatus(resultSet.getBoolean(index++));
 			
 			// populate advisor's list of students
 		}
@@ -463,7 +509,27 @@ public class DerbyDatabase implements IDatabase {
 			
 			// admins.eventDate
 			admin.setDate(Date.valueOf(resultSet.getString(index++))); 
-		}		
+		}
+		
+		// retrieves ContentComponent information from query result set
+		private void loadContentComponent(ContentComponent content, ResultSet resultSet, int index) throws SQLException {
+			
+			// contentComponent.username
+			content.setUsername(resultSet.getString(index++));
+			
+			// contentComponent.infoStateType
+			content.setInfoStateType(resultSet.getString(index++));
+			
+			// contentComponent.status
+			content.setStatus(resultSet.getBoolean(index++));
+			
+			// contentComponent.type
+			content.setType(resultSet.getString(index++));
+			
+			// contentComponent.content
+			content.setContent(resultSet.getString(index++));
+			
+		}
 		
 
 	//  creates the users, graduates, advisors, admins, and infostate tables
@@ -471,11 +537,23 @@ public class DerbyDatabase implements IDatabase {
 		executeTransaction(new Transaction<Boolean>() {
 			@Override
 			public Boolean execute(Connection conn) throws SQLException {
+				// user table
 				PreparedStatement stmt1 = null;
+				
+				// graduates table
 				PreparedStatement stmt2 = null;
+				
+				// advisor table
 				PreparedStatement stmt3 = null;
+				
+				// admin table
 				PreparedStatement stmt4 = null;
+				
+				// infostate table
 				PreparedStatement stmt5 = null;
+				
+				// contentComponent table
+				PreparedStatement stmt6 = null;
 			
 				try {
 					stmt1 = conn.prepareStatement(
@@ -534,6 +612,7 @@ public class DerbyDatabase implements IDatabase {
 					System.out.println("Admin table created");
 					
 					stmt5 = conn.prepareStatement(
+
 							"create table infostates("+
 							"	author_id integer constraint author_id references authors, " +
 							"infoStateType varchar(7), extraInfo varchar(255), "+
@@ -544,11 +623,31 @@ public class DerbyDatabase implements IDatabase {
 							"slideshowPhoto4 varchar(100), "+
 							"video varchar(100)"+
 							 ")"
+
+							"create table infostates("
+							+ "username varchar(50), "
+							+ "infoStateType varchar(7) "
+							+ ")"
+
 					);
 					stmt5.executeUpdate();
 					
 					System.out.println("InfoState table created");
-										
+					
+					stmt6 = conn.prepareStatement(
+							
+						"create table contentComponents ( "
+						+ "  username varchar(50), "
+						+ "  infoStateType varchar(50), "
+						+ "  status varchar(5), "
+						+ "  type varchar(50), "
+						+ "  content varchar(50) "
+						+ ")"
+					);	
+					stmt6.executeUpdate();
+					
+					System.out.println("ContentComponents table created");
+					
 					return true;
 				} finally {
 					DBUtil.closeQuietly(stmt1);
@@ -556,6 +655,7 @@ public class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(stmt3);
 					DBUtil.closeQuietly(stmt4);
 					DBUtil.closeQuietly(stmt5);
+					DBUtil.closeQuietly(stmt6);
 				}
 			}
 		});
@@ -567,11 +667,6 @@ public class DerbyDatabase implements IDatabase {
 		executeTransaction(new Transaction<Boolean>() {
 			@Override
 			public Boolean execute(Connection conn) throws SQLException {
-				List<User> userList;
-				List<Graduate> graduateList;
-				List<Advisor> advisorList;
-				List<Admin> adminList;
-				List<InfoState> infoStateList;
 				
 				try {
 					userList = InitialData.getUsers();
@@ -579,6 +674,7 @@ public class DerbyDatabase implements IDatabase {
 					advisorList = InitialData.getAdvisors();
 					adminList = InitialData.getAdmins();
 					infoStateList = InitialData.getInfoStates();
+					contentComponentList = InitialData.getContentComponents();
 				} catch (IOException e) {
 					throw new SQLException("Couldn't read initial data", e);
 				}
@@ -588,6 +684,7 @@ public class DerbyDatabase implements IDatabase {
 				PreparedStatement insertAdvisor = null;
 				PreparedStatement insertAdmin = null;
 				PreparedStatement insertInfoState = null;
+				PreparedStatement insertContentComponent = null;
 
 				try {
 					// insert users into users table
@@ -639,20 +736,44 @@ public class DerbyDatabase implements IDatabase {
 					
 					// insert infoState into infoState table
 					insertInfoState = conn.prepareStatement("insert into infostates ("
+
 							+ "userId, infoStateType, extraInfo, namePronunciation, slideshowPhoto1, "
 							+ "slideshowPhoto2, slideshowPhoto3, slideshowPhoto4, video) values ("
 							+ "?, ?, ?, ?, ?, ?, ?, ?, ?)");
+=======
+							+ "username, infoStateType)"
+							+ " values ("
+							+ "?, ?)");
+
 					for(InfoState infoState : infoStateList) {
 						insertInfoState.setInt(1, infoState.getUserId());
 						insertInfoState.setString(2, infoState.getFormatType());
+						/*
 						for(int i = 0; i < infoState.getNumContents(); i++) {
 							insertInfoState.setString(i + 3, infoState.getContentAtIndex(i).getContent());
+						}
+						*/
+						for(ContentComponent component : infoState.getContents()) {
+							
 						}
 						insertInfoState.addBatch();
 					}
 					insertInfoState.executeBatch();
 					System.out.println("InfoState table populated");
 					
+					insertContentComponent = conn.prepareStatement("insert into contentComponents ("
+							+ "username, infoStateType, status, type, content)"
+							+ " values (?, ?, ?, ?, ?)"); 
+					for(ContentComponent content : contentComponentList) {
+						insertContentComponent.setString(1, content.getUsername());
+						insertContentComponent.setString(2, content.getInfoStateType());
+						insertContentComponent.setString(3, String.valueOf(content.getStatus()));
+						insertContentComponent.setString(4, content.getType());
+						insertContentComponent.setString(5, content.getContent());
+						insertContentComponent.addBatch();
+					}
+					insertContentComponent.executeBatch();
+					System.out.println("ContentComponent table populated");
 					return true;
 				} finally {
 					DBUtil.closeQuietly(insertUser);
