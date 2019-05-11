@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class InfoState {
 	private String formatType;
 	private final int numContents = 7;
-	private String username;
+	private int UserID; 
 	private ArrayList<ContentComponent> contents;
 	
 	public InfoState() {
@@ -17,13 +17,13 @@ public class InfoState {
 		contents = oldState.getContents();
 	}
 	
-	public String getUsername() {
-		return username;
+	public int getUserId() {
+		return this.UserID;
 	}
 	
-	public void setUsername(String username) {
-		this.username = username;
-	}
+	public void setUserID(int x) {
+		this.UserID = x; 
+	} 
 	
 	public String getFormatType() {
 		return formatType;

@@ -15,7 +15,7 @@ import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
 
 
 /*
- * This file is heavily based off of Skeleton example code provided by <DONALD J. HAKE II> and Solved by <Dennis Chism>
+ * This file is heavily based off of Skeleton example code provided by <DONALD J. HAKE II> 
  * Thanks.
  */
 
@@ -131,5 +131,30 @@ public class FakeDatabase implements IDatabase {
 	@Override
 	public String InsertIntoEventDate(String date) throws SQLException {
 		return null; 
+	}
+	@Override
+	public List<Graduate> findGraduateByUserId(int x) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<Advisor> findAdvisorByUserId(int x) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<Admin> findAdminByUserId(int x) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<InfoState> findGraduateInfoStateByGraduateUserID(int x) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public String updateGraduateContentToApporve(String oldContentPath, int studentUserID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

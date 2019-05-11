@@ -357,6 +357,10 @@ public class DerbyDatabase implements IDatabase {
 			// users.image
 			user.setImage(resultSet.getString(index++)); 
 		}
+		private void loadInfoState(InfoState info, ResultSet resultSet, int index) throws SQLException {
+			
+	
+		}
 		
 		// retrieves Graduate information from query result set
 		private void loadGraduate(Graduate graduate, ResultSet resultSet, int index) throws SQLException {
@@ -475,64 +479,71 @@ public class DerbyDatabase implements IDatabase {
 			
 				try {
 					stmt1 = conn.prepareStatement(
-						
-						"create table users ( "
-						+ "  username varchar(50), "
-						+ "  password varchar(50), "
-						+ "  firstname varchar(25), "
-						+ "  lastname varchar(25), "
-						+ "  accountType varchar(8), "
-						+ "  userImage varchar(100)"
-						+ ")"
+						/*
+						 *User Table Schema
+						 * UserId(int) | username(varchar) | password(varchar) | firstname(varchar)| lastname(varchar) | accountType(varchar) | userImage(varvchar path)  
+						 * 
+						 * 
+						 */
+						"create table users ( "+
+						"	userID integer primary key " +
+						"		generated always as identity (start with 1, increment by 1), " +
+						"  username varchar(50), "+
+						"  password varchar(50), "+
+						"  firstname varchar(25), "+
+						"  lastname varchar(25), "+
+						"  accountType varchar(8),"+
+						"  userImage varchar(100)"+
+						")"
 					);	
 					stmt1.executeUpdate();
 					
 					System.out.println("Users table created");
 					
 					stmt2 = conn.prepareStatement(
-						"create table graduates("
-						+ "username varchar(50) primary key,"
-						+ "major varchar(50), "
-						+ "advisorUsername varchar(50),"
-						+ "status varchar(10)"
-						+ ")"
+						"create table graduates("+
+						"	userID integer constraint UserId references users, " +
+						"major varchar(50), "+ 
+						"advisorUsername varchar(50),"+
+						"status varchar(10)"+
+						")"
 					);
 					stmt2.executeUpdate();
 					
 					System.out.println("Graduate table created");					
 					
 					stmt3 = conn.prepareStatement(
-							"create table advisors("
-							+ "username varchar(50), "
-							+ "academicInfo varchar(50),"
-							+ "status varchar(5)"
-							+ ")"
+							"create table advisors("+
+							"	author_id integer constraint author_id references authors, " +
+							"academicInfo varchar(50),"+
+							"status varchar(5)"+
+							")"
 					);
 					stmt3.executeUpdate();
 					
 					System.out.println("Advisor table created");
 
 					stmt4 = conn.prepareStatement(
-							"create table admins("
-							+ "username varchar(50), "
-							+ "eventDate varchar(50)"
-							+ ")"
+							"create table admins("+
+							"	author_id integer constraint author_id references authors, " +
+							"eventDate varchar(50)"+
+							")"
 					);
 					stmt4.executeUpdate();
 					
 					System.out.println("Admin table created");
 					
 					stmt5 = conn.prepareStatement(
-							"create table infostates("
-							+ "username varchar(50), "
-							+ "infoStateType varchar(7), extraInfo varchar(255), "
-							+ "namePronunciation varchar(100), "
-							+ "slideshowPhoto1 varchar(100), "
-							+ "slideshowPhoto2 varchar(100), "
-							+ "slideshowPhoto3 varchar(100), "
-							+ "slideshowPhoto4 varchar(100), "
-							+ "video varchar(100)"
-							+ ")"
+							"create table infostates("+
+							"	author_id integer constraint author_id references authors, " +
+							"infoStateType varchar(7), extraInfo varchar(255), "+
+							"namePronunciation varchar(100), "+
+							"slideshowPhoto1 varchar(100), "+
+							"slideshowPhoto2 varchar(100), "+
+							"slideshowPhoto3 varchar(100), "+
+							"slideshowPhoto4 varchar(100), "+
+							"video varchar(100)"+
+							 ")"
 					);
 					stmt5.executeUpdate();
 					
@@ -594,9 +605,9 @@ public class DerbyDatabase implements IDatabase {
 					System.out.println("Users table populated");
 					
 					// insert graduates into graduates table
-					insertGraduate = conn.prepareStatement("insert into graduates (username, major, advisorUsername, status) values (?, ?, ?, ?)");
+					insertGraduate = conn.prepareStatement("insert into graduates (userID, major, advisorUsername, status) values (?, ?, ?, ?)");
 					for(Graduate graduate : graduateList) {
-						insertGraduate.setString(1, graduate.getUsername());
+						insertGraduate.setInt(1, graduate.getUserId());
 						insertGraduate.setString(2, graduate.getMajor());
 						insertGraduate.setString(3, graduate.getAdvisor());
 						insertGraduate.setString(4, String.valueOf(graduate.getStatus()));
@@ -606,9 +617,9 @@ public class DerbyDatabase implements IDatabase {
 					System.out.println("Graduates table populated");
 					
 					// insert advisors into advisors table
-					insertAdvisor = conn.prepareStatement("insert into advisors (username, academicInfo, status) values (?, ?, ?)");
+					insertAdvisor = conn.prepareStatement("insert into advisors (userId, academicInfo, status) values (?, ?, ?)");
 					for(Advisor advisor : advisorList) {
-						insertAdvisor.setString(1, advisor.getUsername());
+						insertAdvisor.setInt(1, advisor.getUserId());
 						insertAdvisor.setString(2, advisor.getAcademicInformation());
 						insertAdvisor.setString(3, String.valueOf(advisor.getStatus()));
 						insertAdvisor.addBatch();
@@ -619,7 +630,7 @@ public class DerbyDatabase implements IDatabase {
 					// insert admins into admins table
 					insertAdmin = conn.prepareStatement("insert into admins (username, eventDate) values (?, ?)");
 					for(Admin admin : adminList) {
-						insertAdmin.setString(1, admin.getUsername());
+						insertAdmin.setInt(1, admin.getUserId());
 						insertAdmin.setString(2, String.valueOf(admin.getDate()));
 						insertAdmin.addBatch();
 					}
@@ -628,11 +639,11 @@ public class DerbyDatabase implements IDatabase {
 					
 					// insert infoState into infoState table
 					insertInfoState = conn.prepareStatement("insert into infostates ("
-							+ "username, infoStateType, extraInfo, namePronunciation, slideshowPhoto1, "
+							+ "userId, infoStateType, extraInfo, namePronunciation, slideshowPhoto1, "
 							+ "slideshowPhoto2, slideshowPhoto3, slideshowPhoto4, video) values ("
 							+ "?, ?, ?, ?, ?, ?, ?, ?, ?)");
 					for(InfoState infoState : infoStateList) {
-						insertInfoState.setString(1, infoState.getUsername());
+						insertInfoState.setInt(1, infoState.getUserId());
 						insertInfoState.setString(2, infoState.getFormatType());
 						for(int i = 0; i < infoState.getNumContents(); i++) {
 							insertInfoState.setString(i + 3, infoState.getContentAtIndex(i).getContent());
@@ -685,6 +696,197 @@ public class DerbyDatabase implements IDatabase {
 		db.loadInitialData();
 		
 		System.out.println("PCP DB successfully initialized!");
+	}
+
+	@Override
+	public List<Graduate> findGraduateByUserId(int x) {
+		return executeTransaction(new Transaction<List<Graduate>>() {
+			@Override
+			public List<Graduate> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement(
+							"select graduates.* " +
+							"from graduates"+
+							"where graduates.userid = ?"
+					);
+					stmt.setInt(1, x);
+					
+					List<Graduate> result = new ArrayList<Graduate>();
+					
+					resultSet = stmt.executeQuery();
+					
+					// for making sure a result was found  
+					Boolean found = false;
+					while (resultSet.next()) {
+						found = true;
+						User user = new User();
+						loadUser(user, resultSet, 1);
+						Graduate graduate = new Graduate(user);
+						loadGraduate(graduate, resultSet, 8);
+						result.add(graduate);
+					}
+					
+					// this if statements checks if 
+					if (!found) {
+						System.out.println("graduate was not found in the advisor table");
+					}
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+		
+	}
+
+	@Override
+	public List<Advisor> findAdvisorByUserId(int x) {
+		return executeTransaction(new Transaction<List<Advisor>>() {
+			@Override
+			public List<Advisor> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement(
+					"select advisors.* "+
+					"from advisors"+ 
+					"where advisors.userId = ?"
+							
+					);
+					stmt.setInt(1, x);
+					
+					List<Advisor> result = new ArrayList<Advisor>();
+					
+					resultSet = stmt.executeQuery();
+					
+					// for making sure a result was found  
+					Boolean found = false;
+					while (resultSet.next()) {
+						found = true;
+						User user = new User(); 
+						loadUser(user, resultSet, 1);
+						Advisor advisor = new Advisor(); 
+						loadAdvisor(advisor, resultSet, 8);
+						result.add(advisor);
+					}
+					
+					// this if statements checks if 
+					if (!found) {
+						System.out.println("Advisor was not found in the advisor table");
+					}
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+	}
+
+	@Override
+	public List<Admin> findAdminByUserId(int x) {
+		return executeTransaction(new Transaction<List<Admin>>() {
+			@Override
+			public List<Admin> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement(
+					"select admins.* "+
+					"from admins"+ 
+					"where admins.userId = ?"
+							
+					);
+					stmt.setInt(1, x);
+					
+					List<Admin> result = new ArrayList<Admin>();
+					
+					resultSet = stmt.executeQuery();
+					
+					// for making sure a result was found  
+					Boolean found = false;
+					while (resultSet.next()) {
+						found = true;
+						User user = new User(); 
+						loadUser(user, resultSet, 1);
+						Admin admin = new Admin(); 
+						loadAdmin(admin, resultSet, 8);
+						result.add(admin);
+					}
+					
+					// this if statements checks if 
+					if (!found) {
+						System.out.println("Admin was not found in the advisor table");
+					}
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+	}
+
+	@Override
+	public List<InfoState> findGraduateInfoStateByGraduateUserID(int x) {		
+		return executeTransaction(new Transaction<List<InfoState>>() {
+			@Override
+				public List<InfoState> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement(
+						"select infoStates.* "+
+						"from infoStates"+ 
+						"where infostates.userId = ?"
+						
+						);
+				stmt.setInt(1, x);
+				
+				List<InfoState> result = new ArrayList<InfoState>();
+				
+				resultSet = stmt.executeQuery();
+				
+				while() 
+			
+				
+
+				
+				return result;
+			} finally {
+				DBUtil.closeQuietly(resultSet);
+				DBUtil.closeQuietly(stmt);
+			}
+		}
+	});
+	}
+
+	@Override
+	public String updateGraduateContentToApporve(String oldContentPath, int studentUserID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<User> findUserByUsernameAndPassword(String username, String password) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String updateGraduateContentToApporve(String oldContentPath, String newContentPath, int studentUserID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 

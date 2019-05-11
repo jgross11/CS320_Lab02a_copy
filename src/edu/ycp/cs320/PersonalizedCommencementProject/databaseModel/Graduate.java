@@ -4,6 +4,7 @@ public class Graduate extends User{
 	private String major, minor, QRCodeString;
 	private InfoState pendingInfo, currentInfo;
 	private String advisor;
+	private int UserId; 
 	private boolean status;
 	
 	public Graduate() {
