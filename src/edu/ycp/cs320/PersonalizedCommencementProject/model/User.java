@@ -1,7 +1,7 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.model;
 
 public class User {
-	private String username, password, firstName, lastName, type;
+	private String username, password, firstName, lastName, type, image;
 	public User() {
 
 	}
@@ -45,4 +45,11 @@ public class User {
 	public String getName() {
 		return firstName + " " + lastName;
 	}
+	public void setProfilePic(String path) {
+		this.image = path; 
+	}
+	public String getProfilePic() {
+		return this.image; 
+	}
+
 }

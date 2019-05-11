@@ -34,6 +34,7 @@ public class InitialData {
 		List<User> userList = new ArrayList<User>();
 		ReadCSV readUsers = new ReadCSV("users.csv");
 		try {
+			Integer UserID = 1; 
 			while (true) {
 				List<String> tuple = readUsers.next();
 				if (tuple == null) {
@@ -41,6 +42,7 @@ public class InitialData {
 				}
 				Iterator<String> i = tuple.iterator();
 				User user = new User();
+				user.setUserId(UserID); 
 				user.setUsername(i.next());
 				user.setPassword(i.next());
 				user.setFirstName(i.next());
@@ -90,6 +92,7 @@ public class InitialData {
 				if(graduate == null) {
 					System.err.println(". . . . GRADUATE INFO NOT FOUND. . . .");
 				}
+				graduate.setUserId(Integer.parseInt(i.next()));
 				graduate.setMajor(i.next());
 				graduate.setAdvisor(i.next());
 				graduate.setStatus(i.next().equals("ready"));
@@ -132,6 +135,7 @@ public class InitialData {
 				if(advisor == null) {
 					System.err.println(". . . . ADVISOR INFO NOT FOUND. . . .");
 				}
+				advisor.setUserId(Integer.parseInt(i.next()));
 				advisor.setAcademicInformation(i.next());
 				advisor.setStatus(Boolean.parseBoolean(i.next()));
 				
@@ -179,6 +183,7 @@ public class InitialData {
 				if(admin == null) {
 					System.err.println(". . . . ADMIN INFO NOT FOUND. . . .");
 				}
+				admin.setUserId(Integer.parseInt(i.next()));
 				admin.setDate(Long.parseLong(i.next()));
 				adminList.add(admin);
 			}
@@ -211,6 +216,10 @@ public class InitialData {
 					
 					// found graduate, set infostate
 					if(grad.getUsername().equals(username)) {
+
+						infoState = new InfoState();
+						infoState.setUserID(Integer.parseInt(i.next())); 
+            
 						// obtain and check infostate's type
 						String type = i.next();
 						infoState = populateInfoState(username, type);

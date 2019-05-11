@@ -2,6 +2,7 @@ package edu.ycp.cs320.PersonalizedCommencementProject.databaseModel;
 
 public class User {
 	private String username, password, firstName, lastName, type, image;
+	private int UserID;
 	public User() {
 
 	}
@@ -12,6 +13,7 @@ public class User {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.image = image;
+		this.
 	}
 	public String getUsername() {
 		return username;
@@ -52,4 +54,10 @@ public class User {
 	public void setImage(String image) {
 		this.image = image;
 	}
+	public void setUserId(int i) {
+		this.UserID = i; 
+	}
+	public int getUserId() {
+		return this.UserID; 
+	} 
 }

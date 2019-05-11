@@ -32,5 +32,8 @@ public class UserController {
 	public void setLastName(String lastName) {
 		model.setLastName(lastName);
 	}
+	public void setProfilePic(String ProfilePic) {
+		model.setImage(ProfilePic); 
+	}
 	
 }

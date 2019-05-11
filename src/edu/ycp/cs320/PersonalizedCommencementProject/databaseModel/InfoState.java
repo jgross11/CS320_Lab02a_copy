@@ -13,7 +13,12 @@ public class InfoState {
 	public static final int VIDEO_INDEX = 7;
 	private final int numContents = 8;
 	private String formatType;
+
+	private final int numContents = 7;
+	private int UserID; 
+=======
 	private String username;
+
 	private ArrayList<ContentComponent> contents;
 	
 	public InfoState() {
@@ -28,13 +33,13 @@ public class InfoState {
 		contents = oldState.getContents();
 	}
 	
-	public String getUsername() {
-		return username;
+	public int getUserId() {
+		return this.UserID;
 	}
 	
-	public void setUsername(String username) {
-		this.username = username;
-	}
+	public void setUserID(int x) {
+		this.UserID = x; 
+	} 
 	
 	public String getFormatType() {
 		return formatType;
