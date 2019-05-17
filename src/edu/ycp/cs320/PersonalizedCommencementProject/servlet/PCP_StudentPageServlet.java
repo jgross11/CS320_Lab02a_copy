@@ -125,10 +125,6 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		Graduate graduate = (Graduate) session.getAttribute("graduate");
 		controller.setModel(graduate);
 		
-		
-		// TODO: create reference to model
-		// TODO: Graduate model = controller.getModel();
-		
 		// determines whether or not student wishes
 		// to save changes to their media selections
 		String studentSaveChanges = "";
@@ -151,8 +147,13 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		
 		// student wishes to edit their media
 		if(mode.equals("graduateView")) {
-			session.setAttribute("mode", "graduateEdit");
-			System.out.println("Switching graduate mode from view to edit");
+			if(controller.canEdit()) {
+				session.setAttribute("mode", "graduateEdit");
+				System.out.println("Switching graduate mode from view to edit");				
+			}
+			else {
+				System.out.println("Editing deadline has passed");
+			}
 			session.setAttribute("graduate", graduate);
 			req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
 		}
@@ -165,6 +166,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 			if(req.getParameter("graduateLayoutChange").toString().equals("true")){
 				// TODO: set graduate's layout mode to the chosen value
 				// TODO: this is temporary; will eventually change model
+				graduate.getPendingInfo().setLayout(req.getParameter("graduateLayout"));
 				session.setAttribute("graduateLayout", req.getParameter("graduateLayout"));
 				session.setAttribute("graduateLayoutChange", "false");
 				session.setAttribute("mode", "graduateEdit");
@@ -189,7 +191,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 					    uniqueFileName = graduate.getUsername() + "_" + profilePicturePart.getSubmittedFileName();
 					    writeFile(profilePicturePart, uniqueFileName, "image");
 					    ContentComponent newContent = new ContentComponent("student-media-uploads\\photos\\" + uniqueFileName, false, InfoState.PROFILE, graduate.getUsername(), "pending");
-						controller.insertGraduateMediaIntoContentComponentTable(graduate.getUsername(), "pending", newContent);
+						controller.insertGraduateMediaIntoContentComponentTable(newContent);
 						controller.setInfoAtIndex(InfoState.PROFILE_INDEX, new ContentComponent("student-media-uploads/photos/" + uniqueFileName, newContent.getStatus(), newContent.getType(), newContent.getUsername(), newContent.getInfoStateType()));
 						System.out.println("Entered new profile picture");
 						for(ContentComponent content : graduate.getPendingInfo().getContents()) {
@@ -201,17 +203,27 @@ public class PCP_StudentPageServlet extends HttpServlet {
 					Part namePronunciationPart = req.getPart("namePronunciationUpload");
 					if(!namePronunciationPart.getSubmittedFileName().equals("")) {
 						// TODO: insert student's username here
-					    uniqueFileName = /*model.getUsername() + */ "test_" + namePronunciationPart.getSubmittedFileName();
+					    uniqueFileName = graduate.getUsername() + "_" + namePronunciationPart.getSubmittedFileName();
 					    writeFile(namePronunciationPart, uniqueFileName, "audio");
 					    ContentComponent newContent = new ContentComponent("student-media-uploads\\audios\\" + uniqueFileName, false, InfoState.NAMEPRONUNCIATION, graduate.getUsername(), "pending");
-						controller.insertGraduateMediaIntoContentComponentTable(graduate.getUsername(), "pending", newContent);
+						controller.insertGraduateMediaIntoContentComponentTable(newContent);
 						controller.setInfoAtIndex(InfoState.NAMEPRONUNCIATION_INDEX, new ContentComponent("student-media-uploads/audios/" + uniqueFileName, newContent.getStatus(), newContent.getType(), newContent.getUsername(), newContent.getInfoStateType()));
 						System.out.println("Entered new name pronunciation");
 						for(ContentComponent content : graduate.getPendingInfo().getContents()) {
 							System.out.println(content.getType() + " | " + content.getContent());
 						}
 					}
- 
+					
+					// extra information check
+					String newExtraInfo = req.getParameter("studentNewInformation");
+					String oldExtraInfo = graduate.getPendingInfo().getContentAtIndex(InfoState.EXTRAINFORMATION_INDEX).getContent();
+					if(!newExtraInfo.equals(oldExtraInfo)) {
+						ContentComponent newExtraInformation = new ContentComponent(newExtraInfo, false, InfoState.EXTRAINFORMATION, graduate.getUsername(), "pending");
+						controller.insertGraduateMediaIntoContentComponentTable(newExtraInformation);
+						controller.setInfoAtIndex(InfoState.EXTRAINFORMATION_INDEX, newExtraInformation);
+						System.out.println("Extra information has changed");
+						System.out.println(newExtraInfo + " | " + oldExtraInfo);
+					}
 					String layout = session.getAttribute("graduateLayout").toString();
 					if(layout.equals("static slideshow") || layout.equals("dynamic slideshow")) {
 						String builder = "";
@@ -223,7 +235,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 								uniqueFileName = graduate.getUsername() + "_" + imagePart.getSubmittedFileName();
 							    writeFile(imagePart, uniqueFileName, "image");
 							    ContentComponent newContent = new ContentComponent("student-media-uploads\\photos\\" + uniqueFileName, false, "slideshow" + i, graduate.getUsername(), "pending");
-								controller.insertGraduateMediaIntoContentComponentTable(graduate.getUsername(), "pending", newContent);
+								controller.insertGraduateMediaIntoContentComponentTable(newContent);
 								controller.setInfoAtIndex(2+i, new ContentComponent("student-media-uploads/photos/" + uniqueFileName, newContent.getStatus(), newContent.getType(), newContent.getUsername(), newContent.getInfoStateType()));
 							}
 							else {
@@ -241,7 +253,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 							uniqueFileName = graduate.getUsername() + "_" + videoPart.getSubmittedFileName();
 						    writeFile(videoPart, uniqueFileName, "video");
 						    ContentComponent newContent = new ContentComponent("student-media-uploads\\videos\\" + uniqueFileName, false, InfoState.VIDEO, graduate.getUsername(), "pending");
-							controller.insertGraduateMediaIntoContentComponentTable(graduate.getUsername(), "pending", newContent);
+							controller.insertGraduateMediaIntoContentComponentTable(newContent);
 							controller.setInfoAtIndex(InfoState.PROFILE_INDEX, new ContentComponent("student-media-uploads/videos/" + uniqueFileName, newContent.getStatus(), newContent.getType(), newContent.getUsername(), newContent.getInfoStateType()));
 							System.out.println("Entered new video");
 							for(ContentComponent content : graduate.getPendingInfo().getContents()) {
@@ -266,6 +278,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 					System.out.println("Invalid Values, save: " + studentSaveChanges);
 				}
 			}
+			graduate.calculateStatus();
 			session.setAttribute("graduate", graduate);
 			req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
 		}
@@ -290,6 +303,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 			}
 			else if(session.getAttribute("advisorGoBack").equals("true")) {
 				System.out.println("Navigating back to advisor home page");
+				
 				resp.sendRedirect(req.getContextPath() + "/PCP_AdvisorPage");
 			}
 			
@@ -307,53 +321,79 @@ public class PCP_StudentPageServlet extends HttpServlet {
 				InfoState pendingState = grad.getPendingInfo();
 				System.out.println("Advisor saved changes");
 				// contents from jsp go: extra info(0), name pronunciation(1), display picture(2), slideshows(3-6), video(7)
+				// TODO: change the jsp to align advisor choice with infostate indices 
+				// TODO: to eliminate necessity of switch statement
 				Boolean[] advisorChoices = constructAdvisorChoiceArray(req.getParameter("studentNewInfo"));
+				int temp;
+				ContentComponent tempC = null;
 				for(int i = 0; i < advisorChoices.length; i++) {
+					temp = -1;
+					switch(i) {
+					case 0:
+						temp = InfoState.EXTRAINFORMATION_INDEX;
+					break;
+					case 1:
+						temp = InfoState.NAMEPRONUNCIATION_INDEX;
+						break;
+					case 2:
+						temp = InfoState.PROFILE_INDEX;
+						break;
+					case 3:
+						temp = InfoState.SLIDESHOW1_INDEX;
+						break;
+					case 4:
+						temp = InfoState.SLIDESHOW2_INDEX;
+						break;
+					case 5:
+						temp = InfoState.SLIDESHOW3_INDEX;
+						break;
+					case 6:
+						temp = InfoState.SLIDESHOW4_INDEX;
+						break;
+					case 7:
+						temp = InfoState.VIDEO_INDEX;
+						break;
+					default:
+						System.out.println("missing");
+					break;
+					}
 					if(advisorChoices[i]){
-						switch(i) {
-						case 0:
-							newState.setContentAtIndex(InfoState.EXTRAINFORMATION_INDEX, pendingState.getContentAtIndex(InfoState.EXTRAINFORMATION_INDEX));
-						break;
-						case 1:
-							newState.setContentAtIndex(InfoState.NAMEPRONUNCIATION_INDEX, pendingState.getContentAtIndex(InfoState.NAMEPRONUNCIATION_INDEX));
-						break;
-						case 2:
-							newState.setContentAtIndex(InfoState.PROFILE_INDEX, pendingState.getContentAtIndex(InfoState.PROFILE_INDEX));
-						break;
-						case 3:
-							newState.setContentAtIndex(InfoState.SLIDESHOW1_INDEX, pendingState.getContentAtIndex(InfoState.SLIDESHOW1_INDEX));
-						break;
-						case 4:
-							newState.setContentAtIndex(InfoState.SLIDESHOW2_INDEX, pendingState.getContentAtIndex(InfoState.SLIDESHOW2_INDEX));
-						break;
-						case 5:
-							newState.setContentAtIndex(InfoState.SLIDESHOW3_INDEX, pendingState.getContentAtIndex(InfoState.SLIDESHOW3_INDEX));
-						break;
-						case 6:
-							newState.setContentAtIndex(InfoState.SLIDESHOW4_INDEX, pendingState.getContentAtIndex(InfoState.SLIDESHOW4_INDEX));
-						break;
-						case 7:
-							newState.setContentAtIndex(InfoState.VIDEO_INDEX, pendingState.getContentAtIndex(InfoState.VIDEO_INDEX));
-						break;
-						default:
-							System.out.println("missing");
-						break;
-						}
+						tempC = pendingState.getContentAtIndex(temp);
+						tempC.setStatus(true);
+						newState.setContentAtIndex(temp, tempC);
+						controller.insertGraduateMediaIntoContentComponentTable(tempC);
+						tempC.setInfoStateType("current");
+						controller.insertGraduateMediaIntoContentComponentTable(tempC);
+					}
+					else {
+						tempC = grad.getCurrentInfo().getContentAtIndex(temp);
+						System.out.println("Adding component |" + tempC.getContent() + "| to graduate's current infostate");
+						System.out.println("**Component to  be added's  information**");
+						tempC.setInfoStateType("pending");
+						System.out.println("Content: " + tempC.getContent());
+						System.out.println("IS type: " + tempC.getInfoStateType());
+						System.out.println("Content type: " + tempC.getType());
+						System.out.println("Status: " + tempC.getStatus());
+						System.out.println("User: " + tempC.getUsername());
+						controller.insertGraduateMediaIntoContentComponentTable(tempC);
 					}
 				}
 				// debug
 				
-				/*
+				
 				for(ContentComponent content : pendingState.getContents()) {
 					System.out.println("pending content: " + content.getContent());
 				}
 				for(ContentComponent content : grad.getCurrentInfo().getContents()) {
-					System.out.println("current content: " + content.getContent());
+					System.out.println("old current content: " + content.getContent());
 				}
 				for(ContentComponent content : newState.getContents()) {
-					System.out.println("new content: " + content.getContent());
+					System.out.println("new current content: " + content.getContent() + " | status: " + content.getStatus());
 				}
-				*/
+				grad.setCurrentInfo(newState);
+				grad.setPendingInfo(newState);
+				// TODO: iterate through the new state and insert changes into db for both current and pending states
+				
 			}
 			else {
 				System.out.println("Advisor didn't save changes");
