@@ -65,6 +65,7 @@ public class LoginController {
 		else {
 			graduates = new ArrayList<Graduate>();
 			for (Graduate graduate : graduateList) {
+				graduate.calculateStatus();
 				graduates.add(graduate);
 			}			
 		}
@@ -94,25 +95,25 @@ public class LoginController {
 		return advisors;
 	}
 	
-	public ArrayList<Admin> getAdminByUsername(String username) {
+	public ArrayList<Long> fetchEventDate() {
 		
-		// get the list of admins - should only return one
-		List<Admin> adminList = db.findAdminByUsername(username);
-		ArrayList<Admin> admins = null;
+		// get the list of dates - should only return one
+		List<Long> dateList = db.fetchEventDate();
+		ArrayList<Long> dates = null;
 		
-		if (adminList.isEmpty()) {
-			System.out.println("No admins found");
+		if (dateList.isEmpty()) {
+			System.out.println("No dates found");
 			return null;
 		}
 		else {
-			admins = new ArrayList<Admin>();
-			for (Admin admin : adminList) {
-				admins.add(admin);
+			dates = new ArrayList<Long>();
+			for (Long aLong : dateList) {
+				dates.add(aLong);
 			}			
 		}
 		
-		// return found admin
-		return admins;
+		// return found dates
+		return dates;
 	}
 	
 	public ArrayList<Graduate> getAdvisorGraduatesByAdvisorUsername(String username) {
