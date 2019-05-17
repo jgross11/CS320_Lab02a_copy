@@ -2,6 +2,7 @@ package edu.ycp.cs320.PersonalizedCommencementProject.servlet;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -130,60 +131,57 @@ public class PCP_IndexServlet extends HttpServlet {
 		
 		if(user != null) {
 			
-		// get login account type
-		String loginType = user.getType();
-		
-		// informs session that login is successful
-		session.setAttribute("validLogIn", true);
-		
-		// redirect to student page
-		if(loginType.equals("graduate")) {
-			System.out.println("User supplied valid graduate data");
-			Graduate graduate = null;
-			ArrayList<Graduate> graduates = controller.getGraduateByUsername(username);
-			for(Graduate graduateInList : graduates) {
-				// found graduate with same username
-				if(graduateInList.getUsername().equals(user.getUsername())) {
-					graduate = graduateInList;
-					System.out.println("Graduate FOUND");
-					System.out.println(graduate.getMajor());
-					System.out.println(graduate.getAdvisor());
-					System.out.println(graduate.getStatus());
-					for(int i = 0; i < graduate.getCurrentInfo().getNumContents(); i++) {
-						System.out.println(graduate.getCurrentInfo().getContentAtIndex(i).getContent());
-						System.out.println(graduate.getPendingInfo().getContentAtIndex(i).getContent());
+			// get login account type
+			String loginType = user.getType();
+			
+			// informs session that login is successful
+			session.setAttribute("validLogIn", true);
+			
+			// redirect to student page
+			if(loginType.equals("graduate")) {
+				System.out.println("User supplied valid graduate data");
+				Graduate graduate = null;
+				ArrayList<Graduate> graduates = controller.getGraduateByUsername(username);
+				for(Graduate graduateInList : graduates) {
+					// found graduate with same username
+					if(graduateInList.getUsername().equals(user.getUsername())) {
+						graduate = graduateInList;
+						System.out.println("Graduate FOUND");
+						System.out.println(graduate.getMajor());
+						System.out.println(graduate.getAdvisor());
+						System.out.println(graduate.getStatus());
+						for(int i = 0; i < graduate.getCurrentInfo().getNumContents(); i++) {
+							System.out.println(graduate.getCurrentInfo().getContentAtIndex(i).getContent());
+							System.out.println(graduate.getPendingInfo().getContentAtIndex(i).getContent());
+						}
+						break;
 					}
-					break;
 				}
+				
+				// check if no graduate was found
+				if(graduate == null) {
+					System.err.println("*** NO GRADUATE WAS FOUND***");
+					resp.sendRedirect(req.getContextPath() + "/PCP_IndexPage");
+				}
+				
+				// transfers data from userModel to gradModel 
+				//Graduate gradModel = new Graduate(userModel);
+				
+				// displays view version of student page
+				session.setAttribute("mode", "graduateView");
+				
+				session.setAttribute("graduate", graduate);
+				
+				// sets session attribute to display student status 
+				session.setAttribute("studentStatus", graduate.getStatus() ? "Ready" : "Not Ready");
+				
+				//TODO: add logic determining layout of graduate's information, load appropriate value
+				session.setAttribute("graduateLayout", "static slideshow");
+				
+				// redirect to the student page
+				
+				resp.sendRedirect(req.getContextPath() + "/PCP_StudentPage");
 			}
-			
-			// check if no graduate was found
-			if(graduate == null) {
-				System.err.println("*** NO GRADUATE WAS FOUND***");
-				resp.sendRedirect(req.getContextPath() + "/PCP_IndexPage");
-			}
-			
-			// transfers data from userModel to gradModel 
-			//Graduate gradModel = new Graduate(userModel);
-			
-			// displays view version of student page
-			session.setAttribute("mode", "graduateView");
-			
-			session.setAttribute("graduate", graduate);
-			
-			// sets session attribute to display student status 
-			session.setAttribute("studentStatus", graduate.getStatus() ? "Ready" : "Not Ready");
-			
-			// sets session attribute to display graduate's additional information
-			session.setAttribute("studentExtraInformation", graduate.getCurrentInfo().getContentAtIndex(0).getContent());
-			
-			//TODO: add logic determining layout of graduate's information, load appropriate value
-			session.setAttribute("graduateLayout", "static slideshow");
-			
-			// redirect to the student page
-			
-			resp.sendRedirect(req.getContextPath() + "/PCP_StudentPage");
-		}
 			
 			// redirect to advisor page
 			else if(loginType.equals("advisor")) {
@@ -205,8 +203,9 @@ public class PCP_IndexServlet extends HttpServlet {
 						advisor.setGraduates(controller.getAdvisorGraduatesByAdvisorUsername(username));
 						System.out.println("Finished retrieving advisor's graduate list");
 						advisor.generatePendingAndCompletedGraduateList();
+						advisor.calculateStatus();
 						System.out.println(advisor.getAcademicInformation());
-						System.out.println(advisor.getStatus());
+						System.out.println("Status: " + advisor.getStatus());
 						System.out.println("Begin list of advisor's graduates\n");
 						for(Graduate grad : advisor.getGraduates()) {
 							System.out.println(grad.getName());
@@ -228,20 +227,17 @@ public class PCP_IndexServlet extends HttpServlet {
 			
 			// redirect to admin page
 			else if(loginType.equals("admin")){
-				Admin admin = null;
-				ArrayList<Admin> admins = controller.getAdminByUsername(username);
-				for(Admin adminInList : admins) {
-					// found admin with same username
-					if(adminInList.getUsername().equals(user.getUsername())) {
-						admin = adminInList;
-						System.out.println("Admin FOUND");
-						System.out.println(admin.getName());
-						System.out.println(admin.getDate());
-						session.setAttribute("admin", admin);
-						req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
-						break;
-					}
-					
+				Admin admin = new Admin(user);
+				ArrayList<Long> dates = controller.fetchEventDate();
+				for(Long dateInList : dates) {
+					// found dates
+					admin.setDate(dateInList);
+					System.out.println("name: " + admin.getName());
+					System.out.println("date in ms: " + admin.getDate());
+					System.out.println("date as date: " + new Date(admin.getDate()));
+					session.setAttribute("admin", admin);
+					resp.sendRedirect(req.getContextPath() + "/PCP_AdminPage");
+					break;
 				}
 			}
 			else {
