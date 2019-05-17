@@ -72,7 +72,7 @@ public class Graduate extends User{
 	
 	public void calculateStatus() {
 		status = true;
-		for(ContentComponent content : currentInfo.getContents()) {
+		for(ContentComponent content : pendingInfo.getContents()) {
 			if(!content.getStatus()) {
 				status = false;
 				break;
