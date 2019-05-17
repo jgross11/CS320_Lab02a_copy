@@ -1,6 +1,8 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.servlet;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,12 +11,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.AdminController;
-import edu.ycp.cs320.PersonalizedCommencementProject.controller.AdvisorController;
-import edu.ycp.cs320.PersonalizedCommencementProject.controller.GraduateController;
-import edu.ycp.cs320.PersonalizedCommencementProject.controller.UserController;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Admin;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Admin;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
@@ -55,6 +55,8 @@ public class PCP_AdminPageServlet extends HttpServlet {
 		// TODO: make this search userDB for session informations usernames' type
 		// TODO: and redirect to admin page only if type is admin
 		if(user.getType().equals("admin")) {
+			req.setAttribute("mode", "home");
+			System.out.println("mode: " + req.getParameter("mode"));
 			req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
 		}
 		else {
@@ -66,6 +68,8 @@ public class PCP_AdminPageServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
+		
+		
 		// doPost called when advisor clicks on student button
 
 		// check for valid studentToView input from JSP and
@@ -73,9 +77,13 @@ public class PCP_AdminPageServlet extends HttpServlet {
 		
 		// create array of Graduate objects to demonstrate event
 		// creates DB instance
+		
+		System.out.println("PCP_AdminPage Servlet: doPost");
+		String choice = req.getParameter("adminChoice");
+		HttpSession session = req.getSession();
+		ArrayList<Graduate> grads = null;
 		DatabaseProvider.setInstance(new DerbyDatabase());
 		IDatabase db = DatabaseProvider.getInstance();
-		ArrayList<Graduate> grads = null;
 		List<Graduate> gradList = db.findGraduateByUsername("dchism");
 		if (gradList.isEmpty()) {
 			System.out.println("No graduates found");
@@ -107,15 +115,49 @@ public class PCP_AdminPageServlet extends HttpServlet {
 				System.out.println("Adding " + grad.getName());
 			}			
 		}
-		req.setAttribute("gradList", grads);
-		
-		System.out.println("PCP_AdvisorPage Servlet: doPost");
-		if(req.getParameter("startEvent").equals("true")) {
-			// TODO: consider making this its own servlet to get rid 
-			// TODO: of the extra /_view/ created by the dispatch
-			req.getRequestDispatcher("/_view/PCP_EventPage.jsp").forward(req, resp);
+		System.out.println("mode: " + req.getParameter("mode"));
+		if(req.getParameter("mode").equals("home")) {
+			if(choice.equals("start event")) {
+				session.setAttribute("gradList", grads);
+				session.setAttribute("leftGrad", grads.get(0));
+				session.setAttribute("rightGrad", grads.get(1));
+				req.setAttribute("mode", "event");
+				System.out.println("choice: " + choice);
+				req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
+			} 
+			else if(choice.equals("update deadline")){
+				System.out.println("\n\n\nSubmitted date: " + req.getParameter("newDate"));
+				Admin admin = (Admin)req.getSession().getAttribute("admin");
+				AdminController controller = new AdminController();
+				controller.setModel(admin);
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				format.format(new Date());
+				try {
+					controller.setDate(format.parse(req.getParameter("newDate")).getTime());
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				req.setAttribute("mode", "home");
+				req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
+			}			
 		}
 		else {
+			if(choice.equals("find grad")) {
+				String gradUsername = req.getParameter("gradToFind");
+				for(Graduate grad : grads) {
+					if(grad.getUsername().equals(gradUsername)) {
+						session.setAttribute("rightGrad", session.getAttribute("leftGrad"));
+						session.setAttribute("leftGrad", grad);
+						break;
+					}
+				}
+				req.setAttribute("mode", "event");
+				req.setAttribute("choice", "none");
+			}
+			else {
+				req.setAttribute("mode", "home");
+				req.setAttribute("choice", "none");				
+			}
 			req.getRequestDispatcher("/_view/PCP_AdminPage.jsp").forward(req, resp);
 		}
 	}
