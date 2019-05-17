@@ -388,6 +388,7 @@ public class InitialData {
 						// obtain and check infostate's type
 						String type = i.next();
 						infoState = populateInfoState(username, type);
+						infoState.setLayout(i.next());
 						infoState.setUsername(username);
 						if(type.equals("current")) {
 							infoState.setFormatType("current");
@@ -468,8 +469,26 @@ public class InitialData {
 					component.setType(i.next());
 					
 					// contentcomponent.content
-					component.setContent(i.next());
 					
+					/*
+					 *  TODO: implement this to decrease database size
+					String builder = "";
+					switch(component.getType()) {
+						case InfoState.EXTRAINFORMATION:
+							// not a file, don't add anything
+						break;
+						case InfoState.VIDEO:
+							builder = "student-media-uploads\\videos\\";
+						break;
+						case InfoState.NAMEPRONUNCIATION:
+							builder = "student-media-uploads\\audios\\";
+						break;
+						default:
+							builder = "student-media-uploads\\photos\\";
+						break;
+					}
+					*/
+					component.setContent(/*builder + */ i.next());
 					// add to list
 					contentComponentList.add(component);
 				}
