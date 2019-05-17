@@ -1,5 +1,7 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.controller;
 
+import java.util.Date;
+
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Advisor;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.ContentComponent;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
@@ -24,13 +26,21 @@ public class GraduateController extends UserController{
 		this.model = model;
 	}
 
-	public void insertGraduateMediaIntoContentComponentTable(String username, String string, ContentComponent content) {
-		db.insertGraduateMediaIntoContentComponentTable(username, string, content);
+	public void insertGraduateMediaIntoContentComponentTable(ContentComponent content) {
+		db.insertGraduateMediaIntoContentComponentTable(content);
 	}
 
 	public void setInfoAtIndex(int index, ContentComponent content) {
 		model.getPendingInfo().setContentAtIndex(index, content);
 	}
 	
+	public boolean canEdit() {
+		if(new Date(System.currentTimeMillis()).compareTo(new Date(db.fetchEventDate().get(0))) <= 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 	
 }
