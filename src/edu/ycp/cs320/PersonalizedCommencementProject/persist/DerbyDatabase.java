@@ -105,11 +105,11 @@ public class DerbyDatabase implements IDatabase {
 				try {
 					stmt = conn.prepareStatement(
 							"select graduates.major, graduates.advisorusername, "
-							+ "graduates.status, contentComponents.infostatetype, "
+							+ "graduates.status, infostates.layout, contentComponents.infostatetype, "
 							+ "contentComponents.status, contentComponents.type, "
 							+ "contentComponents.content "
-							+ "from graduates, contentComponents where "
-							+ "graduates.username = contentComponents.username and graduates.username = ?"
+							+ "from graduates, contentComponents, infostates where "
+							+ "graduates.username = contentComponents.username and graduates.username = ? and infostates.username = graduates.username"
 					);
 					stmt.setString(1, username);
 					List<User> gradAsUser = findUserByUsername(username);
@@ -169,50 +169,6 @@ public class DerbyDatabase implements IDatabase {
 						Advisor advisor = new Advisor(user);
 						loadAdvisor(advisor, resultSet, 7);
 						result.add(advisor);
-					}
-					
-					// check if the username was found
-					if (!found) {
-						System.out.println(username + " was not found in the user table");
-					}
-					
-					return result;
-				} finally {
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-				}
-			}
-		});
-	}
-
-	@Override
-	public List<Admin> findAdminByUsername(String username) {
-		return executeTransaction(new Transaction<List<Admin>>() {
-			@Override
-			public List<Admin> execute(Connection conn) throws SQLException {
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				
-				try {
-					stmt = conn.prepareStatement(
-							"select users.*, admins.* from users, admins where admins.username = ? and users.username = admins.username"
-					);
-					stmt.setString(1, username);
-					
-					List<Admin> result = new ArrayList<Admin>();
-					
-					resultSet = stmt.executeQuery();
-					
-					// for testing that a result was returned
-					Boolean found = false;
-					
-					while (resultSet.next()) {
-						found = true;
-						User user = new User();
-						loadUser(user, resultSet, 1);
-						Admin admin = new Admin(user);
-						loadAdmin(admin, resultSet, 7);
-						result.add(admin);
 					}
 					
 					// check if the username was found
@@ -413,11 +369,15 @@ public class DerbyDatabase implements IDatabase {
 			// graduates.major
 			graduate.setMajor(resultSet.getString(index++));
 			
+			System.out.println(graduate.getMajor());
 			// graduates.advisorUsername
 			graduate.setAdvisor(resultSet.getString(index++));
 			
 			// graduates.status
 			graduate.setStatus(Boolean.valueOf(resultSet.getString(index++)));
+			
+			// layout
+			String layout = resultSet.getString(index++);
 			
 			InfoState current = new InfoState();
 			InfoState pending = new InfoState();
@@ -434,7 +394,7 @@ public class DerbyDatabase implements IDatabase {
 				// contentcomponents.path
 				String path = resultSet.getString(index++);
 				
-				ContentComponent content = new ContentComponent(path, Boolean.valueOf(status), contentType, graduate.getUsername());
+				ContentComponent content = new ContentComponent(path, Boolean.valueOf(status), contentType, graduate.getUsername(), infoStateType);
 				
 				int contentIndex = 0;
 				
@@ -479,6 +439,7 @@ public class DerbyDatabase implements IDatabase {
 			}
 			graduate.setCurrentInfo(current);
 			graduate.setPendingInfo(pending);
+			graduate.getPendingInfo().setLayout(layout);
 		}
 		
 		// retrieves Advisor information from query result set
@@ -496,6 +457,7 @@ public class DerbyDatabase implements IDatabase {
 			// populate advisor's list of students
 		}
 		
+		/*TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST
 		// retrieves Admin information from query result set
 		private void loadAdmin(Admin admin, ResultSet resultSet, int index) throws SQLException {
 					
@@ -503,9 +465,9 @@ public class DerbyDatabase implements IDatabase {
 			index++;
 			
 			// admins.eventDate
-			admin.setDate(Date.valueOf(resultSet.getString(index++))); 
+			admin.setDate(Long.valueOf(resultSet.getString(index++))); 
 		}
-		
+		*/
 		// retrieves ContentComponent information from query result set
 		private void loadContentComponent(ContentComponent content, ResultSet resultSet, int index) throws SQLException {
 			
@@ -526,587 +488,6 @@ public class DerbyDatabase implements IDatabase {
 			
 		}
 		
-	/*
-	// transaction that retrieves a Book, and its Author by Title
-	@Override
-	public List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> findAuthorAndBookByTitle(final String title) {
-		return executeTransaction(new Transaction<List<ZUNUSED_Pair<ZUNUSED_Author,ZUNUSED_Book>>>() {
-			@Override
-			public List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> execute(Connection conn) throws SQLException {
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				
-				try {
-					stmt = conn.prepareStatement(
-							"select authors.*, books.* " +
-							"  from  authors, books, bookAuthors " +
-							"  where books.title = ? " +
-							"    and authors.author_id = bookAuthors.author_id " +
-							"    and books.book_id     = bookAuthors.book_id"
-					);
-					stmt.setString(1, title);
-					
-					List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> result = new ArrayList<ZUNUSED_Pair<ZUNUSED_Author,ZUNUSED_Book>>();
-					
-					resultSet = stmt.executeQuery();
-					
-					// for testing that a result was returned
-					Boolean found = false;
-					
-					while (resultSet.next()) {
-						found = true;
-						
-						ZUNUSED_Author author = new ZUNUSED_Author();
-						loadAuthor(author, resultSet, 1);
-						ZUNUSED_Book book = new ZUNUSED_Book();
-						loadBook(book, resultSet, 4);
-						
-						result.add(new ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>(author, book));
-					}
-					
-					// check if the title was found
-					if (!found) {
-						System.out.println("<" + title + "> was not found in the books table");
-					}
-					
-					return result;
-				} finally {
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-				}
-			}
-		});
-	}
-	
-	
-	// transaction that retrieves a list of Books with their Authors, given Author's last name
-	@Override
-	public List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> findAuthorAndBookByAuthorLastName(final String lastName) {
-		return executeTransaction(new Transaction<List<ZUNUSED_Pair<ZUNUSED_Author,ZUNUSED_Book>>>() {
-			@Override
-			public List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> execute(Connection conn) throws SQLException {
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-
-				// try to retrieve Authors and Books based on Author's last name, passed into query
-				try {
-					stmt = conn.prepareStatement(
-							"select authors.*, books.* " +
-							"  from  authors, books, bookAuthors " +
-							"  where authors.lastname = ? " +
-							"    and authors.author_id = bookAuthors.author_id " +
-							"    and books.book_id     = bookAuthors.book_id "   +
-							"  order by books.title asc, books.published asc"
-					);
-					stmt.setString(1, lastName);
-					
-					// establish the list of (Author, Book) Pairs to receive the result
-					List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> result = new ArrayList<ZUNUSED_Pair<ZUNUSED_Author,ZUNUSED_Book>>();
-					
-					// execute the query, get the results, and assemble them in an ArrayLsit
-					resultSet = stmt.executeQuery();
-					while (resultSet.next()) {
-						ZUNUSED_Author author = new ZUNUSED_Author();
-						loadAuthor(author, resultSet, 1);
-						ZUNUSED_Book book = new ZUNUSED_Book();
-						loadBook(book, resultSet, 4);
-						
-						result.add(new ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>(author, book));
-					}
-					
-					return result;
-				} finally {
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-				}
-			}
-		});
-	}
-	
-	
-	// transaction that retrieves all Books in Library, with their respective Authors
-	@Override
-	public List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> findAllBooksWithAuthors() {
-		return executeTransaction(new Transaction<List<ZUNUSED_Pair<ZUNUSED_Author,ZUNUSED_Book>>>() {
-			@Override
-			public List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> execute(Connection conn) throws SQLException {
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				
-				try {
-					stmt = conn.prepareStatement(
-							"select authors.*, books.* " +
-							"  from authors, books, bookAuthors " +
-							"  where authors.author_id = bookAuthors.author_id " +
-							"    and books.book_id     = bookAuthors.book_id "   +
-							"  order by books.title asc"
-					);
-					
-					List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> result = new ArrayList<ZUNUSED_Pair<ZUNUSED_Author,ZUNUSED_Book>>();
-					
-					resultSet = stmt.executeQuery();
-					
-					// for testing that a result was returned
-					Boolean found = false;
-					
-					while (resultSet.next()) {
-						found = true;
-						
-						ZUNUSED_Author author = new ZUNUSED_Author();
-						loadAuthor(author, resultSet, 1);
-						ZUNUSED_Book book = new ZUNUSED_Book();
-						loadBook(book, resultSet, 4);
-						
-						result.add(new ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>(author, book));
-					}
-					
-					// check if any books were found
-					if (!found) {
-						System.out.println("No books were found in the database");
-					}
-					
-					return result;
-				} finally {
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-				}
-			}
-		});
-	}	
-	
-	
-	// transaction that retrieves all Authors in Library
-	@Override
-	public List<ZUNUSED_Author> findAllAuthors() {
-		return executeTransaction(new Transaction<List<ZUNUSED_Author>>() {
-			@Override
-			public List<ZUNUSED_Author> execute(Connection conn) throws SQLException {
-				PreparedStatement stmt = null;
-				ResultSet resultSet = null;
-				
-				try {
-					stmt = conn.prepareStatement(
-							"select * from authors " +
-							" order by lastname asc, firstname asc"
-					);
-					
-					List<ZUNUSED_Author> result = new ArrayList<ZUNUSED_Author>();
-					
-					resultSet = stmt.executeQuery();
-					
-					// for testing that a result was returned
-					Boolean found = false;
-					
-					while (resultSet.next()) {
-						found = true;
-						
-						ZUNUSED_Author author = new ZUNUSED_Author();
-						loadAuthor(author, resultSet, 1);
-						
-						result.add(author);
-					}
-					
-					// check if any authors were found
-					if (!found) {
-						System.out.println("No authors were found in the database");
-					}
-					
-					return result;
-				} finally {
-					DBUtil.closeQuietly(resultSet);
-					DBUtil.closeQuietly(stmt);
-				}
-			}
-		});
-	}
-	
-	
-	// transaction that inserts new Book into the Books table
-	// also first inserts new Author into Authors table, if necessary
-	// and then inserts entry into BookAuthors junction table
-	@Override
-	public Integer insertBookIntoBooksTable(final String title, final String isbn, final int published, final String lastName, final String firstName) {
-		return executeTransaction(new Transaction<Integer>() {
-			@Override
-			public Integer execute(Connection conn) throws SQLException {
-				PreparedStatement stmt1 = null;
-				PreparedStatement stmt2 = null;
-				PreparedStatement stmt3 = null;
-				PreparedStatement stmt4 = null;
-				PreparedStatement stmt5 = null;
-				PreparedStatement stmt6 = null;				
-				
-				ResultSet resultSet1 = null;
-				ResultSet resultSet3 = null;
-				ResultSet resultSet5 = null;				
-				
-				// for saving author ID and book ID
-				Integer author_id = -1;
-				Integer book_id   = -1;
-
-				// try to retrieve author_id (if it exists) from DB, for Author's full name, passed into query
-				try {
-					stmt1 = conn.prepareStatement(
-							"select author_id from authors " +
-							"  where lastname = ? and firstname = ? "
-					);
-					stmt1.setString(1, lastName);
-					stmt1.setString(2, firstName);
-					
-					// execute the query, get the result
-					resultSet1 = stmt1.executeQuery();
-
-					
-					// if Author was found then save author_id					
-					if (resultSet1.next())
-					{
-						author_id = resultSet1.getInt(1);
-						System.out.println("Author <" + lastName + ", " + firstName + "> found with ID: " + author_id);						
-					}
-					else
-					{
-						System.out.println("Author <" + lastName + ", " + firstName + "> not found");
-				
-						// if the Author is new, insert new Author into Authors table
-						if (author_id <= 0) {
-							// prepare SQL insert statement to add Author to Authors table
-							stmt2 = conn.prepareStatement(
-									"insert into authors (lastname, firstname) " +
-									"  values(?, ?) "
-							);
-							stmt2.setString(1, lastName);
-							stmt2.setString(2, firstName);
-							
-							// execute the update
-							stmt2.executeUpdate();
-							
-							System.out.println("New author <" + lastName + ", " + firstName + "> inserted in Authors table");						
-						
-							// try to retrieve author_id for new Author - DB auto-generates author_id
-							stmt3 = conn.prepareStatement(
-									"select author_id from authors " +
-									"  where lastname = ? and firstname = ? "
-							);
-							stmt3.setString(1, lastName);
-							stmt3.setString(2, firstName);
-							
-							// execute the query							
-							resultSet3 = stmt3.executeQuery();
-							
-							// get the result - there had better be one							
-							if (resultSet3.next())
-							{
-								author_id = resultSet3.getInt(1);
-								System.out.println("New author <" + lastName + ", " + firstName + "> ID: " + author_id);						
-							}
-							else	// really should throw an exception here - the new author should have been inserted, but we didn't find them
-							{
-								System.out.println("New author <" + lastName + ", " + firstName + "> not found in Authors table (ID: " + author_id);
-							}
-						}
-					}
-					
-					// now insert new Book into Books table
-					// prepare SQL insert statement to add new Book to Books table
-					stmt4 = conn.prepareStatement(
-							"insert into books (title, isbn, published) " +
-							"  values(?, ?, ?) "
-					);
-					stmt4.setString(1, title);
-					stmt4.setString(2, isbn);
-					stmt4.setInt(3, published);
-					
-					// execute the update
-					stmt4.executeUpdate();
-					
-					System.out.println("New book <" + title + "> inserted into Books table");					
-
-					// now retrieve book_id for new Book, so that we can set up BookAuthor entry
-					// and return the book_id, which the DB auto-generates
-					// prepare SQL statement to retrieve book_id for new Book
-					stmt5 = conn.prepareStatement(
-							"select book_id from books " +
-							"  where title = ? and isbn = ? and published = ? "
-									
-					);
-					stmt5.setString(1, title);
-					stmt5.setString(2, isbn);
-					stmt5.setInt(3, published);
-
-					// execute the query
-					resultSet5 = stmt5.executeQuery();
-					
-					// get the result - there had better be one
-					if (resultSet5.next())
-					{
-						book_id = resultSet5.getInt(1);
-						System.out.println("New book <" + title + "> ID: " + book_id);						
-					}
-					else	// really should throw an exception here - the new book should have been inserted, but we didn't find it
-					{
-						System.out.println("New book <" + title + "> not found in Books table (ID: " + book_id);
-					}
-					
-					// now that we have all the information, insert entry into BookAuthors table
-					// which is the junction table for Books and Authors
-					// prepare SQL insert statement to add new Book to Books table
-					stmt6 = conn.prepareStatement(
-							"insert into bookAuthors (book_id, author_id) " +
-							"  values(?, ?) "
-					);
-					stmt6.setInt(1, book_id);
-					stmt6.setInt(2, author_id);
-					
-					// execute the update
-					stmt6.executeUpdate();
-					
-					System.out.println("New entry for book ID <" + book_id + "> and author ID <" + author_id + "> inserted into BookAuthors junction table");						
-					
-					System.out.println("New book <" + title + "> inserted into Books table");					
-					
-					return book_id;
-				} finally {
-					DBUtil.closeQuietly(resultSet1);
-					DBUtil.closeQuietly(stmt1);
-					DBUtil.closeQuietly(stmt2);					
-					DBUtil.closeQuietly(resultSet3);
-					DBUtil.closeQuietly(stmt3);					
-					DBUtil.closeQuietly(stmt4);
-					DBUtil.closeQuietly(resultSet5);
-					DBUtil.closeQuietly(stmt5);
-					DBUtil.closeQuietly(stmt6);
-				}
-			}
-		});
-	}
-	
-	
-	// transaction that deletes Book (and possibly its Author) from Library
-	@Override
-	public List<ZUNUSED_Author> removeBookByTitle(final String title) {
-		return executeTransaction(new Transaction<List<ZUNUSED_Author>>() {
-			@Override
-			public List<ZUNUSED_Author> execute(Connection conn) throws SQLException {
-				PreparedStatement stmt1 = null;
-				PreparedStatement stmt2 = null;
-				PreparedStatement stmt3 = null;
-				PreparedStatement stmt4 = null;
-				PreparedStatement stmt5 = null;
-				PreparedStatement stmt6 = null;							
-				
-				ResultSet resultSet1    = null;			
-				ResultSet resultSet2    = null;
-				ResultSet resultSet5    = null;
-				
-				try {
-					// first get the Author(s) of the Book to be deleted
-					// just in case it's the only Book by this Author
-					// in which case, we should also remove the Author(s)
-					stmt1 = conn.prepareStatement(
-							"select authors.* " +
-							"  from  authors, books, bookAuthors " +
-							"  where books.title = ? " +
-							"    and authors.author_id = bookAuthors.author_id " +
-							"    and books.book_id     = bookAuthors.book_id"
-					);
-					
-					// get the Book's Author(s)
-					stmt1.setString(1, title);
-					resultSet1 = stmt1.executeQuery();
-					
-					// assemble list of Authors from query
-					List<ZUNUSED_Author> authors = new ArrayList<ZUNUSED_Author>();					
-				
-					while (resultSet1.next()) {
-						ZUNUSED_Author author = new ZUNUSED_Author();
-						loadAuthor(author, resultSet1, 1);
-						authors.add(author);
-					}
-					
-					// check if any Authors were found
-					// this shouldn't be necessary, there should not be a Book in the DB without an Author
-					if (authors.size() == 0) {
-						System.out.println("No author was found for title <" + title + "> in the database");
-					}
-										
-					// now get the Book(s) to be deleted
-					// we will need the book_id to remove associated entries in BookAuthors (junction table)
-				
-					stmt2 = conn.prepareStatement(
-							"select books.* " +
-							"  from  books " +
-							"  where books.title = ? "
-					);
-					
-					// get the Book(s)
-					stmt2.setString(1, title);
-					resultSet2 = stmt2.executeQuery();
-					
-					// assemble list of Books from query
-					List<ZUNUSED_Book> books = new ArrayList<ZUNUSED_Book>();					
-				
-					while (resultSet2.next()) {
-						ZUNUSED_Book book = new ZUNUSED_Book();
-						loadBook(book, resultSet2, 1);
-						books.add(book);
-					}
-					
-					// first delete entries in BookAuthors junction table
-					// can't delete entries in Books or Authors tables while they have foreign keys in junction table
-					// prepare to delete the junction table entries (bookAuthors)
-					stmt3 = conn.prepareStatement(
-							"delete from bookAuthors " +
-							"  where book_id = ? "
-					);
-					
-					// delete the junction table entries from the DB for this title
-					// this works if there are not multiple books with the same name
-					stmt3.setInt(1, books.get(0).getBookId());
-					stmt3.executeUpdate();
-					
-					System.out.println("Deleted junction table entries for book(s) <" + title + "> from DB");									
-					
-					// now delete entries in Books table for this title
-					stmt4 = conn.prepareStatement(
-							"delete from books " +
-							"  where title = ? "
-					);
-					
-					// delete the Book entries from the DB for this title
-					stmt4.setString(1, title);
-					stmt4.executeUpdate();
-					
-					System.out.println("Deleted book(s) with title <" + title + "> from DB");									
-					
-					// now check if the Author(s) have any Books remaining in the DB
-					// only need to check if there are any entries in junction table that have this author ID
-					for (int i = 0; i < authors.size(); i++) {
-						// prepare to find Books for this Author
-						stmt5 = conn.prepareStatement(
-								"select books.book_id from books, bookAuthors " +
-								"  where bookAuthors.author_id = ? "
-						);
-						
-						// retrieve any remaining books for this Author
-						stmt5.setInt(1, books.get(i).getAuthorId());
-						resultSet5 = stmt5.executeQuery();						
-
-						// if nothing returned, then delete Author
-						if (!resultSet5.next()) {
-							stmt6 = conn.prepareStatement(
-								"delete from authors " +
-								"  where author_id = ?"
-							);
-							
-							// delete the Author from DB
-							stmt6.setInt(1, authors.get(i).getAuthorId());
-							stmt6.executeUpdate();
-							
-							System.out.println("Deleted author <" + authors.get(i).getLastname() + ", " + authors.get(i).getFirstname() + "> from DB");
-							
-							// we're done with this, so close it, since we might have more to do
-							DBUtil.closeQuietly(stmt6);
-						}
-						
-						// we're done with this, so close it since we might have more to do
-						DBUtil.closeQuietly(resultSet5);
-						DBUtil.closeQuietly(stmt5);
-					}
-					return authors;
-				} finally {
-					DBUtil.closeQuietly(resultSet1);
-					DBUtil.closeQuietly(resultSet2);
-					
-					DBUtil.closeQuietly(stmt1);
-					DBUtil.closeQuietly(stmt2);
-					DBUtil.closeQuietly(stmt3);					
-					DBUtil.closeQuietly(stmt4);					
-				}
-			}
-		});
-	}
-	
-	
-	// wrapper SQL transaction function that calls actual transaction function (which has retries)
-	public<ResultType> ResultType executeTransaction(Transaction<ResultType> txn) {
-		try {
-			return doExecuteTransaction(txn);
-		} catch (SQLException e) {
-			throw new PersistenceException("Transaction failed", e);
-		}
-	}
-	
-	// SQL transaction function which retries the transaction MAX_ATTEMPTS times before failing
-	public<ResultType> ResultType doExecuteTransaction(Transaction<ResultType> txn) throws SQLException {
-		Connection conn = connect();
-		
-		try {
-			int numAttempts = 0;
-			boolean success = false;
-			ResultType result = null;
-			
-			while (!success && numAttempts < MAX_ATTEMPTS) {
-				try {
-					result = txn.execute(conn);
-					conn.commit();
-					success = true;
-				} catch (SQLException e) {
-					if (e.getSQLState() != null && e.getSQLState().equals("41000")) {
-						// Deadlock: retry (unless max retry count has been reached)
-						numAttempts++;
-					} else {
-						// Some other kind of SQLException
-						throw e;
-					}
-				}
-			}
-			
-			if (!success) {
-				throw new SQLException("Transaction failed (too many retries)");
-			}
-			
-			// Success!
-			return result;
-		} finally {
-			DBUtil.closeQuietly(conn);
-		}
-	}
-
-	// TODO: Here is where you name and specify the location of your Derby SQL database
-	// TODO: Change it here and in SQLDemo.java under CS320_LibraryExample_Lab06->edu.ycp.cs320.sqldemo
-	// TODO: DO NOT PUT THE DB IN THE SAME FOLDER AS YOUR PROJECT - that will cause conflicts later w/Git
-	private Connection connect() throws SQLException {
-		Connection conn = DriverManager.getConnection("jdbc:derby:C:/CS320-2019-LibraryExample-DB/library.db;create=true");		
-		
-		// Set autocommit() to false to allow the execution of
-		// multiple queries/statements as part of the same transaction.
-		conn.setAutoCommit(false);
-		
-		return conn;
-	}
-	
-	// retrieves Author information from query result set
-	private void loadAuthor(ZUNUSED_Author author, ResultSet resultSet, int index) throws SQLException {
-		author.setAuthorId(resultSet.getInt(index++));
-		author.setLastname(resultSet.getString(index++));
-		author.setFirstname(resultSet.getString(index++));
-	}
-	
-	// retrieves Book information from query result set
-	private void loadBook(ZUNUSED_Book book, ResultSet resultSet, int index) throws SQLException {
-		book.setBookId(resultSet.getInt(index++));
-//		book.setAuthorId(resultSet.getInt(index++));  // no longer used
-		book.setTitle(resultSet.getString(index++));
-		book.setIsbn(resultSet.getString(index++));
-		book.setPublished(resultSet.getInt(index++));
-	}
-	
-	// retrieves WrittenBy information from query result set
-	private void loadBookAuthors(ZUNUSED_BookAuthor bookAuthor, ResultSet resultSet, int index) throws SQLException {
-		bookAuthor.setBookId(resultSet.getInt(index++));
-		bookAuthor.setAuthorId(resultSet.getInt(index++));
-	}
-	*/
 	//  creates the users, graduates, advisors, admins, and infostate tables
 	public void createTables() {
 		executeTransaction(new Transaction<Boolean>() {
@@ -1171,7 +552,6 @@ public class DerbyDatabase implements IDatabase {
 
 					stmt4 = conn.prepareStatement(
 							"create table admins("
-							+ "username varchar(50), "
 							+ "eventDate varchar(50)"
 							+ ")"
 					);
@@ -1182,7 +562,8 @@ public class DerbyDatabase implements IDatabase {
 					stmt5 = conn.prepareStatement(
 							"create table infostates("
 							+ "username varchar(50), "
-							+ "infoStateType varchar(7) "
+							+ "infoStateType varchar(7), "
+							+ "layout varchar(7)"
 							+ ")"
 					);
 					stmt5.executeUpdate();
@@ -1285,10 +666,9 @@ public class DerbyDatabase implements IDatabase {
 					System.out.println("Advisors table populated");
 					
 					// insert admins into admins table
-					insertAdmin = conn.prepareStatement("insert into admins (username, eventDate) values (?, ?)");
+					insertAdmin = conn.prepareStatement("insert into admins (eventDate) values (?)");
 					for(Admin admin : adminList) {
-						insertAdmin.setString(1, admin.getUsername());
-						insertAdmin.setString(2, String.valueOf(admin.getDate()));
+						insertAdmin.setString(1, String.valueOf(admin.getDate()));
 						insertAdmin.addBatch();
 					}
 					insertAdmin.executeBatch();
@@ -1296,20 +676,13 @@ public class DerbyDatabase implements IDatabase {
 					
 					// insert infoState into infoState table
 					insertInfoState = conn.prepareStatement("insert into infostates ("
-							+ "username, infoStateType)"
+							+ "username, infoStateType, layout)"
 							+ " values ("
-							+ "?, ?)");
+							+ "?, ?, ?)");
 					for(InfoState infoState : infoStateList) {
 						insertInfoState.setString(1, infoState.getUsername());
 						insertInfoState.setString(2, infoState.getFormatType());
-						/*
-						for(int i = 0; i < infoState.getNumContents(); i++) {
-							insertInfoState.setString(i + 3, infoState.getContentAtIndex(i).getContent());
-						}
-						*/
-						for(ContentComponent component : infoState.getContents()) {
-							
-						}
+						insertInfoState.setString(3, infoState.getLayout());
 						insertInfoState.addBatch();
 					}
 					insertInfoState.executeBatch();
@@ -1335,7 +708,6 @@ public class DerbyDatabase implements IDatabase {
 					DBUtil.closeQuietly(insertAdvisor);	
 					DBUtil.closeQuietly(insertAdmin);
 					DBUtil.closeQuietly(insertInfoState);
-					System.out.println("Data already exists .. probably");
 				}
 			}
 		});
@@ -1352,177 +724,106 @@ public class DerbyDatabase implements IDatabase {
 		
 		System.out.println("PCP DB successfully initialized!");
 	}
-
+	
 	@Override
-	public Integer insertGraduateMediaIntoContentComponentTable(String username, String InfoStateType, ContentComponent content) {
+	public Integer insertGraduateMediaIntoContentComponentTable(ContentComponent content) {
 		return executeTransaction(new Transaction<Integer>() {
 			@Override
 			
 			public Integer execute(Connection conn) throws SQLException {
 				PreparedStatement stmt1 = null;
-				PreparedStatement stmt2 = null;
-				PreparedStatement stmt3 = null;
-				PreparedStatement stmt4 = null;
-				PreparedStatement stmt5 = null;
-				PreparedStatement stmt6 = null;				
-				
 				ResultSet resultSet1 = null;
-				ResultSet resultSet3 = null;
-				ResultSet resultSet5 = null;				
 				
-				// for saving author ID and book ID
-				Integer author_id = -1;
-				Integer book_id   = -1;
-	
-				// try to retrieve author_id (if it exists) from DB, for Author's full name, passed into query
 				try {
-					/*
-					   "create table contentComponents ( "
-						+ "  username varchar(50), "
-						+ "  infoStateType varchar(50), "
-						+ "  status varchar(5), "
-						+ "  type varchar(50), "
-						+ "  content varchar(50) "
-						+ ")"
-					 */
 					stmt1 = conn.prepareStatement(
 							"update contentcomponents set"
-							+ " status = 'false',"
+							+ " status = ?,"
 							+ " content = ? "
 							+ " where username = ? "
 							+ " and infoStateType = ?"
 							+ " and type = ?"
 					);
-					stmt1.setString(1, content.getContent());
-					stmt1.setString(2, content.getUsername());
-					stmt1.setString(3, content.getInfoStateType());
-					stmt1.setString(4, content.getType());
+					stmt1.setString(1, String.valueOf(content.getStatus()));
+					stmt1.setString(2, content.getContent());
+					stmt1.setString(3, content.getUsername());
+					stmt1.setString(4, content.getInfoStateType());
+					stmt1.setString(5, content.getType());
 					
 					// execute the query, get the result
 					return stmt1.executeUpdate();
-	
-					/*
-					// if Author was found then save author_id					
-					if (resultSet1.next())
-					{
-						author_id = resultSet1.getInt(1);
-						System.out.println("Author <" + lastName + ", " + firstName + "> found with ID: " + author_id);						
-					}
-					else
-					{
-						System.out.println("Author <" + lastName + ", " + firstName + "> not found");
-				
-						// if the Author is new, insert new Author into Authors table
-						if (author_id <= 0) {
-							// prepare SQL insert statement to add Author to Authors table
-							stmt2 = conn.prepareStatement(
-									"insert into authors (lastname, firstname) " +
-									"  values(?, ?) "
-							);
-							stmt2.setString(1, lastName);
-							stmt2.setString(2, firstName);
-							
-							// execute the update
-							stmt2.executeUpdate();
-							
-							System.out.println("New author <" + lastName + ", " + firstName + "> inserted in Authors table");						
-						
-							// try to retrieve author_id for new Author - DB auto-generates author_id
-							stmt3 = conn.prepareStatement(
-									"select author_id from authors " +
-									"  where lastname = ? and firstname = ? "
-							);
-							stmt3.setString(1, lastName);
-							stmt3.setString(2, firstName);
-							
-							// execute the query							
-							resultSet3 = stmt3.executeQuery();
-							
-							// get the result - there had better be one							
-							if (resultSet3.next())
-							{
-								author_id = resultSet3.getInt(1);
-								System.out.println("New author <" + lastName + ", " + firstName + "> ID: " + author_id);						
-							}
-							else	// really should throw an exception here - the new author should have been inserted, but we didn't find them
-							{
-								System.out.println("New author <" + lastName + ", " + firstName + "> not found in Authors table (ID: " + author_id);
-							}
-						}
-					}
-					
-					// now insert new Book into Books table
-					// prepare SQL insert statement to add new Book to Books table
-					stmt4 = conn.prepareStatement(
-							"insert into books (title, isbn, published) " +
-							"  values(?, ?, ?) "
-					);
-					stmt4.setString(1, title);
-					stmt4.setString(2, isbn);
-					stmt4.setInt(3, published);
-					
-					// execute the update
-					stmt4.executeUpdate();
-					
-					System.out.println("New book <" + title + "> inserted into Books table");					
-	
-					// now retrieve book_id for new Book, so that we can set up BookAuthor entry
-					// and return the book_id, which the DB auto-generates
-					// prepare SQL statement to retrieve book_id for new Book
-					stmt5 = conn.prepareStatement(
-							"select book_id from books " +
-							"  where title = ? and isbn = ? and published = ? "
-									
-					);
-					stmt5.setString(1, title);
-					stmt5.setString(2, isbn);
-					stmt5.setInt(3, published);
-	
-					// execute the query
-					resultSet5 = stmt5.executeQuery();
-					
-					// get the result - there had better be one
-					if (resultSet5.next())
-					{
-						book_id = resultSet5.getInt(1);
-						System.out.println("New book <" + title + "> ID: " + book_id);						
-					}
-					else	// really should throw an exception here - the new book should have been inserted, but we didn't find it
-					{
-						System.out.println("New book <" + title + "> not found in Books table (ID: " + book_id);
-					}
-					
-					// now that we have all the information, insert entry into BookAuthors table
-					// which is the junction table for Books and Authors
-					// prepare SQL insert statement to add new Book to Books table
-					stmt6 = conn.prepareStatement(
-							"insert into bookAuthors (book_id, author_id) " +
-							"  values(?, ?) "
-					);
-					stmt6.setInt(1, book_id);
-					stmt6.setInt(2, author_id);
-					
-					// execute the update
-					stmt6.executeUpdate();
-					
-					System.out.println("New entry for book ID <" + book_id + "> and author ID <" + author_id + "> inserted into BookAuthors junction table");						
-					
-					System.out.println("New book <" + title + "> inserted into Books table");					
-					
-					return book_id;
-					*/
 				} finally {
 					DBUtil.closeQuietly(resultSet1);
 					DBUtil.closeQuietly(stmt1);
-					DBUtil.closeQuietly(stmt2);					
-					DBUtil.closeQuietly(resultSet3);
-					DBUtil.closeQuietly(stmt3);					
-					DBUtil.closeQuietly(stmt4);
-					DBUtil.closeQuietly(resultSet5);
-					DBUtil.closeQuietly(stmt5);
-					DBUtil.closeQuietly(stmt6);
 				}
 			}
 		});
 	}
+
+	@Override
+	public List<Long> fetchEventDate() {
+		return executeTransaction(new Transaction<List<Long>>() {
+			@Override
+			public List<Long> execute(Connection conn) throws SQLException {
+				PreparedStatement stmt = null;
+				ResultSet resultSet = null;
+				
+				try {
+					stmt = conn.prepareStatement(
+							"select admins.*" +
+							"  from  admins "
+					);
+					
+					List<Long> result = new ArrayList<Long>();
+					
+					resultSet = stmt.executeQuery();
+					
+					// for testing that a result was returned
+					Boolean found = false;
+					
+					while (resultSet.next()) {
+						found = true;
+						
+						Long date = resultSet.getLong(1);
+						result.add(date);
+					}
+					
+					// check if date was found
+					if (!found) {
+						System.out.println("No dates found");
+					}
+					
+					return result;
+				} finally {
+					DBUtil.closeQuietly(resultSet);
+					DBUtil.closeQuietly(stmt);
+				}
+			}
+		});
+	}
+
+	@Override
+	public Integer insertDateIntoAdminTable(long date) {
+		return executeTransaction(new Transaction<Integer>() {
+			@Override
+			
+			public Integer execute(Connection conn) throws SQLException {
+				PreparedStatement stmt1 = null;
+				ResultSet resultSet1 = null;
+				
+				try {
+					stmt1 = conn.prepareStatement(
+							"update admins set"
+							+ " eventDate = ?"
+					);
+					stmt1.setLong(1, date);
+					
+					// execute the query, get the result
+					return stmt1.executeUpdate();
+				} finally {
+					DBUtil.closeQuietly(resultSet1);
+					DBUtil.closeQuietly(stmt1);
+				}
+			}
+		});		
+	}		
 }
