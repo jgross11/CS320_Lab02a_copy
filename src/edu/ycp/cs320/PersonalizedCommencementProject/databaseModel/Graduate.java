@@ -72,11 +72,35 @@ public class Graduate extends User{
 	
 	public void calculateStatus() {
 		status = true;
-		for(ContentComponent content : currentInfo.getContents()) {
+		for(ContentComponent content : pendingInfo.getContents()) {
 			if(!content.getStatus()) {
 				status = false;
 				break;
 			}
 		}
+	}
+	public int getProfileIndex() {
+		return InfoState.PROFILE_INDEX;
+	}
+	public int getExtraInformationIndex() {
+		return InfoState.EXTRAINFORMATION_INDEX;
+	}
+	public int getNamePronunciationIndex() {
+		return InfoState.NAMEPRONUNCIATION_INDEX;
+	}
+	public int getSlideshow1Index() {
+		return InfoState.SLIDESHOW1_INDEX;
+	}
+	public int getSlideshow2Index() {
+		return InfoState.SLIDESHOW2_INDEX;
+	}
+	public int getSlideshow3Index() {
+		return InfoState.SLIDESHOW3_INDEX;
+	}
+	public int getSlideshow4Index() {
+		return InfoState.SLIDESHOW4_INDEX;
+	}
+	public int getVideoIndex() {
+		return InfoState.VIDEO_INDEX;
 	}
 }

@@ -19,6 +19,9 @@ public class Admin extends User{
 	public void setDate(long date) {
 		deadline = new Date(date); 
 	}
+	public void setDate(Date date) {
+		deadline = date;
+	}
 
 	public Date getDate() {
 		return deadline; 

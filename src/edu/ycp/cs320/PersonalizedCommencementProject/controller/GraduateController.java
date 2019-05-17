@@ -1,50 +1,46 @@
 package edu.ycp.cs320.PersonalizedCommencementProject.controller;
 
-import edu.ycp.cs320.PersonalizedCommencementProject.miscellaneousClasses.InfoState;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
-import edu.ycp.cs320.PersonalizedCommencementProject.model.Graduate;
+import java.util.Date;
+
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Advisor;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.ContentComponent;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.InfoState;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.DatabaseProvider;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.DerbyDatabase;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.IDatabase;
 
 // Graduate controller class
 public class GraduateController extends UserController{
+	IDatabase db = null;
 	private Graduate model;
 	
-	public Graduate getModel() {
-		return model;
+	
+	public GraduateController() {
+		// creates DB instance
+		DatabaseProvider.setInstance(new DerbyDatabase());
+		db = DatabaseProvider.getInstance();
 	}
 	
 	public void setModel(Graduate model) {
 		this.model = model;
 	}
-	
-	public void setMajor(String major) {
-		model.setMajor(major);
+
+	public void insertGraduateMediaIntoContentComponentTable(ContentComponent content) {
+		db.insertGraduateMediaIntoContentComponentTable(content);
+	}
+
+	public void setInfoAtIndex(int index, ContentComponent content) {
+		model.getPendingInfo().setContentAtIndex(index, content);
 	}
 	
-	public void setMinor(String minor) {
-		model.setMinor(minor);
+	public boolean canEdit() {
+		if(new Date(System.currentTimeMillis()).compareTo(new Date(db.fetchEventDate().get(0))) <= 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	
-	public void setQRCodeString(String QRCodeString) {
-		model.setQRCodeString(QRCodeString);
-	}
-	
-	public void setStatus(boolean status) {
-		model.setStatus(status);
-	}
-	
-	public void setAdvisor(Advisor advisor) {
-		model.setAdvisor(advisor);
-	}
-	
-	public void setCurrentInfo(InfoState currentInfo) {
-		model.setCurrentInfo(currentInfo);
-	}
-	
-	public void setPendingInfo(InfoState pendingInfo) {
-		model.setPendingInfo(pendingInfo);
-	}
-	
-	public void calculateStatus() {
-		model.calculateStatus();
-	}
 }

@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -17,13 +18,18 @@ import javax.servlet.http.Part;
 
 import edu.ycp.cs320.PersonalizedCommencementProject.controller.GraduateController;
 import edu.ycp.cs320.PersonalizedCommencementProject.model.Advisor;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.DatabaseProvider;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.DerbyDatabase;
+import edu.ycp.cs320.PersonalizedCommencementProject.persist.IDatabase;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.ContentComponent;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.Graduate;
+import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.InfoState;
 import edu.ycp.cs320.PersonalizedCommencementProject.databaseModel.User;
 
 
 @MultipartConfig(
 		fileSizeThreshold = 1024 * 1024,
-		maxFileSize = 1024 * 1024 * 5, 
+		maxFileSize = 1024 * 1024 * 512, 
 		maxRequestSize = 1024 * 1024 * 5 * 5
 )
 
@@ -40,7 +46,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// parent directory to save files in
 		// sets directory relative to os running servlet
-		uploadPath =  getServletContext().getRealPath("") + "\\student-media-uploads";
+		uploadPath =  getServletContext().getRealPath("") + "//student-media-uploads";
 		System.out.println(uploadPath);
 		File uploadDirectory = new File(uploadPath);
 		
@@ -117,9 +123,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		// the user is interacting with the project
 		HttpSession session = req.getSession();
 		Graduate graduate = (Graduate) session.getAttribute("graduate");
-		
-		// TODO: create reference to model
-		// TODO: Graduate model = controller.getModel();
+		controller.setModel(graduate);
 		
 		// determines whether or not student wishes
 		// to save changes to their media selections
@@ -143,8 +147,14 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		
 		// student wishes to edit their media
 		if(mode.equals("graduateView")) {
-			session.setAttribute("mode", "graduateEdit");
-			System.out.println("Switching graduate mode from view to edit");
+			if(controller.canEdit()) {
+				session.setAttribute("mode", "graduateEdit");
+				System.out.println("Switching graduate mode from view to edit");				
+			}
+			else {
+				System.out.println("Editing deadline has passed");
+			}
+			session.setAttribute("graduate", graduate);
 			req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
 		}
 		
@@ -156,6 +166,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 			if(req.getParameter("graduateLayoutChange").toString().equals("true")){
 				// TODO: set graduate's layout mode to the chosen value
 				// TODO: this is temporary; will eventually change model
+				graduate.getPendingInfo().setLayout(req.getParameter("graduateLayout"));
 				session.setAttribute("graduateLayout", req.getParameter("graduateLayout"));
 				session.setAttribute("graduateLayoutChange", "false");
 				session.setAttribute("mode", "graduateEdit");
@@ -176,21 +187,43 @@ public class PCP_StudentPageServlet extends HttpServlet {
 					String uniqueFileName;
 					Part profilePicturePart = req.getPart("profilePictureUpload");
 					if(!profilePicturePart.getSubmittedFileName().equals("")) {
-						System.out.println("uploaded file name:" + profilePicturePart.getSubmittedFileName());
-						
-						// TODO: insert student's username here
-					    uniqueFileName = /*model.getUsername() + */ "test_" + profilePicturePart.getSubmittedFileName();
+						System.out.println("uploaded file name:" + graduate.getUsername() + "_" + profilePicturePart.getSubmittedFileName());
+					    uniqueFileName = graduate.getUsername() + "_" + profilePicturePart.getSubmittedFileName();
 					    writeFile(profilePicturePart, uniqueFileName, "image");
+					    ContentComponent newContent = new ContentComponent("student-media-uploads\\photos\\" + uniqueFileName, false, InfoState.PROFILE, graduate.getUsername(), "pending");
+						controller.insertGraduateMediaIntoContentComponentTable(newContent);
+						controller.setInfoAtIndex(InfoState.PROFILE_INDEX, new ContentComponent("student-media-uploads/photos/" + uniqueFileName, newContent.getStatus(), newContent.getType(), newContent.getUsername(), newContent.getInfoStateType()));
+						System.out.println("Entered new profile picture");
+						for(ContentComponent content : graduate.getPendingInfo().getContents()) {
+							System.out.println(content.getType() + " | " + content.getContent());
+						}
 					}
 					
 					// name pronunciation check
 					Part namePronunciationPart = req.getPart("namePronunciationUpload");
 					if(!namePronunciationPart.getSubmittedFileName().equals("")) {
 						// TODO: insert student's username here
-					    uniqueFileName = /*model.getUsername() + */ "test_" + namePronunciationPart.getSubmittedFileName();
+					    uniqueFileName = graduate.getUsername() + "_" + namePronunciationPart.getSubmittedFileName();
 					    writeFile(namePronunciationPart, uniqueFileName, "audio");
+					    ContentComponent newContent = new ContentComponent("student-media-uploads\\audios\\" + uniqueFileName, false, InfoState.NAMEPRONUNCIATION, graduate.getUsername(), "pending");
+						controller.insertGraduateMediaIntoContentComponentTable(newContent);
+						controller.setInfoAtIndex(InfoState.NAMEPRONUNCIATION_INDEX, new ContentComponent("student-media-uploads/audios/" + uniqueFileName, newContent.getStatus(), newContent.getType(), newContent.getUsername(), newContent.getInfoStateType()));
+						System.out.println("Entered new name pronunciation");
+						for(ContentComponent content : graduate.getPendingInfo().getContents()) {
+							System.out.println(content.getType() + " | " + content.getContent());
+						}
 					}
- 
+					
+					// extra information check
+					String newExtraInfo = req.getParameter("studentNewInformation");
+					String oldExtraInfo = graduate.getPendingInfo().getContentAtIndex(InfoState.EXTRAINFORMATION_INDEX).getContent();
+					if(!newExtraInfo.equals(oldExtraInfo)) {
+						ContentComponent newExtraInformation = new ContentComponent(newExtraInfo, false, InfoState.EXTRAINFORMATION, graduate.getUsername(), "pending");
+						controller.insertGraduateMediaIntoContentComponentTable(newExtraInformation);
+						controller.setInfoAtIndex(InfoState.EXTRAINFORMATION_INDEX, newExtraInformation);
+						System.out.println("Extra information has changed");
+						System.out.println(newExtraInfo + " | " + oldExtraInfo);
+					}
 					String layout = session.getAttribute("graduateLayout").toString();
 					if(layout.equals("static slideshow") || layout.equals("dynamic slideshow")) {
 						String builder = "";
@@ -199,19 +232,33 @@ public class PCP_StudentPageServlet extends HttpServlet {
 							builder = "image" + i + "Upload";
 							imagePart = req.getPart(builder);
 							if(!imagePart.getSubmittedFileName().equals("")) {
-								uniqueFileName = /*model.getUsername() + */ "test_" + imagePart.getSubmittedFileName();
+								uniqueFileName = graduate.getUsername() + "_" + imagePart.getSubmittedFileName();
 							    writeFile(imagePart, uniqueFileName, "image");
+							    ContentComponent newContent = new ContentComponent("student-media-uploads\\photos\\" + uniqueFileName, false, "slideshow" + i, graduate.getUsername(), "pending");
+								controller.insertGraduateMediaIntoContentComponentTable(newContent);
+								controller.setInfoAtIndex(2+i, new ContentComponent("student-media-uploads/photos/" + uniqueFileName, newContent.getStatus(), newContent.getType(), newContent.getUsername(), newContent.getInfoStateType()));
 							}
 							else {
 								System.out.println("Nothing was uploaded for " + builder);
+							}
+							System.out.println("Entered new slideshow images");
+							for(ContentComponent content : graduate.getPendingInfo().getContents()) {
+								System.out.println(content.getType() + " | " + content.getContent());
 							}
 						}
 					}
 					else if(layout.equals("video")) {
 						Part videoPart = req.getPart("videoUpload");
 						if(!videoPart.getSubmittedFileName().equals("")) {
-							uniqueFileName = /*model.getUsername() + */ "test_" + videoPart.getSubmittedFileName();
+							uniqueFileName = graduate.getUsername() + "_" + videoPart.getSubmittedFileName();
 						    writeFile(videoPart, uniqueFileName, "video");
+						    ContentComponent newContent = new ContentComponent("student-media-uploads\\videos\\" + uniqueFileName, false, InfoState.VIDEO, graduate.getUsername(), "pending");
+							controller.insertGraduateMediaIntoContentComponentTable(newContent);
+							controller.setInfoAtIndex(InfoState.PROFILE_INDEX, new ContentComponent("student-media-uploads/videos/" + uniqueFileName, newContent.getStatus(), newContent.getType(), newContent.getUsername(), newContent.getInfoStateType()));
+							System.out.println("Entered new video");
+							for(ContentComponent content : graduate.getPendingInfo().getContents()) {
+								System.out.println(content.getType() + " | " + content.getContent());
+							}
 						}
 						else {
 							System.out.println("Nothing was uploaded for videoUpload");
@@ -231,6 +278,8 @@ public class PCP_StudentPageServlet extends HttpServlet {
 					System.out.println("Invalid Values, save: " + studentSaveChanges);
 				}
 			}
+			graduate.calculateStatus();
+			session.setAttribute("graduate", graduate);
 			req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
 		}
 		// advisor wishes to dis/approve a student's media selections
@@ -254,6 +303,7 @@ public class PCP_StudentPageServlet extends HttpServlet {
 			}
 			else if(session.getAttribute("advisorGoBack").equals("true")) {
 				System.out.println("Navigating back to advisor home page");
+				
 				resp.sendRedirect(req.getContextPath() + "/PCP_AdvisorPage");
 			}
 			
@@ -264,8 +314,90 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		else if(mode.equals("advisorEdit")) {
 			session.setAttribute("mode", "advisorView");
 			System.out.println("Switching advisor mode from edit to view");
-			System.out.println(req.getParameter("advisorSaveChanges"));
 			// TODO: add logic to save dis/approved content
+			if(Boolean.valueOf(req.getParameter("advisorSaveChanges"))) {
+				Graduate grad = (Graduate) session.getAttribute("studentToView");
+				InfoState newState = grad.getCurrentInfo();
+				InfoState pendingState = grad.getPendingInfo();
+				System.out.println("Advisor saved changes");
+				// contents from jsp go: extra info(0), name pronunciation(1), display picture(2), slideshows(3-6), video(7)
+				// TODO: change the jsp to align advisor choice with infostate indices 
+				// TODO: to eliminate necessity of switch statement
+				Boolean[] advisorChoices = constructAdvisorChoiceArray(req.getParameter("studentNewInfo"));
+				int temp;
+				ContentComponent tempC = null;
+				for(int i = 0; i < advisorChoices.length; i++) {
+					temp = -1;
+					switch(i) {
+					case 0:
+						temp = InfoState.EXTRAINFORMATION_INDEX;
+					break;
+					case 1:
+						temp = InfoState.NAMEPRONUNCIATION_INDEX;
+						break;
+					case 2:
+						temp = InfoState.PROFILE_INDEX;
+						break;
+					case 3:
+						temp = InfoState.SLIDESHOW1_INDEX;
+						break;
+					case 4:
+						temp = InfoState.SLIDESHOW2_INDEX;
+						break;
+					case 5:
+						temp = InfoState.SLIDESHOW3_INDEX;
+						break;
+					case 6:
+						temp = InfoState.SLIDESHOW4_INDEX;
+						break;
+					case 7:
+						temp = InfoState.VIDEO_INDEX;
+						break;
+					default:
+						System.out.println("missing");
+					break;
+					}
+					if(advisorChoices[i]){
+						tempC = pendingState.getContentAtIndex(temp);
+						tempC.setStatus(true);
+						newState.setContentAtIndex(temp, tempC);
+						controller.insertGraduateMediaIntoContentComponentTable(tempC);
+						tempC.setInfoStateType("current");
+						controller.insertGraduateMediaIntoContentComponentTable(tempC);
+					}
+					else {
+						tempC = grad.getCurrentInfo().getContentAtIndex(temp);
+						System.out.println("Adding component |" + tempC.getContent() + "| to graduate's current infostate");
+						System.out.println("**Component to  be added's  information**");
+						tempC.setInfoStateType("pending");
+						System.out.println("Content: " + tempC.getContent());
+						System.out.println("IS type: " + tempC.getInfoStateType());
+						System.out.println("Content type: " + tempC.getType());
+						System.out.println("Status: " + tempC.getStatus());
+						System.out.println("User: " + tempC.getUsername());
+						controller.insertGraduateMediaIntoContentComponentTable(tempC);
+					}
+				}
+				// debug
+				
+				
+				for(ContentComponent content : pendingState.getContents()) {
+					System.out.println("pending content: " + content.getContent());
+				}
+				for(ContentComponent content : grad.getCurrentInfo().getContents()) {
+					System.out.println("old current content: " + content.getContent());
+				}
+				for(ContentComponent content : newState.getContents()) {
+					System.out.println("new current content: " + content.getContent() + " | status: " + content.getStatus());
+				}
+				grad.setCurrentInfo(newState);
+				grad.setPendingInfo(newState);
+				// TODO: iterate through the new state and insert changes into db for both current and pending states
+				
+			}
+			else {
+				System.out.println("Advisor didn't save changes");
+			}
 			
 			req.getRequestDispatcher("/_view/PCP_StudentPage.jsp").forward(req, resp);
 		}
@@ -276,6 +408,25 @@ public class PCP_StudentPageServlet extends HttpServlet {
 		req.setAttribute("studentSaveChanges", studentSaveChanges);
 	}
 	
+	private Boolean[] constructAdvisorChoiceArray(String parameter) {
+		int beginSpace = 0;
+		int counter = 0;
+		Boolean[] resultArray = new Boolean[8];
+		for(int i = 0; i < parameter.length(); i++) {
+			if (parameter.charAt(i) == ',' || i == parameter.length() - 1) {
+				if(parameter.charAt(beginSpace) == 't') {
+					resultArray[counter] = true;
+				}
+				else {
+					resultArray[counter] = false;
+				}
+				counter++;
+				beginSpace = i + 1;
+			}
+		}
+		return resultArray;
+	}
+
 	// writes a given file to a specified path depending on a given file type
 	// also, checks for and deletes files with same name prior to uploading
 	public void writeFile(Part filePart, String fileName, String fileType) throws IOException{
@@ -294,15 +445,16 @@ public class PCP_StudentPageServlet extends HttpServlet {
 	    else {
 	    	System.out.println("Invalid file type");
 	    }
-	    File oldFile = new File(path + File.separator + fileName);
+	    String wholePath = path + File.separator + fileName;
+	    File oldFile = new File(wholePath);
 	    if(oldFile.delete()) {
-	    	System.out.println("deleted old file: " + path + File.separator + fileName);
+	    	System.out.println("deleted old file: " + wholePath);
 	    }
 	    else {
 	    	System.out.println("file wasn't found or unable to delete");
 	    }
 	    try {
-	        out = new FileOutputStream(new File(path + File.separator + fileName));
+	        out = new FileOutputStream(oldFile);
 	        filecontent = filePart.getInputStream();
 	        int read = 0;
 	        byte[] bytes = new byte[1024 * 1024 * 5];

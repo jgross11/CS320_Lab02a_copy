@@ -97,7 +97,8 @@ public class Advisor extends User{
 		completedGraduates = new ArrayList<Graduate>();
 		pendingGraduates = new ArrayList<Graduate>();
 		for(Graduate graduate : graduates) {
-			if(graduate.getStatus() == true) {
+			graduate.calculateStatus();
+			if(graduate.getStatus()) {
 				completedGraduates.add(graduate);
 			}
 			else {
@@ -109,7 +110,7 @@ public class Advisor extends User{
 	public void calculateNumCompletedGraduates() {
 		numCompletedGraduates = 0;
 		for(Graduate grad : graduates) {
-			if(grad.getStatus() == true) {
+			if(grad.getStatus()) {
 				numCompletedGraduates++;
 			}
 		}

@@ -30,6 +30,13 @@ public class ContentComponent {
 		this.type = type;
 		this.username = username;
 	}
+	public ContentComponent(String path, Boolean status, String type, String username, String infoStateType) {
+		this.content = path;
+		this.status = status;
+		this.type = type;
+		this.username = username;
+		this.infoStateType = infoStateType;
+	}
 	
 	public boolean getStatus() {
 		return status;

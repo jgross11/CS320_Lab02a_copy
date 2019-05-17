@@ -23,19 +23,13 @@ import edu.ycp.cs320.PersonalizedCommencementProject.model.ZUNUSED_Pair;
 */
 
 public interface IDatabase {
-	/*
-	public List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> findAuthorAndBookByTitle(String title);
-	public List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> findAuthorAndBookByAuthorLastName(String lastName);
-	public Integer insertBookIntoBooksTable(String title, String isbn, int published, String lastName, String firstName);
-	public List<ZUNUSED_Pair<ZUNUSED_Author, ZUNUSED_Book>> findAllBooksWithAuthors();
-	public List<ZUNUSED_Author> findAllAuthors();
-	public List<ZUNUSED_Author> removeBookByTitle(String title);		
-	*/
 	public List<User> findUserByUsername(String username);
 	public List<Graduate> findGraduateByUsername(String username);
 	public List<Advisor> findAdvisorByUsername(String username);
-	public List<Admin> findAdminByUsername(String username);
+	public List<Long> fetchEventDate();
 	public List<InfoState> findGraduateInfoStateByGraduateUsername(String username);
 	public List<Graduate> findAdvisorGraduatesByAdvisorUsername(String username);
 	public List<ContentComponent> findContentComponentsByUsername(String username);
+	public Integer insertGraduateMediaIntoContentComponentTable(ContentComponent content);
+	public Integer insertDateIntoAdminTable(long date);
 }

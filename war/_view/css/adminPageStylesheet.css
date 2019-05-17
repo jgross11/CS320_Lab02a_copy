@@ -31,15 +31,13 @@
 #adminName{
     height: 20px;
     font-size: 150%;
-    border-top: 0px solid black;
-    border-right: 0px solid black;
-    border-left: 0px solid black;
-    border-bottom: 1px solid black;
     font-size: 150%;
+    border-bottom: 1px solid black;
 }
 #eventStatus{
     border: 0px solid black;
     font-size: 180%;
+    border-bottom: 1px solid black;
 }
 
 #studentStatusBox{
@@ -75,27 +73,17 @@
 
 #academicInformation{
     font-size: 30px;
-    border-top: 0px solid black;
-    border-right: 0px solid black;
-    border-left: 0px solid black;
-    border-bottom: 1px solid black;
     width: 440px;
 }
 #adminName{
     height: 20px;
     width: 440px;
     font-size: 40px;
-    border-top: 0px solid black;
-    border-right: 0px solid black;
-    border-left: 0px solid black;
-    border-bottom: 1px solid black;
 }
 th{
     font-size: 180%;
-    border: 1px solid black;
 }
 td{
     font-size: 130%;
-    border: 1px solid black;
     text-align: center;
 }
