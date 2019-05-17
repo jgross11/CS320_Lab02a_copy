@@ -32,18 +32,18 @@ public class PCP_AdvisorPageServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		System.out.println("PCP_AdvisorPage Servlet : doGet");
 		// verify that user is an advisor
-		User user = null;
+		Advisor advisor = null;
 		try{
-			user = (User) req.getSession().getAttribute("user");
-			user.getType();
+			advisor = (Advisor) req.getSession().getAttribute("advisor");
+			advisor.getType();
 		}
 		catch(NullPointerException e) {
 			// new users are null, and are redirected accordingly
 			resp.sendRedirect(req.getContextPath() + "/PCP_Index");
 		}
-		// TODO: make this search userDB for session informations usernames' type
-		// TODO: and redirect to advisor page only if type is advisor
-		if(user.getType().equals("advisor")) {
+		if(advisor.getType().equals("advisor")) {
+			advisor.generatePendingAndCompletedGraduateList();
+			advisor.calculateStatus();
 			req.getRequestDispatcher("/_view/PCP_AdvisorPage.jsp").forward(req, resp);
 		}
 		else {
