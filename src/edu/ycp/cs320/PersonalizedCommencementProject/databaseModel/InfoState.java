@@ -22,6 +22,7 @@ public class InfoState {
 	private final int numContents = 8;
 	private String formatType;
 	private String username;
+	private String layout;
 	private ArrayList<ContentComponent> contents;
 	
 	public InfoState() {
@@ -70,5 +71,12 @@ public class InfoState {
 	
 	public void setContentAtIndex(int index, ContentComponent content){
 		contents.set(index, content);
+	}
+	
+	public String getLayout() {
+		return layout;
+	}
+	public void setLayout(String layout) {
+		this.layout = layout;
 	}
 }
